@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.instrument_drivers.tektronix.AWGFileParser &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link href="../../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.instrument_drivers.tektronix.AWGFileParser</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.instrument_drivers.tektronix.AWGFileParser</h1><div class="highlight"><pre>
+<span></span><span class="c1"># awg file -&gt; (what, we, put, into, make_send_and_load_awg_file)</span>
+<span class="c1"># This module parses an awg file using THREE sub-parser. This code could</span>
+<span class="c1"># probably be streamlined somewhat.</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">AWG_FILE_FORMAT</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;MAGIC&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;VERSION&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SAMPLING_RATE&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>    <span class="c1"># d</span>
+    <span class="s1">&#39;REPETITION_RATE&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>    <span class="c1"># # NAME?</span>
+    <span class="s1">&#39;HOLD_REPETITION_RATE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># True | False</span>
+    <span class="s1">&#39;CLOCK_SOURCE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># Internal | External</span>
+    <span class="s1">&#39;REFERENCE_SOURCE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># Internal | External</span>
+    <span class="s1">&#39;EXTERNAL_REFERENCE_TYPE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># Fixed | Variable</span>
+    <span class="s1">&#39;REFERENCE_CLOCK_FREQUENCY_SELECTION&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># 10 MHz | 20 MHz | 100 MHz</span>
+    <span class="s1">&#39;REFERENCE_MULTIPLIER_RATE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1">#</span>
+    <span class="s1">&#39;DIVIDER_RATE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>   <span class="c1"># 1 | 2 | 4 | 8 | 16 | 32 | 64 | 128 | 256</span>
+    <span class="s1">&#39;TRIGGER_SOURCE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># Internal | External</span>
+    <span class="s1">&#39;INTERNAL_TRIGGER_RATE&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>    <span class="c1">#</span>
+    <span class="s1">&#39;TRIGGER_INPUT_IMPEDANCE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># 50 ohm | 1 kohm</span>
+    <span class="s1">&#39;TRIGGER_INPUT_SLOPE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># Positive | Negative</span>
+    <span class="s1">&#39;TRIGGER_INPUT_POLARITY&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># Positive | Negative</span>
+    <span class="s1">&#39;TRIGGER_INPUT_THRESHOLD&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>    <span class="c1">#</span>
+    <span class="s1">&#39;EVENT_INPUT_IMPEDANCE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># 50 ohm | 1 kohm</span>
+    <span class="s1">&#39;EVENT_INPUT_POLARITY&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># Positive | Negative</span>
+    <span class="s1">&#39;EVENT_INPUT_THRESHOLD&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;JUMP_TIMING&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># Sync | Async</span>
+    <span class="s1">&#39;INTERLEAVE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># On |  This setting is stronger than coupling</span>
+    <span class="s1">&#39;ZEROING&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># On | Off</span>
+    <span class="s1">&#39;COUPLING&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># The Off | Pair | All setting is weaker than .</span>
+    <span class="s1">&#39;RUN_MODE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># Continuous | Triggered | Gated | Sequence</span>
+    <span class="s1">&#39;WAIT_VALUE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># First | Last</span>
+    <span class="s1">&#39;RUN_STATE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>    <span class="c1"># On | Off</span>
+    <span class="s1">&#39;INTERLEAVE_ADJ_PHASE&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;INTERLEAVE_ADJ_AMPLITUDE&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;EVENT_JUMP_MODE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Event jump | Dynamic jump</span>
+    <span class="s1">&#39;TABLE_JUMP_STROBE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># On</span>
+    <span class="s1">&#39;TABLE_JUMP_DEFINITION&#39;</span><span class="p">:</span> <span class="s1">&#39;ignore&#39;</span><span class="p">,</span>  <span class="c1"># Array of tablejump</span>
+    <span class="c1"># ---------------------</span>
+    <span class="c1"># Channel 1 settings</span>
+    <span class="c1"># ---------------------</span>
+    <span class="s1">&#39;OUTPUT_WAVEFORM_NAME_1&#39;</span><span class="p">:</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span>  <span class="c1"># if in continuous mode</span>
+    <span class="s1">&#39;DAC_RESOLUTION_1&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># 8 | 10</span>
+    <span class="s1">&#39;CHANNEL_STATE_1&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># On | Off</span>
+    <span class="s1">&#39;ANALOG_DIRECT_OUTPUT_1&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># On | Off</span>
+    <span class="s1">&#39;ANALOG_FILTER_1&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Enum type.</span>
+    <span class="s1">&#39;ANALOG_METHOD_1&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Amplitude/Offset, High/Low</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;ANALOG_AMPLITUDE_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;ANALOG_OFFSET_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;ANALOG_HIGH_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;ANALOG_LOW_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MARKER1_SKEW_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MARKER1_METHOD_1&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Amplitude/Offset, High/Low</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;MARKER1_AMPLITUDE_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;MARKER1_OFFSET_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;MARKER1_HIGH_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;MARKER1_LOW_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MARKER2_SKEW_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MARKER2_METHOD_1&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Amplitude/Offset, High/Low</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;MARKER2_AMPLITUDE_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;MARKER2_OFFSET_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;MARKER2_HIGH_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;MARKER2_LOW_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DIGITAL_METHOD_1&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Amplitude/Offset, High/Low</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;DIGITAL_AMPLITUDE_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;DIGITAL_OFFSET_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;DIGITAL_HIGH_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;DIGITAL_LOW_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;EXTERNAL_ADD_1&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># AWG5000 only</span>
+    <span class="s1">&#39;PHASE_DELAY_INPUT_METHOD_1&#39;</span><span class="p">:</span>   <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Phase/DelayInme/DelayInints</span>
+    <span class="s1">&#39;PHASE_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>  <span class="c1"># When the Input Method is not Phase, it is skipped.</span>
+    <span class="c1"># When the Input Method is not DelayInTime, it is skipped.</span>
+    <span class="s1">&#39;DELAY_IN_TIME_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is not DelayInPoint, it is skipped.</span>
+    <span class="s1">&#39;DELAY_IN_POINTS_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CHANNEL_SKEW_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DC_OUTPUT_LEVEL_1&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>  <span class="c1"># V</span>
+    <span class="c1"># ---------------------</span>
+    <span class="c1"># ---------------------</span>
+    <span class="s1">&#39;OUTPUT_WAVEFORM_NAME_2&#39;</span><span class="p">:</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DAC_RESOLUTION_2&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># 8 | 10</span>
+    <span class="s1">&#39;CHANNEL_STATE_2&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># On | Off</span>
+    <span class="s1">&#39;ANALOG_DIRECT_OUTPUT_2&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># On | Off</span>
+    <span class="s1">&#39;ANALOG_FILTER_2&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Enum type.</span>
+    <span class="s1">&#39;ANALOG_METHOD_2&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Amplitude/Offset, High/Low</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;ANALOG_AMPLITUDE_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;ANALOG_OFFSET_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;ANALOG_HIGH_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;ANALOG_LOW_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MARKER1_SKEW_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MARKER1_METHOD_2&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Amplitude/Offset, High/Low</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;MARKER1_AMPLITUDE_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;MARKER1_OFFSET_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;MARKER1_HIGH_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;MARKER1_LOW_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MARKER2_SKEW_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MARKER2_METHOD_2&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Amplitude/Offset, High/Low</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;MARKER2_AMPLITUDE_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;MARKER2_OFFSET_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;MARKER2_HIGH_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;MARKER2_LOW_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DIGITAL_METHOD_2&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Amplitude/Offset, High/Low</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;DIGITAL_AMPLITUDE_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;DIGITAL_OFFSET_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;DIGITAL_HIGH_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;DIGITAL_LOW_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;EXTERNAL_ADD_2&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># AWG5000 only</span>
+    <span class="s1">&#39;PHASE_DELAY_INPUT_METHOD_2&#39;</span><span class="p">:</span>   <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Phase/DelayInme/DelayInints</span>
+    <span class="s1">&#39;PHASE_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>  <span class="c1"># When the Input Method is not Phase, it is skipped.</span>
+    <span class="c1"># When the Input Method is not DelayInTime, it is skipped.</span>
+    <span class="s1">&#39;DELAY_IN_TIME_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is not DelayInPoint, it is skipped.</span>
+    <span class="s1">&#39;DELAY_IN_POINTS_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CHANNEL_SKEW_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DC_OUTPUT_LEVEL_2&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>  <span class="c1"># V</span>
+    <span class="c1"># ---------------------</span>
+    <span class="c1"># ---------------------</span>
+    <span class="s1">&#39;OUTPUT_WAVEFORM_NAME_3&#39;</span><span class="p">:</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DAC_RESOLUTION_3&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># 8 | 10</span>
+    <span class="s1">&#39;CHANNEL_STATE_3&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># On | Off</span>
+    <span class="s1">&#39;ANALOG_DIRECT_OUTPUT_3&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># On | Off</span>
+    <span class="s1">&#39;ANALOG_FILTER_3&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Enum type.</span>
+    <span class="s1">&#39;ANALOG_METHOD_3&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Amplitude/Offset, High/Low</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;ANALOG_AMPLITUDE_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;ANALOG_OFFSET_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;ANALOG_HIGH_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;ANALOG_LOW_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MARKER1_SKEW_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MARKER1_METHOD_3&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Amplitude/Offset, High/Low</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;MARKER1_AMPLITUDE_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;MARKER1_OFFSET_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;MARKER1_HIGH_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;MARKER1_LOW_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MARKER2_SKEW_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MARKER2_METHOD_3&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Amplitude/Offset, High/Low</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;MARKER2_AMPLITUDE_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;MARKER2_OFFSET_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;MARKER2_HIGH_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;MARKER2_LOW_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DIGITAL_METHOD_3&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Amplitude/Offset, High/Low</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;DIGITAL_AMPLITUDE_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;DIGITAL_OFFSET_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;DIGITAL_HIGH_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;DIGITAL_LOW_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;EXTERNAL_ADD_3&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># AWG5000 only</span>
+    <span class="s1">&#39;PHASE_DELAY_INPUT_METHOD_3&#39;</span><span class="p">:</span>   <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Phase/DelayInme/DelayInints</span>
+    <span class="s1">&#39;PHASE_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>  <span class="c1"># When the Input Method is not Phase, it is skipped.</span>
+    <span class="c1"># When the Input Method is not DelayInTime, it is skipped.</span>
+    <span class="s1">&#39;DELAY_IN_TIME_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is not DelayInPoint, it is skipped.</span>
+    <span class="s1">&#39;DELAY_IN_POINTS_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CHANNEL_SKEW_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DC_OUTPUT_LEVEL_3&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>  <span class="c1"># V</span>
+    <span class="c1"># ---------------------</span>
+    <span class="c1"># ---------------------</span>
+    <span class="s1">&#39;OUTPUT_WAVEFORM_NAME_4&#39;</span><span class="p">:</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DAC_RESOLUTION_4&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># 8 | 10</span>
+    <span class="s1">&#39;CHANNEL_STATE_4&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># On | Off</span>
+    <span class="s1">&#39;ANALOG_DIRECT_OUTPUT_4&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># On | Off</span>
+    <span class="s1">&#39;ANALOG_FILTER_4&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Enum type.</span>
+    <span class="s1">&#39;ANALOG_METHOD_4&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Amplitude/Offset, High/Low</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;ANALOG_AMPLITUDE_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;ANALOG_OFFSET_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;ANALOG_HIGH_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;ANALOG_LOW_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MARKER1_SKEW_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MARKER1_METHOD_4&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Amplitude/Offset, High/Low</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;MARKER1_AMPLITUDE_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;MARKER1_OFFSET_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;MARKER1_HIGH_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;MARKER1_LOW_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MARKER2_SKEW_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MARKER2_METHOD_4&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Amplitude/Offset, High/Low</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;MARKER2_AMPLITUDE_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;MARKER2_OFFSET_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;MARKER2_HIGH_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;MARKER2_LOW_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DIGITAL_METHOD_4&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Amplitude/Offset, High/Low</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;DIGITAL_AMPLITUDE_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is High/Low, it is skipped.</span>
+    <span class="s1">&#39;DIGITAL_OFFSET_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;DIGITAL_HIGH_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is Amplitude/Offset, it is skipped.</span>
+    <span class="s1">&#39;DIGITAL_LOW_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;EXTERNAL_ADD_4&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># AWG5000 only</span>
+    <span class="s1">&#39;PHASE_DELAY_INPUT_METHOD_4&#39;</span><span class="p">:</span>   <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># Phase/DelayInme/DelayInints</span>
+    <span class="s1">&#39;PHASE_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>  <span class="c1"># When the Input Method is not Phase, it is skipped.</span>
+    <span class="c1"># When the Input Method is not DelayInTime, it is skipped.</span>
+    <span class="s1">&#39;DELAY_IN_TIME_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="c1"># When the Input Method is not DelayInPoint, it is skipped.</span>
+    <span class="s1">&#39;DELAY_IN_POINTS_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CHANNEL_SKEW_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DC_OUTPUT_LEVEL_4&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span>  <span class="c1"># V</span>
+    <span class="p">}</span>
+
+<span class="c1"># Note: this dictionary is dynamically updated by _parser1</span>
+<span class="n">AWG_FILE_FORMAT_WAV</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;WAVEFORM_NAME&#39;</span><span class="p">:</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;WAVEFORM_TYPE&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;WAVEFORM_LENGTH&#39;</span><span class="p">:</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;WAVEFORM_TIMESTAMP&#39;</span><span class="p">:</span> <span class="s1">&#39;8H&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;WAVEFORM_DATA_4&#39;</span><span class="p">:</span> <span class="kc">None</span>
+    <span class="p">}</span>
+
+<span class="n">AWG_FILE_FORMAT_SEQ</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;SEQUENCE_WAIT&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># On | Off</span>
+    <span class="s1">&#39;SEQUENCE_LOOP&#39;</span><span class="p">:</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span>  <span class="c1"># 0=infinite</span>
+    <span class="s1">&#39;SEQUENCE_JUMP&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># OFF:0, INDEX: element #, NEXT: -1</span>
+    <span class="s1">&#39;SEQUENCE_GOTO&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>  <span class="c1"># 0 if GOTO is OFF, else an element number</span>
+    <span class="s1">&#39;SEQUENCE_WAVEFORM&#39;</span><span class="p">:</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SEQUENCE_IS&#39;</span><span class="p">:</span> <span class="s1">&#39;2h&#39;</span><span class="p">,</span>  <span class="c1"># Yes | No</span>
+    <span class="s1">&#39;SEQUENCE_SUBSEQ&#39;</span><span class="p">:</span> <span class="s1">&#39;s&#39;</span>
+    <span class="p">}</span>
+
+<span class="n">AWG_TRANSLATER</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;HOLD_REPETITION_RATE&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;False&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;True&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;CLOCK_SOURCE&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Internal&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;External&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;REFERENCE_SOURCE&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Internal&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;External&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;EXTERNAL_REFERENCE_TYPE&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Fixed&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;Variable&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;TRIGGER_SOURCE&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Internal&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;External&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;TRIGGER_INPUT_IMPEDANCE&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;50 Ohm&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;1 kOhm&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;TRIGGER_INPUT_SLOPE&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Positive&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;Negative&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;TRIGGER_INPUT_POLARITY&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Positive&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;Negative&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;EVENT_INPUT_IMPEDANCE&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;50 Ohm&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;1 kOhm&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;EVENT_INPUT_SLOPE&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Positive&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;Negative&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;EVENT_INPUT_POLARITY&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Positive&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;Negative&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;JUMP_TIMING&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Sync&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;Async&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;RUN_MODE&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Continuous&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;Triggered&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;Gated&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;Sequence&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;WAIT_VALUE&#39;</span><span class="p">:</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;First&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;Last&#39;</span><span class="p">}</span>
+    <span class="p">}</span>
+
+<span class="n">_parser3_output</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span>
+    <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]],</span>
+    <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]],</span>
+    <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]],</span>
+    <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_unpacker</span><span class="p">(</span>
+        <span class="n">binaryarray</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">dacbitdepth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">14</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unpacks an awg-file integer wave into a waveform and two markers</span>
+<span class="sd">    in the same way as the AWG does. This can be useful for checking</span>
+<span class="sd">    how the signals are going to be interpreted by the instrument.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        binaryarray: A numpy array containing the</span>
+<span class="sd">            packed waveform and markers.</span>
+<span class="sd">        dacbitdepth: Specifies the bit depth for the digitisation</span>
+<span class="sd">            of the waveform. Allowed values: 14, 8. Default: 14.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The waveform scaled to have values from -1 to 1, marker 1, marker 2.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">wflength</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">binaryarray</span><span class="p">)</span>
+    <span class="n">wf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">wflength</span><span class="p">)</span>
+    <span class="n">m1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">wflength</span><span class="p">)</span>
+    <span class="n">m2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">wflength</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">bitnum</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">binaryarray</span><span class="p">):</span>
+        <span class="n">bitstring</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">(</span><span class="n">bitnum</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+        <span class="n">m2</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bitstring</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">m1</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bitstring</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">wf</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">bitstring</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="o">**</span><span class="mi">13</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">**</span><span class="mi">13</span>
+        <span class="c1"># print(bitstring, int(bitstring[2:], base=2))</span>
+
+    <span class="k">return</span> <span class="n">wf</span><span class="p">,</span> <span class="n">m1</span><span class="p">,</span> <span class="n">m2</span>
+
+
+<span class="k">def</span> <span class="nf">_unwrap</span><span class="p">(</span><span class="n">bites</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper function for interpreting the bytes from the awg file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        bites: a bytes object</span>
+<span class="sd">        fmt: the format string (either &#39;s&#39;, &#39;h&#39; or &#39;d&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span>
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s1">&#39;s&#39;</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">bites</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s1">&#39;ignore&#39;</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;Not read&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="o">+</span><span class="n">fmt</span><span class="p">,</span> <span class="n">bites</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="k">def</span> <span class="nf">_getendingnumber</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper function to extract the last number of a string</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        string: A .awg field name, like SEQUENCE_JUMP_23</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The number and the shortened string,</span>
+<span class="sd">        e.g. &#39;SEQUENCE_JUMP_23&#39; -&gt; (23, &#39;SEQUENCE_JUMP_&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">num</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">string</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">char</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+            <span class="n">num</span> <span class="o">+=</span> <span class="n">char</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">string</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">num</span><span class="p">)]</span>
+
+
+<span class="n">awgfilepath</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;/Users/william/AuxiliaryQCoDeS/AWGhelpers/awgfiles/&#39;</span> <span class="o">+</span>
+               <span class="s1">&#39;customawgfile.awg&#39;</span><span class="p">)</span>
+
+<span class="n">awgfilepath2</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;/Users/william/AuxiliaryQCoDeS/AWGhelpers/awgfiles/&#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;machinemadefortest.awg&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_parser1</span><span class="p">(</span>
+        <span class="n">awgfilepath</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]]],</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper function doing the heavy lifting of reading and understanding the</span>
+<span class="sd">    binary .awg file format.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        awgfilepath: The absolute path of the awg file to read</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple of instrument settings (a dict), waveforms (list of lists), sequencer settings (list of lists)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">instdict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">waveformlist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[]]</span>
+    <span class="n">sequencelist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[]]</span>
+    <span class="n">wfmlen</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">awgfilepath</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">chunk</span> <span class="o">=</span> <span class="n">fid</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="p">(</span><span class="n">namelen</span><span class="p">,</span> <span class="n">valuelen</span><span class="p">)</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;II&#39;</span><span class="p">,</span> <span class="n">chunk</span><span class="p">)</span>
+
+            <span class="n">rawname</span> <span class="o">=</span> <span class="n">fid</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">namelen</span><span class="p">)</span>
+            <span class="n">rawvalue</span> <span class="o">=</span> <span class="n">fid</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">valuelen</span><span class="p">)</span>
+
+            <span class="n">name</span> <span class="o">=</span> <span class="n">rawname</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>  <span class="c1"># remove NULL termination char</span>
+
+            <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;WAVEFORM&#39;</span><span class="p">):</span>
+
+                <span class="n">namestop</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">+</span><span class="n">name</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+                <span class="n">lookupname</span> <span class="o">=</span> <span class="n">name</span><span class="p">[:</span><span class="n">namestop</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="s1">&#39;DATA&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                    <span class="n">fmtstr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">wfmlen</span><span class="si">}</span><span class="s1">H&#39;</span>
+                    <span class="n">AWG_FILE_FORMAT_WAV</span><span class="p">[</span><span class="s1">&#39;WAVEFORM_DATA&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fmtstr</span>
+
+                <span class="n">file_format</span> <span class="o">=</span> <span class="n">AWG_FILE_FORMAT_WAV</span><span class="p">[</span><span class="n">lookupname</span><span class="p">]</span>
+                <span class="k">assert</span> <span class="n">file_format</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">_unwrap</span><span class="p">(</span><span class="n">rawvalue</span><span class="p">,</span> <span class="n">file_format</span><span class="p">)</span>
+                <span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">barename</span><span class="p">)</span> <span class="o">=</span> <span class="n">_getendingnumber</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">fieldname</span> <span class="o">=</span> <span class="n">barename</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">number</span><span class="o">-</span><span class="mi">20</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">waveformlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fieldname</span><span class="p">)</span>
+                <span class="n">waveformlist</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="s1">&#39;LENGTH&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+                    <span class="n">wfmlen</span> <span class="o">=</span> <span class="n">value</span>
+
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;SEQUENCE&#39;</span><span class="p">):</span>
+
+                <span class="n">namestop</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">+</span><span class="n">name</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+                <span class="n">lookupname</span> <span class="o">=</span> <span class="n">name</span><span class="p">[:</span><span class="n">namestop</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">_unwrap</span><span class="p">(</span><span class="n">rawvalue</span><span class="p">,</span> <span class="n">AWG_FILE_FORMAT_SEQ</span><span class="p">[</span><span class="n">lookupname</span><span class="p">])</span>
+                <span class="n">sequencelist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">sequencelist</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                <span class="k">continue</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">_unwrap</span><span class="p">(</span><span class="n">rawvalue</span><span class="p">,</span> <span class="n">AWG_FILE_FORMAT</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">AWG_TRANSLATER</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">AWG_TRANSLATER</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">value</span><span class="p">]</span>
+
+            <span class="n">instdict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">instdict</span><span class="p">,</span> <span class="n">waveformlist</span><span class="p">,</span> <span class="n">sequencelist</span>
+
+
+<span class="k">def</span> <span class="nf">_parser2</span><span class="p">(</span><span class="n">waveformlist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cast the waveformlist from _parser1 into a dict used by _parser3.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        waveformlist: A list of lists of waveforms from ``_parser1``</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary with keys waveform name and values for marker1,</span>
+<span class="sd">            marker2, and the waveform as np.arrays</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">outdict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">fieldname</span><span class="p">,</span> <span class="n">fieldvalue</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">waveformlist</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">waveformlist</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="s1">&#39;NAME&#39;</span> <span class="ow">in</span> <span class="n">fieldname</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">fieldvalue</span>
+        <span class="k">if</span> <span class="s1">&#39;DATA&#39;</span> <span class="ow">in</span> <span class="n">fieldname</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">_unpacker</span><span class="p">(</span><span class="n">fieldvalue</span><span class="p">)</span>
+            <span class="n">outdict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;m1&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;m2&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                   <span class="s1">&#39;wfm&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]}})</span>
+
+    <span class="k">return</span> <span class="n">outdict</span>
+
+
+<span class="k">def</span> <span class="nf">_parser3</span><span class="p">(</span>
+        <span class="n">sequencelist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span>
+        <span class="n">wfmdict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+             <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_parser3_output</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The final parser! OMG+1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sequencedict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;SEQUENCE_WAIT&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;SEQUENCE_LOOP&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;SEQUENCE_JUMP&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;SEQUENCE_GOTO&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;SEQUENCE_WAVEFORM_NAME_CH_1&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;SEQUENCE_WAVEFORM_NAME_CH_2&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;SEQUENCE_WAVEFORM_NAME_CH_3&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;SEQUENCE_WAVEFORM_NAME_CH_4&#39;</span><span class="p">:</span> <span class="p">[]</span>
+    <span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">fieldvalue</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sequencelist</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sequencelist</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+
+        <span class="n">seqnum</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">_getendingnumber</span><span class="p">(</span><span class="n">fieldname</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;WAVEFORM&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">sequencedict</span><span class="p">[</span><span class="n">name</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fieldvalue</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sequencedict</span><span class="p">[</span><span class="n">name</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wfmdict</span><span class="p">[</span><span class="n">fieldvalue</span><span class="p">])</span>
+
+    <span class="c1"># clean the dict</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">sequencedict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sequencedict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="n">sequencedict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="c1"># waveforms</span>
+    <span class="n">wfms</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">m1s</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">m2s</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">channels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">sequencedict</span> <span class="k">if</span> <span class="s1">&#39;WAVE&#39;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">]:</span>
+        <span class="n">channels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_getendingnumber</span><span class="p">(</span><span class="n">key</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">wfms_temp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">m1s_temp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">m2s_temp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">wfmdict</span> <span class="ow">in</span> <span class="n">sequencedict</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+            <span class="n">wfms_temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wfmdict</span><span class="p">[</span><span class="s1">&#39;wfm&#39;</span><span class="p">])</span>
+            <span class="n">m1s_temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wfmdict</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">])</span>
+            <span class="n">m2s_temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wfmdict</span><span class="p">[</span><span class="s1">&#39;m2&#39;</span><span class="p">])</span>
+
+        <span class="n">wfms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wfms_temp</span><span class="p">)</span>
+        <span class="n">m1s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m1s_temp</span><span class="p">)</span>
+        <span class="n">m2s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m2s_temp</span><span class="p">)</span>
+
+    <span class="n">nreps</span> <span class="o">=</span> <span class="n">sequencedict</span><span class="p">[</span><span class="s1">&#39;SEQUENCE_LOOP&#39;</span><span class="p">]</span>
+    <span class="n">waits</span> <span class="o">=</span> <span class="n">sequencedict</span><span class="p">[</span><span class="s1">&#39;SEQUENCE_WAIT&#39;</span><span class="p">]</span>
+    <span class="n">gotos</span> <span class="o">=</span> <span class="n">sequencedict</span><span class="p">[</span><span class="s1">&#39;SEQUENCE_GOTO&#39;</span><span class="p">]</span>
+    <span class="n">jumps</span> <span class="o">=</span> <span class="n">sequencedict</span><span class="p">[</span><span class="s1">&#39;SEQUENCE_JUMP&#39;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">wfms</span><span class="p">,</span> <span class="n">m1s</span><span class="p">,</span> <span class="n">m2s</span><span class="p">,</span> <span class="n">nreps</span><span class="p">,</span> <span class="n">waits</span><span class="p">,</span> <span class="n">gotos</span><span class="p">,</span> <span class="n">jumps</span><span class="p">,</span> <span class="n">channels</span>
+
+
+<div class="viewcode-block" id="parse_awg_file"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.tektronix.html#qcodes.instrument_drivers.tektronix.AWGFileParser.parse_awg_file">[docs]</a><span class="k">def</span> <span class="nf">parse_awg_file</span><span class="p">(</span>
+        <span class="n">awgfilepath</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">_parser3_output</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parser for a binary .awg file. Returns a tuple matching the call signature</span>
+<span class="sd">    of make_send_and_load_awg_file and a dictionary with instrument settings</span>
+
+<span class="sd">    NOTE: Build-in waveforms are not stored in .awg files. Blame tektronix.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        awgfilepath: The absolute path to the awg file</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A tuple and a dict, where the tuple is</span>
+<span class="sd">        (wfms, m1s, m2s, nreps, trigs, gotos, jumps, channels)</span>
+<span class="sd">        and the dict contains all instrument settings from the file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">instdict</span><span class="p">,</span> <span class="n">waveformlist</span><span class="p">,</span> <span class="n">sequencelist</span> <span class="o">=</span> <span class="n">_parser1</span><span class="p">(</span><span class="n">awgfilepath</span><span class="p">)</span>
+    <span class="n">wfmdict</span> <span class="o">=</span> <span class="n">_parser2</span><span class="p">(</span><span class="n">waveformlist</span><span class="p">)</span>
+    <span class="n">callsigtuple</span> <span class="o">=</span> <span class="n">_parser3</span><span class="p">(</span><span class="n">sequencelist</span><span class="p">,</span> <span class="n">wfmdict</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">callsigtuple</span><span class="p">,</span> <span class="n">instdict</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

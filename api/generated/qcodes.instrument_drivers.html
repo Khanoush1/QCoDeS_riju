@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.instrument_drivers package &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="qcodes.instrument_drivers.AimTTi package" href="qcodes.instrument_drivers.AimTTi.html" />
+    <link rel="prev" title="qcodes.plots.qcmatplotlib" href="../plots/qcmatplotlib.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">qcodes.instrument_drivers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.AimTTi.html">qcodes.instrument_drivers.AimTTi package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.AlazarTech.html">qcodes.instrument_drivers.AlazarTech package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.Galil.html">qcodes.instrument_drivers.Galil package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.HP.html">qcodes.instrument_drivers.HP package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.Harvard.html">qcodes.instrument_drivers.Harvard package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html">qcodes.instrument_drivers.Keysight package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.Lakeshore.html">qcodes.instrument_drivers.Lakeshore package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.Minicircuits.html">qcodes.instrument_drivers.Minicircuits package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.QDev.html">qcodes.instrument_drivers.QDev package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.QDevil.html">qcodes.instrument_drivers.QDevil package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.QuantumDesign.html">qcodes.instrument_drivers.QuantumDesign package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.ZI.html">qcodes.instrument_drivers.ZI package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.agilent.html">qcodes.instrument_drivers.agilent package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.american_magnetics.html">qcodes.instrument_drivers.american_magnetics package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.basel.html">qcodes.instrument_drivers.basel package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.ithaco.html">qcodes.instrument_drivers.ithaco package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.oxford.html">qcodes.instrument_drivers.oxford package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.rigol.html">qcodes.instrument_drivers.rigol package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.rohde_schwarz.html">qcodes.instrument_drivers.rohde_schwarz package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.signal_hound.html">qcodes.instrument_drivers.signal_hound package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.stahl.html">qcodes.instrument_drivers.stahl package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.stanford_research.html">qcodes.instrument_drivers.stanford_research package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html">qcodes.instrument_drivers.tektronix package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.weinschel.html">qcodes.instrument_drivers.weinschel package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.yokogawa.html">qcodes.instrument_drivers.yokogawa package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.zurich_instruments.html">qcodes.instrument_drivers.zurich_instruments package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-qcodes.instrument_drivers.devices">qcodes.instrument_drivers.devices module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-qcodes.instrument_drivers.test">qcodes.instrument_drivers.test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-qcodes.instrument_drivers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>qcodes.instrument_drivers package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/generated/qcodes.instrument_drivers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="qcodes-instrument-drivers-package">
+<h1>qcodes.instrument_drivers package<a class="headerlink" href="#qcodes-instrument-drivers-package" title="Permalink to this headline"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.AimTTi.html">qcodes.instrument_drivers.AimTTi package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.AimTTi.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.AimTTi.html#module-qcodes.instrument_drivers.AimTTi.AimTTi_PL601P_channels">qcodes.instrument_drivers.AimTTi.AimTTi_PL601P_channels module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.AimTTi.html#module-qcodes.instrument_drivers.AimTTi">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.AlazarTech.html">qcodes.instrument_drivers.AlazarTech package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.AlazarTech.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.AlazarTech.html#module-qcodes.instrument_drivers.AlazarTech.ATS">qcodes.instrument_drivers.AlazarTech.ATS module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.AlazarTech.html#module-qcodes.instrument_drivers.AlazarTech.ATS9360">qcodes.instrument_drivers.AlazarTech.ATS9360 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.AlazarTech.html#module-qcodes.instrument_drivers.AlazarTech.ATS9373">qcodes.instrument_drivers.AlazarTech.ATS9373 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.AlazarTech.html#module-qcodes.instrument_drivers.AlazarTech.ATS9440">qcodes.instrument_drivers.AlazarTech.ATS9440 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.AlazarTech.html#module-qcodes.instrument_drivers.AlazarTech.ATS9870">qcodes.instrument_drivers.AlazarTech.ATS9870 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.AlazarTech.html#module-qcodes.instrument_drivers.AlazarTech.ATS_acquisition_controllers">qcodes.instrument_drivers.AlazarTech.ATS_acquisition_controllers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.AlazarTech.html#module-qcodes.instrument_drivers.AlazarTech.ats_api">qcodes.instrument_drivers.AlazarTech.ats_api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.AlazarTech.html#module-qcodes.instrument_drivers.AlazarTech.constants">qcodes.instrument_drivers.AlazarTech.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.AlazarTech.html#module-qcodes.instrument_drivers.AlazarTech.dll_wrapper">qcodes.instrument_drivers.AlazarTech.dll_wrapper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.AlazarTech.html#module-qcodes.instrument_drivers.AlazarTech.helpers">qcodes.instrument_drivers.AlazarTech.helpers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.AlazarTech.html#module-qcodes.instrument_drivers.AlazarTech.utils">qcodes.instrument_drivers.AlazarTech.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.AlazarTech.html#module-qcodes.instrument_drivers.AlazarTech">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.Galil.html">qcodes.instrument_drivers.Galil package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Galil.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Galil.html#module-qcodes.instrument_drivers.Galil.dmc_41x3">qcodes.instrument_drivers.Galil.dmc_41x3 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Galil.html#module-qcodes.instrument_drivers.Galil">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.HP.html">qcodes.instrument_drivers.HP package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.HP.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.HP.html#module-qcodes.instrument_drivers.HP.HP8133A">qcodes.instrument_drivers.HP.HP8133A module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.HP.html#module-qcodes.instrument_drivers.HP.HP8753D">qcodes.instrument_drivers.HP.HP8753D module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.HP.html#module-qcodes.instrument_drivers.HP.HP_83650A">qcodes.instrument_drivers.HP.HP_83650A module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.HP.html#module-qcodes.instrument_drivers.HP">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.Harvard.html">qcodes.instrument_drivers.Harvard package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Harvard.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Harvard.html#module-qcodes.instrument_drivers.Harvard.Decadac">qcodes.instrument_drivers.Harvard.Decadac module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Harvard.html#module-qcodes.instrument_drivers.Harvard">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html">qcodes.instrument_drivers.Keysight package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.keysightb1500.html">qcodes.instrument_drivers.Keysight.keysightb1500 package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.keysightb1500.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.keysightb1500.html#module-qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1500_base">qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1500_base module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.keysightb1500.html#module-qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1500_module">qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1500_module module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.keysightb1500.html#module-qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1500_sampling_measurement">qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1500_sampling_measurement module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.keysightb1500.html#module-qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B">qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.keysightb1500.html#module-qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1517A">qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1517A module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.keysightb1500.html#module-qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1520A">qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1520A module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.keysightb1500.html#module-qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1530A">qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1530A module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.keysightb1500.html#module-qcodes.instrument_drivers.Keysight.keysightb1500.constants">qcodes.instrument_drivers.Keysight.keysightb1500.constants module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.keysightb1500.html#module-qcodes.instrument_drivers.Keysight.keysightb1500.message_builder">qcodes.instrument_drivers.Keysight.keysightb1500.message_builder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.keysightb1500.html#module-qcodes.instrument_drivers.Keysight.keysightb1500">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.private.html">qcodes.instrument_drivers.Keysight.private package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.private.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.private.html#module-qcodes.instrument_drivers.Keysight.private.Keysight_344xxA_submodules">qcodes.instrument_drivers.Keysight.private.Keysight_344xxA_submodules module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.private.html#module-qcodes.instrument_drivers.Keysight.private.error_handling">qcodes.instrument_drivers.Keysight.private.error_handling module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.private.html#module-qcodes.instrument_drivers.Keysight.private">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.Infiniium">qcodes.instrument_drivers.Keysight.Infiniium module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.KeysightAgilent_33XXX">qcodes.instrument_drivers.Keysight.KeysightAgilent_33XXX module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.Keysight_34410A_submodules">qcodes.instrument_drivers.Keysight.Keysight_34410A_submodules module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.Keysight_34411A_submodules">qcodes.instrument_drivers.Keysight.Keysight_34411A_submodules module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.Keysight_34460A_submodules">qcodes.instrument_drivers.Keysight.Keysight_34460A_submodules module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.Keysight_34461A_submodules">qcodes.instrument_drivers.Keysight.Keysight_34461A_submodules module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.Keysight_34465A_submodules">qcodes.instrument_drivers.Keysight.Keysight_34465A_submodules module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.Keysight_34470A_submodules">qcodes.instrument_drivers.Keysight.Keysight_34470A_submodules module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.Keysight_B2962A">qcodes.instrument_drivers.Keysight.Keysight_B2962A module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.Keysight_N5173B">qcodes.instrument_drivers.Keysight.Keysight_N5173B module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.Keysight_N5183B">qcodes.instrument_drivers.Keysight.Keysight_N5183B module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.Keysight_N6705B">qcodes.instrument_drivers.Keysight.Keysight_N6705B module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.KtM960x">qcodes.instrument_drivers.Keysight.KtM960x module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.KtM960xDefs">qcodes.instrument_drivers.Keysight.KtM960xDefs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.KtMAwg">qcodes.instrument_drivers.Keysight.KtMAwg module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.KtMAwgDefs">qcodes.instrument_drivers.Keysight.KtMAwgDefs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.N51x1">qcodes.instrument_drivers.Keysight.N51x1 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.N5222B">qcodes.instrument_drivers.Keysight.N5222B module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.N5230C">qcodes.instrument_drivers.Keysight.N5230C module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.N5245A">qcodes.instrument_drivers.Keysight.N5245A module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.N52xx">qcodes.instrument_drivers.Keysight.N52xx module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.N9030B">qcodes.instrument_drivers.Keysight.N9030B module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.P9374A">qcodes.instrument_drivers.Keysight.P9374A module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.keysight_34934a">qcodes.instrument_drivers.Keysight.keysight_34934a module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.keysight_34980a">qcodes.instrument_drivers.Keysight.keysight_34980a module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.keysight_34980a_submodules">qcodes.instrument_drivers.Keysight.keysight_34980a_submodules module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.keysight_b220x">qcodes.instrument_drivers.Keysight.keysight_b220x module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight.keysight_e4980a">qcodes.instrument_drivers.Keysight.keysight_e4980a module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Keysight.html#module-qcodes.instrument_drivers.Keysight">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.Lakeshore.html">qcodes.instrument_drivers.Lakeshore package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Lakeshore.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Lakeshore.html#module-qcodes.instrument_drivers.Lakeshore.Model_325">qcodes.instrument_drivers.Lakeshore.Model_325 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Lakeshore.html#module-qcodes.instrument_drivers.Lakeshore.Model_336">qcodes.instrument_drivers.Lakeshore.Model_336 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Lakeshore.html#module-qcodes.instrument_drivers.Lakeshore.Model_372">qcodes.instrument_drivers.Lakeshore.Model_372 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Lakeshore.html#module-qcodes.instrument_drivers.Lakeshore.lakeshore_base">qcodes.instrument_drivers.Lakeshore.lakeshore_base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Lakeshore.html#module-qcodes.instrument_drivers.Lakeshore">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.Minicircuits.html">qcodes.instrument_drivers.Minicircuits package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Minicircuits.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Minicircuits.html#module-qcodes.instrument_drivers.Minicircuits.Base_SPDT">qcodes.instrument_drivers.Minicircuits.Base_SPDT module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Minicircuits.html#module-qcodes.instrument_drivers.Minicircuits.RC_SP4T">qcodes.instrument_drivers.Minicircuits.RC_SP4T module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Minicircuits.html#module-qcodes.instrument_drivers.Minicircuits.RC_SPDT">qcodes.instrument_drivers.Minicircuits.RC_SPDT module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Minicircuits.html#module-qcodes.instrument_drivers.Minicircuits.RUDAT_13G_90">qcodes.instrument_drivers.Minicircuits.RUDAT_13G_90 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Minicircuits.html#module-qcodes.instrument_drivers.Minicircuits.USBHIDMixin">qcodes.instrument_drivers.Minicircuits.USBHIDMixin module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Minicircuits.html#module-qcodes.instrument_drivers.Minicircuits.USB_SPDT">qcodes.instrument_drivers.Minicircuits.USB_SPDT module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.Minicircuits.html#module-qcodes.instrument_drivers.Minicircuits">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.QDev.html">qcodes.instrument_drivers.QDev package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.QDev.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.QDev.html#module-qcodes.instrument_drivers.QDev.QDac_channels">qcodes.instrument_drivers.QDev.QDac_channels module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.QDev.html#module-qcodes.instrument_drivers.QDev">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.QDevil.html">qcodes.instrument_drivers.QDevil package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.QDevil.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.QDevil.html#module-qcodes.instrument_drivers.QDevil.QDevil_QDAC">qcodes.instrument_drivers.QDevil.QDevil_QDAC module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.QDevil.html#module-qcodes.instrument_drivers.QDevil">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.QuantumDesign.html">qcodes.instrument_drivers.QuantumDesign package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.QuantumDesign.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.QuantumDesign.DynaCoolPPMS.html">qcodes.instrument_drivers.QuantumDesign.DynaCoolPPMS package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.QuantumDesign.DynaCoolPPMS.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.QuantumDesign.DynaCoolPPMS.html#module-qcodes.instrument_drivers.QuantumDesign.DynaCoolPPMS.DynaCool">qcodes.instrument_drivers.QuantumDesign.DynaCoolPPMS.DynaCool module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.QuantumDesign.DynaCoolPPMS.html#module-qcodes.instrument_drivers.QuantumDesign.DynaCoolPPMS">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.QuantumDesign.html#module-qcodes.instrument_drivers.QuantumDesign">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.ZI.html">qcodes.instrument_drivers.ZI package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.ZI.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.ZI.html#module-qcodes.instrument_drivers.ZI.ZIUHFLI">qcodes.instrument_drivers.ZI.ZIUHFLI module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.ZI.html#module-qcodes.instrument_drivers.ZI">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.agilent.html">qcodes.instrument_drivers.agilent package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.agilent.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.agilent.html#module-qcodes.instrument_drivers.agilent.Agilent_34400A">qcodes.instrument_drivers.agilent.Agilent_34400A module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.agilent.html#module-qcodes.instrument_drivers.agilent.E8267C">qcodes.instrument_drivers.agilent.E8267C module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.agilent.html#module-qcodes.instrument_drivers.agilent.E8527D">qcodes.instrument_drivers.agilent.E8527D module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.agilent.html#module-qcodes.instrument_drivers.agilent">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.american_magnetics.html">qcodes.instrument_drivers.american_magnetics package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.american_magnetics.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.american_magnetics.html#module-qcodes.instrument_drivers.american_magnetics.AMI430">qcodes.instrument_drivers.american_magnetics.AMI430 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.american_magnetics.html#module-qcodes.instrument_drivers.american_magnetics">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.basel.html">qcodes.instrument_drivers.basel package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.basel.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.basel.html#module-qcodes.instrument_drivers.basel.sp983c">qcodes.instrument_drivers.basel.sp983c module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.basel.html#module-qcodes.instrument_drivers.basel.sp983c_remote">qcodes.instrument_drivers.basel.sp983c_remote module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.basel.html#module-qcodes.instrument_drivers.basel">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.ithaco.html">qcodes.instrument_drivers.ithaco package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.ithaco.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.ithaco.html#module-qcodes.instrument_drivers.ithaco.Ithaco_1211">qcodes.instrument_drivers.ithaco.Ithaco_1211 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.ithaco.html#module-qcodes.instrument_drivers.ithaco">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.oxford.html">qcodes.instrument_drivers.oxford package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.oxford.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.oxford.html#module-qcodes.instrument_drivers.oxford.MercuryiPS_VISA">qcodes.instrument_drivers.oxford.MercuryiPS_VISA module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.oxford.html#module-qcodes.instrument_drivers.oxford.mercuryiPS">qcodes.instrument_drivers.oxford.mercuryiPS module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.oxford.html#module-qcodes.instrument_drivers.oxford.triton">qcodes.instrument_drivers.oxford.triton module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.oxford.html#module-qcodes.instrument_drivers.oxford">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.rigol.html">qcodes.instrument_drivers.rigol package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rigol.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.rigol.private.html">qcodes.instrument_drivers.rigol.private package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.rigol.private.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.rigol.private.html#module-qcodes.instrument_drivers.rigol.private.DP8xx">qcodes.instrument_drivers.rigol.private.DP8xx module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.rigol.private.html#module-qcodes.instrument_drivers.rigol.private">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rigol.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rigol.html#module-qcodes.instrument_drivers.rigol.DG1062">qcodes.instrument_drivers.rigol.DG1062 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rigol.html#module-qcodes.instrument_drivers.rigol.DG4000">qcodes.instrument_drivers.rigol.DG4000 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rigol.html#module-qcodes.instrument_drivers.rigol.DP821">qcodes.instrument_drivers.rigol.DP821 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rigol.html#module-qcodes.instrument_drivers.rigol.DP831">qcodes.instrument_drivers.rigol.DP831 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rigol.html#module-qcodes.instrument_drivers.rigol.DP832">qcodes.instrument_drivers.rigol.DP832 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rigol.html#module-qcodes.instrument_drivers.rigol.DS1074Z">qcodes.instrument_drivers.rigol.DS1074Z module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rigol.html#module-qcodes.instrument_drivers.rigol.DS4000">qcodes.instrument_drivers.rigol.DS4000 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rigol.html#module-qcodes.instrument_drivers.rigol">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.rohde_schwarz.html">qcodes.instrument_drivers.rohde_schwarz package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rohde_schwarz.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="qcodes.instrument_drivers.rohde_schwarz.private.html">qcodes.instrument_drivers.rohde_schwarz.private package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.rohde_schwarz.private.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.rohde_schwarz.private.html#module-qcodes.instrument_drivers.rohde_schwarz.private.HMC804x">qcodes.instrument_drivers.rohde_schwarz.private.HMC804x module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="qcodes.instrument_drivers.rohde_schwarz.private.html#module-qcodes.instrument_drivers.rohde_schwarz.private">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rohde_schwarz.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rohde_schwarz.html#module-qcodes.instrument_drivers.rohde_schwarz.RTE1000">qcodes.instrument_drivers.rohde_schwarz.RTE1000 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rohde_schwarz.html#module-qcodes.instrument_drivers.rohde_schwarz.RTO1000">qcodes.instrument_drivers.rohde_schwarz.RTO1000 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rohde_schwarz.html#module-qcodes.instrument_drivers.rohde_schwarz.SGS100A">qcodes.instrument_drivers.rohde_schwarz.SGS100A module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rohde_schwarz.html#module-qcodes.instrument_drivers.rohde_schwarz.ZNB">qcodes.instrument_drivers.rohde_schwarz.ZNB module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rohde_schwarz.html#module-qcodes.instrument_drivers.rohde_schwarz.ZNB20">qcodes.instrument_drivers.rohde_schwarz.ZNB20 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.rohde_schwarz.html#module-qcodes.instrument_drivers.rohde_schwarz">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.signal_hound.html">qcodes.instrument_drivers.signal_hound package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.signal_hound.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.signal_hound.html#module-qcodes.instrument_drivers.signal_hound.USB_SA124B">qcodes.instrument_drivers.signal_hound.USB_SA124B module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.signal_hound.html#module-qcodes.instrument_drivers.signal_hound">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.stahl.html">qcodes.instrument_drivers.stahl package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.stahl.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.stahl.html#module-qcodes.instrument_drivers.stahl.stahl">qcodes.instrument_drivers.stahl.stahl module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.stahl.html#module-qcodes.instrument_drivers.stahl">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.stanford_research.html">qcodes.instrument_drivers.stanford_research package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.stanford_research.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.stanford_research.html#module-qcodes.instrument_drivers.stanford_research.SG384">qcodes.instrument_drivers.stanford_research.SG384 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.stanford_research.html#module-qcodes.instrument_drivers.stanford_research.SR560">qcodes.instrument_drivers.stanford_research.SR560 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.stanford_research.html#module-qcodes.instrument_drivers.stanford_research.SR830">qcodes.instrument_drivers.stanford_research.SR830 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.stanford_research.html#module-qcodes.instrument_drivers.stanford_research.SR860">qcodes.instrument_drivers.stanford_research.SR860 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.stanford_research.html#module-qcodes.instrument_drivers.stanford_research.SR865">qcodes.instrument_drivers.stanford_research.SR865 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.stanford_research.html#module-qcodes.instrument_drivers.stanford_research.SR865A">qcodes.instrument_drivers.stanford_research.SR865A module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.stanford_research.html#module-qcodes.instrument_drivers.stanford_research.SR86x">qcodes.instrument_drivers.stanford_research.SR86x module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.stanford_research.html#module-qcodes.instrument_drivers.stanford_research">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html">qcodes.instrument_drivers.tektronix package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#module-qcodes.instrument_drivers.tektronix.AWG5014">qcodes.instrument_drivers.tektronix.AWG5014 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#module-qcodes.instrument_drivers.tektronix.AWG5208">qcodes.instrument_drivers.tektronix.AWG5208 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#module-qcodes.instrument_drivers.tektronix.AWG70000A">qcodes.instrument_drivers.tektronix.AWG70000A module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#module-qcodes.instrument_drivers.tektronix.AWG70002A">qcodes.instrument_drivers.tektronix.AWG70002A module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#module-qcodes.instrument_drivers.tektronix.AWGFileParser">qcodes.instrument_drivers.tektronix.AWGFileParser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#module-qcodes.instrument_drivers.tektronix.DPO7200xx">qcodes.instrument_drivers.tektronix.DPO7200xx module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#module-qcodes.instrument_drivers.tektronix.Keithley_2000">qcodes.instrument_drivers.tektronix.Keithley_2000 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#module-qcodes.instrument_drivers.tektronix.Keithley_2400">qcodes.instrument_drivers.tektronix.Keithley_2400 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#module-qcodes.instrument_drivers.tektronix.Keithley_2450">qcodes.instrument_drivers.tektronix.Keithley_2450 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#module-qcodes.instrument_drivers.tektronix.Keithley_2600_channels">qcodes.instrument_drivers.tektronix.Keithley_2600_channels module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#module-qcodes.instrument_drivers.tektronix.Keithley_3706A">qcodes.instrument_drivers.tektronix.Keithley_3706A module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#module-qcodes.instrument_drivers.tektronix.Keithley_6500">qcodes.instrument_drivers.tektronix.Keithley_6500 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#module-qcodes.instrument_drivers.tektronix.Keithley_s46">qcodes.instrument_drivers.tektronix.Keithley_s46 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#module-qcodes.instrument_drivers.tektronix.TPS2012">qcodes.instrument_drivers.tektronix.TPS2012 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#module-qcodes.instrument_drivers.tektronix.keithley_7510">qcodes.instrument_drivers.tektronix.keithley_7510 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.tektronix.html#module-qcodes.instrument_drivers.tektronix">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.weinschel.html">qcodes.instrument_drivers.weinschel package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.weinschel.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.weinschel.html#module-qcodes.instrument_drivers.weinschel.Weinschel_8320">qcodes.instrument_drivers.weinschel.Weinschel_8320 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.weinschel.html#module-qcodes.instrument_drivers.weinschel">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.yokogawa.html">qcodes.instrument_drivers.yokogawa package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.yokogawa.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.yokogawa.html#module-qcodes.instrument_drivers.yokogawa.GS200">qcodes.instrument_drivers.yokogawa.GS200 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.yokogawa.html#module-qcodes.instrument_drivers.yokogawa">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qcodes.instrument_drivers.zurich_instruments.html">qcodes.instrument_drivers.zurich_instruments package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.zurich_instruments.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.zurich_instruments.html#module-qcodes.instrument_drivers.zurich_instruments.hdawg">qcodes.instrument_drivers.zurich_instruments.hdawg module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.zurich_instruments.html#module-qcodes.instrument_drivers.zurich_instruments.mfli">qcodes.instrument_drivers.zurich_instruments.mfli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.zurich_instruments.html#module-qcodes.instrument_drivers.zurich_instruments.uhfli">qcodes.instrument_drivers.zurich_instruments.uhfli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.zurich_instruments.html#module-qcodes.instrument_drivers.zurich_instruments.uhfqa">qcodes.instrument_drivers.zurich_instruments.uhfqa module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qcodes.instrument_drivers.zurich_instruments.html#module-qcodes.instrument_drivers.zurich_instruments">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-qcodes.instrument_drivers.devices">
+<span id="qcodes-instrument-drivers-devices-module"></span><h2>qcodes.instrument_drivers.devices module<a class="headerlink" href="#module-qcodes.instrument_drivers.devices" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qcodes.instrument_drivers.devices.</span></span><span class="sig-name descname"><span class="pre">VoltageDivider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../parameters/parameter.html#qcodes.instrument.parameter.Parameter" title="qcodes.instrument.parameter.Parameter"><span class="pre">qcodes.instrument.parameter.Parameter</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">division_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#int" title="(in Python v3.7)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrument</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/constants.html#None" title="(in Python v3.7)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../instrument/base.html#qcodes.instrument.base.Instrument" title="qcodes.instrument.base.Instrument"><span class="pre">qcodes.instrument.base.Instrument</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/instrument_drivers/devices.html#VoltageDivider"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../parameters/parameter.html#qcodes.instrument.parameter.Parameter" title="qcodes.instrument.parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">qcodes.instrument.parameter.Parameter</span></code></a></p>
+<p>Resitive voltage divider</p>
+<p>To be used when you use a physical voltage divider to set or get a voltage.</p>
+<p>Initialize the voltage diveder by passing the parameter to be measured
+and the value of the division (which should be calibrated beforehand)</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">vd</span> <span class="o">=</span> <span class="n">VoltageDivider</span><span class="p">(</span><span class="n">dac</span><span class="o">.</span><span class="n">chan0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The voltage divider acts a your original parameter, but will set the right
+value, and store the division_value in the metadata.</p>
+<p>Set the value you want to set your device at 10 V</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">vd</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will set the dac.cha0 at 10*10, but upon measuring the divider
+the value returned is the voltage at the sample.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">vd</span><span class="p">()</span>
+<span class="go">10</span>
+</pre></div>
+</div>
+<p>To get the voltage that was actually set on the instrument:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">vd</span><span class="o">.</span><span class="n">get_instrument_value</span><span class="p">()</span>
+<span class="go">100</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v1</strong> – Parameter physically attached to the divider as input</p></li>
+<li><p><strong>division_value</strong> – the divsion value of the divider</p></li>
+<li><p><strong>label</strong> – label of this parameter, by default uses v1 label
+but attaches _attenuated</p></li>
+<li><p><strong>name</strong> – name of this parameter, by default uses v1 name
+but attaches _attenuated</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.label">
+<span class="sig-name descname"><span class="pre">label</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.label" title="Permalink to this definition"></a></dt>
+<dd><p>Label of the data used for plots etc.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.set_raw">
+<span class="sig-name descname"><span class="pre">set_raw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#int" title="(in Python v3.7)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.7/library/constants.html#None" title="(in Python v3.7)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/qcodes/instrument_drivers/devices.html#VoltageDivider.set_raw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.set_raw" title="Permalink to this definition"></a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">set_raw</span></code> is called to perform the actual setting of a parameter on
+the instrument. This method should either be overwritten to perform the
+desired operation or alternatively for <a class="reference internal" href="../parameters/parameter.html#qcodes.instrument.parameter.Parameter" title="qcodes.instrument.parameter.Parameter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parameter</span></code></a> a
+suitable method is automatically generated if <code class="docutils literal notranslate"><span class="pre">set_cmd</span></code> is supplied
+to the parameter constructor. The method is automatically wrapped to
+provide a <code class="docutils literal notranslate"><span class="pre">set</span></code> method on the parameter instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.get_raw">
+<span class="sig-name descname"><span class="pre">get_raw</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#int" title="(in Python v3.7)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/qcodes/instrument_drivers/devices.html#VoltageDivider.get_raw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.get_raw" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>value at which was set at the sample</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">qcodes.instrument.sweep_values.SweepFixedValues</span></span></span><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.__getitem__" title="Permalink to this definition"></a></dt>
+<dd><p>Slice a Parameter to get a SweepValues object
+to iterate over during a sweep</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.__str__" title="Permalink to this definition"></a></dt>
+<dd><p>Include the instrument name with the Parameter name if possible.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.abstract">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">abstract</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.abstract" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.full_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.full_name" title="Permalink to this definition"></a></dt>
+<dd><p>Name of the parameter including the name of the instrument and
+submodule that the parameter may be bound to. The names are separated
+by underscores, like this: <code class="docutils literal notranslate"><span class="pre">instrument_submodule_parameter</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.get_instrument_value">
+<span class="sig-name descname"><span class="pre">get_instrument_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#int" title="(in Python v3.7)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/qcodes/instrument_drivers/devices.html#VoltageDivider.get_instrument_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.get_instrument_value" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>value at which the attached parameter is (i.e. does
+not account for the scaling)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.get_ramp_values">
+<span class="sig-name descname"><span class="pre">get_ramp_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sized</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sized</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.get_ramp_values" title="Permalink to this definition"></a></dt>
+<dd><p>Return values to sweep from current value to target value.
+This method can be overridden to have a custom sweep behaviour.
+It can even be overridden by a generator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – target value</p></li>
+<li><p><strong>step</strong> – maximum step size</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of stepped values, including target value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.gettable">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gettable</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><span class="pre">bool</span></a></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.gettable" title="Permalink to this definition"></a></dt>
+<dd><p>Is it allowed to call get on this parameter?</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.increment">
+<span class="sig-name descname"><span class="pre">increment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.7/library/constants.html#None" title="(in Python v3.7)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.increment" title="Permalink to this definition"></a></dt>
+<dd><p>Increment the parameter with a value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – Value to be added to the parameter.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.instrument">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">instrument</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">InstrumentBase</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.instrument" title="Permalink to this definition"></a></dt>
+<dd><p>Return the first instrument that this parameter is bound to.
+E.g if this is bound to a channel it will return the channel
+and not the instrument that the channel is bound too. Use
+<a class="reference internal" href="#qcodes.instrument_drivers.devices.VoltageDivider.root_instrument" title="qcodes.instrument_drivers.devices.VoltageDivider.root_instrument"><code class="xref py py-meth docutils literal notranslate"><span class="pre">root_instrument()</span></code></a> to get the real instrument.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.inter_delay">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inter_delay</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><span class="pre">float</span></a></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.inter_delay" title="Permalink to this definition"></a></dt>
+<dd><p>Delay time between consecutive set operations.
+The actual time will not be shorter than this, but may be longer
+if the underlying set call takes longer.</p>
+<p>Typically used in conjunction with <cite>step</cite> to create an effective
+ramp rate, but can also be used without a <cite>step</cite> to enforce a delay
+<em>between</em> sets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Returns the current inter_delay.</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Sets the value of the inter_delay.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#TypeError" title="(in Python v3.7)"><strong>TypeError</strong></a> – If delay is not int nor float</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#ValueError" title="(in Python v3.7)"><strong>ValueError</strong></a> – If delay is negative</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.load_metadata">
+<span class="sig-name descname"><span class="pre">load_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.7/library/constants.html#None" title="(in Python v3.7)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.load_metadata" title="Permalink to this definition"></a></dt>
+<dd><p>Load metadata into this classes metadata dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>metadata</strong> – Metadata to load.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.name" title="Permalink to this definition"></a></dt>
+<dd><p>Name of the parameter. This is identical to <a class="reference internal" href="#qcodes.instrument_drivers.devices.VoltageDivider.short_name" title="qcodes.instrument_drivers.devices.VoltageDivider.short_name"><code class="xref py py-meth docutils literal notranslate"><span class="pre">short_name()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.name_parts">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name_parts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.name_parts" title="Permalink to this definition"></a></dt>
+<dd><p>List of the parts that make up the full name of this parameter</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.post_delay">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">post_delay</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><span class="pre">float</span></a></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.post_delay" title="Permalink to this definition"></a></dt>
+<dd><p>Delay time after <em>start</em> of set operation, for each set.
+The actual time will not be shorter than this, but may be longer
+if the underlying set call takes longer.</p>
+<p>Typically used in conjunction with <cite>step</cite> to create an effective
+ramp rate, but can also be used without a <cite>step</cite> to enforce a delay
+<em>after</em> every set. One might think of post_delay as how long a set
+operation is supposed to take. For example, there might be an
+instrument that needs extra time after setting a parameter although
+the command for setting the parameter returns quickly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Returns the current post_delay.</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Sets the value of the post_delay.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#TypeError" title="(in Python v3.7)"><strong>TypeError</strong></a> – If delay is not int nor float</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#ValueError" title="(in Python v3.7)"><strong>ValueError</strong></a> – If delay is negative</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.raw_value">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">raw_value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.raw_value" title="Permalink to this definition"></a></dt>
+<dd><p>Note that this property will be deprecated soon. Use
+<code class="docutils literal notranslate"><span class="pre">cache.raw_value</span></code> instead.</p>
+<p>Represents the cached raw value of the parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Returns the cached raw value of the parameter.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.restore_at_exit">
+<span class="sig-name descname"><span class="pre">restore_at_exit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">allow_changes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">qcodes.instrument.parameter._SetParamContext</span></span></span><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.restore_at_exit" title="Permalink to this definition"></a></dt>
+<dd><p>Use a context manager to restore the value of a parameter after a
+<code class="docutils literal notranslate"><span class="pre">with</span></code> block.</p>
+<p>By default, the parameter value may be changed inside the block, but
+this can be prevented with <code class="docutils literal notranslate"><span class="pre">allow_changes=False</span></code>. This can be
+useful, for example, for debugging a complex measurement that
+unintentionally modifies a parameter.</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="n">set_cmd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">get_cmd</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">p</span><span class="o">.</span><span class="n">restore_at_exit</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="n">p</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;value inside with block: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># prints 3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;value after with block: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># prints 2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">p</span><span class="o">.</span><span class="n">restore_at_exit</span><span class="p">(</span><span class="n">allow_changes</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">p</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c1"># raises an exception</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.root_instrument">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">root_instrument</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">InstrumentBase</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.root_instrument" title="Permalink to this definition"></a></dt>
+<dd><p>Return the fundamental instrument that this parameter belongs too.
+E.g if the parameter is bound to a channel this will return the
+fundamental instrument that that channel belongs to. Use
+<a class="reference internal" href="#qcodes.instrument_drivers.devices.VoltageDivider.instrument" title="qcodes.instrument_drivers.devices.VoltageDivider.instrument"><code class="xref py py-meth docutils literal notranslate"><span class="pre">instrument()</span></code></a> to get the channel.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.set_to">
+<span class="sig-name descname"><span class="pre">set_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_changes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">qcodes.instrument.parameter._SetParamContext</span></span></span><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.set_to" title="Permalink to this definition"></a></dt>
+<dd><p>Use a context manager to temporarily set a parameter to a value. By
+default, the parameter value cannot be changed inside the context.
+This may be overridden with <code class="docutils literal notranslate"><span class="pre">allow_changes=True</span></code>.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">qcodes</span> <span class="kn">import</span> <span class="n">Parameter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="n">set_cmd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">get_cmd</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">p</span><span class="o">.</span><span class="n">set_to</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;p value in with block </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># prints 3</span>
+<span class="gp">... </span>    <span class="n">p</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c1"># raises an exception</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;p value outside with block </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># prints 2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">p</span><span class="o">.</span><span class="n">set_to</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">allow_changes</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">p</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c1"># now this works</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;value after second block: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># still prints 2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.settable">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">settable</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><span class="pre">bool</span></a></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.settable" title="Permalink to this definition"></a></dt>
+<dd><p>Is it allowed to call set on this parameter?</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.short_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">short_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.short_name" title="Permalink to this definition"></a></dt>
+<dd><p>Short name of the parameter. This is without the name of the
+instrument or submodule that the parameter may be bound to. For
+full name refer to <a class="reference internal" href="#qcodes.instrument_drivers.devices.VoltageDivider.full_name" title="qcodes.instrument_drivers.devices.VoltageDivider.full_name"><code class="xref py py-meth docutils literal notranslate"><span class="pre">full_name()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.snapshot">
+<span class="sig-name descname"><span class="pre">snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.snapshot" title="Permalink to this definition"></a></dt>
+<dd><p>Decorate a snapshot dictionary with metadata.
+DO NOT override this method if you want metadata in the snapshot
+instead, override <a class="reference internal" href="#qcodes.instrument_drivers.devices.VoltageDivider.snapshot_base" title="qcodes.instrument_drivers.devices.VoltageDivider.snapshot_base"><code class="xref py py-meth docutils literal notranslate"><span class="pre">snapshot_base()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>update</strong> – Passed to snapshot_base.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Base snapshot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.snapshot_base">
+<span class="sig-name descname"><span class="pre">snapshot_base</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params_to_skip_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.snapshot_base" title="Permalink to this definition"></a></dt>
+<dd><p>State of the parameter as a JSON-compatible dict (everything that
+the custom JSON encoder class
+<a class="reference internal" href="../utils/helpers.html#qcodes.utils.helpers.NumpyJSONEncoder" title="qcodes.utils.helpers.NumpyJSONEncoder"><code class="xref py py-class docutils literal notranslate"><span class="pre">qcodes.utils.helpers.NumpyJSONEncoder</span></code></a> supports).</p>
+<p>If the parameter has been initiated with <code class="docutils literal notranslate"><span class="pre">snapshot_value=False</span></code>,
+the snapshot will NOT include the <code class="docutils literal notranslate"><span class="pre">value</span></code> and <code class="docutils literal notranslate"><span class="pre">raw_value</span></code> of the
+parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>update</strong> – If True, update the state by calling <code class="docutils literal notranslate"><span class="pre">parameter.get()</span></code>
+unless <code class="docutils literal notranslate"><span class="pre">snapshot_get</span></code> of the parameter is <code class="docutils literal notranslate"><span class="pre">False</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">update</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, use the current value from the
+<code class="docutils literal notranslate"><span class="pre">cache</span></code> unless the cache is invalid. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, never call
+<code class="docutils literal notranslate"><span class="pre">parameter.get()</span></code>.</p></li>
+<li><p><strong>params_to_skip_update</strong> – No effect but may be passed from superclass</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>base snapshot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.snapshot_value">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">snapshot_value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><span class="pre">bool</span></a></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.snapshot_value" title="Permalink to this definition"></a></dt>
+<dd><p>If True the value of the parameter will be included in the snapshot.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.step">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.step" title="Permalink to this definition"></a></dt>
+<dd><p>Stepsize that this Parameter uses during set operation.
+Stepsize must be a positive number or None.
+If step is a positive number, this is the maximum value change
+allowed in one hardware call, so a single set can result in many
+calls to the hardware if the starting value is far from the target.
+All but the final change will attempt to change by +/- step exactly.
+If step is None stepping will not be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>Returns the current stepsize.</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>Sets the value of the step.</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#TypeError" title="(in Python v3.7)"><strong>TypeError</strong></a> – if step is set to not numeric or None</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#ValueError" title="(in Python v3.7)"><strong>ValueError</strong></a> – if step is set to negative</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#TypeError" title="(in Python v3.7)"><strong>TypeError</strong></a> – if step is set to not integer or None for an
+    integer parameter</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#TypeError" title="(in Python v3.7)"><strong>TypeError</strong></a> – if step is set to not a number on None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.sweep">
+<span class="sig-name descname"><span class="pre">sweep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#int" title="(in Python v3.7)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">qcodes.instrument.sweep_values.SweepFixedValues</span></span></span><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.sweep" title="Permalink to this definition"></a></dt>
+<dd><p>Create a collection of parameter values to be iterated over.
+Requires <cite>start</cite> and <cite>stop</cite> and (<cite>step</cite> or <cite>num</cite>)
+The sign of <cite>step</cite> is not relevant.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> – The starting value of the sequence.</p></li>
+<li><p><strong>stop</strong> – The end value of the sequence.</p></li>
+<li><p><strong>step</strong> – Spacing between values.</p></li>
+<li><p><strong>num</strong> – Number of values to generate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Collection of parameter values to be
+iterated over.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>SweepFixedValues</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sweep</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="go"> [0.0, 2.5, 5.0, 7.5, 10.0]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sweep</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">[5.0, 6.0, 7.0, 8.0, 9.0, 10.0]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sweep</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mf">10.5</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="go">&gt;[15.0, 13.5, 12.0, 10.5]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.underlying_instrument">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">underlying_instrument</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">InstrumentBase</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.underlying_instrument" title="Permalink to this definition"></a></dt>
+<dd><p>Returns an instance of the underlying hardware instrument that this
+parameter communicates with, per this parameter’s implementation.</p>
+<p>This is useful in the case where a parameter does not belongs to
+an instrument instance that represents a real hardware instrument
+but actually uses a real hardware instrument in its implementation
+(e.g. via calls to one or more parameters of that real hardware
+instrument). This is also useful when a parameter does belong to
+an instrument instance but that instance does not represent the
+real hardware instrument that the parameter interacts with: hence
+<code class="docutils literal notranslate"><span class="pre">root_instrument</span></code> of the parameter cannot be the
+<code class="docutils literal notranslate"><span class="pre">hardware_instrument</span></code>, however <code class="docutils literal notranslate"><span class="pre">underlying_instrument</span></code> can be
+implemented to return the <code class="docutils literal notranslate"><span class="pre">hardware_instrument</span></code>.</p>
+<p>By default it returns the <code class="docutils literal notranslate"><span class="pre">root_instrument</span></code> of the parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.7/library/constants.html#None" title="(in Python v3.7)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.validate" title="Permalink to this definition"></a></dt>
+<dd><p>Validate the value supplied.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – value to validate</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#TypeError" title="(in Python v3.7)"><strong>TypeError</strong></a> – If the value is of the wrong type.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#ValueError" title="(in Python v3.7)"><strong>ValueError</strong></a> – If the value is outside the bounds specified by the
+    validator.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.devices.VoltageDivider.unit">
+<span class="sig-name descname"><span class="pre">unit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#qcodes.instrument_drivers.devices.VoltageDivider.unit" title="Permalink to this definition"></a></dt>
+<dd><p>The unit of measure. Use <code class="docutils literal notranslate"><span class="pre">''</span></code> for unitless.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-qcodes.instrument_drivers.test">
+<span id="qcodes-instrument-drivers-test-module"></span><h2>qcodes.instrument_drivers.test module<a class="headerlink" href="#module-qcodes.instrument_drivers.test" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qcodes.instrument_drivers.test.</span></span><span class="sig-name descname"><span class="pre">DriverTestCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/instrument_drivers/test.html#DriverTestCase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>Create an instance of the class that will use the named test
+method when executed. Raises a ValueError if the instance does
+not have a method with the specified name.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.driver">
+<span class="sig-name descname"><span class="pre">driver</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#type" title="(in Python v3.7)"><span class="pre">type</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.driver" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.setUpClass">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">setUpClass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/instrument_drivers/test.html#DriverTestCase.setUpClass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.setUpClass" title="Permalink to this definition"></a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.addClassCleanup">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">addClassCleanup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.addClassCleanup" title="Permalink to this definition"></a></dt>
+<dd><p>Same as addCleanup, except the cleanup items are called even if
+setUpClass fails (unlike tearDownClass).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.addCleanup">
+<span class="sig-name descname"><span class="pre">addCleanup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.addCleanup" title="Permalink to this definition"></a></dt>
+<dd><p>Add a function, with arguments, to be called when the test is
+completed. Functions added are called on a LIFO basis and are
+called after tearDown on test failure or success.</p>
+<p>Cleanup items are called even if setUp fails (unlike tearDown).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.addTypeEqualityFunc">
+<span class="sig-name descname"><span class="pre">addTypeEqualityFunc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typeobj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.addTypeEqualityFunc" title="Permalink to this definition"></a></dt>
+<dd><p>Add a type specific assertEqual style function to compare a type.</p>
+<p>This method is for use by TestCase subclasses that need to register
+their own type equality functions to provide nicer error messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>typeobj</strong> – The data type to call this function on when both values
+are of the same type in assertEqual().</p></li>
+<li><p><strong>function</strong> – The callable taking two arguments and an optional
+msg= argument that raises self.failureException with a
+useful error message when the two arguments are not equal.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertAlmostEqual">
+<span class="sig-name descname"><span class="pre">assertAlmostEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">places</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertAlmostEqual" title="Permalink to this definition"></a></dt>
+<dd><p>Fail if the two objects are unequal as determined by their
+difference rounded to the given number of decimal places
+(default 7) and comparing to zero, or by comparing that the
+difference between the two objects is more than the given
+delta.</p>
+<p>Note that decimal places (from zero) are usually not the same
+as significant digits (measured from the most significant digit).</p>
+<p>If the two objects compare equal then they will automatically
+compare almost equal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertAlmostEquals">
+<span class="sig-name descname"><span class="pre">assertAlmostEquals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertAlmostEquals" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertCountEqual">
+<span class="sig-name descname"><span class="pre">assertCountEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertCountEqual" title="Permalink to this definition"></a></dt>
+<dd><p>Asserts that two iterables have the same elements, the same number of
+times, without regard to order.</p>
+<blockquote>
+<div><blockquote>
+<div><dl class="simple">
+<dt>self.assertEqual(Counter(list(first)),</dt><dd><p>Counter(list(second)))</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="simple">
+<dt>Example:</dt><dd><ul class="simple">
+<li><p>[0, 1, 1] and [1, 0, 1] compare equal.</p></li>
+<li><p>[0, 0, 1] and [0, 1] compare unequal.</p></li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertDictContainsSubset">
+<span class="sig-name descname"><span class="pre">assertDictContainsSubset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dictionary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertDictContainsSubset" title="Permalink to this definition"></a></dt>
+<dd><p>Checks whether dictionary is a superset of subset.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertDictEqual">
+<span class="sig-name descname"><span class="pre">assertDictEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertDictEqual" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertEqual">
+<span class="sig-name descname"><span class="pre">assertEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertEqual" title="Permalink to this definition"></a></dt>
+<dd><p>Fail if the two objects are unequal as determined by the ‘==’
+operator.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertEquals">
+<span class="sig-name descname"><span class="pre">assertEquals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertEquals" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertFalse">
+<span class="sig-name descname"><span class="pre">assertFalse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertFalse" title="Permalink to this definition"></a></dt>
+<dd><p>Check that the expression is false.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertGreater">
+<span class="sig-name descname"><span class="pre">assertGreater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertGreater" title="Permalink to this definition"></a></dt>
+<dd><p>Just like self.assertTrue(a &gt; b), but with a nicer default message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertGreaterEqual">
+<span class="sig-name descname"><span class="pre">assertGreaterEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertGreaterEqual" title="Permalink to this definition"></a></dt>
+<dd><p>Just like self.assertTrue(a &gt;= b), but with a nicer default message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertIn">
+<span class="sig-name descname"><span class="pre">assertIn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">member</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertIn" title="Permalink to this definition"></a></dt>
+<dd><p>Just like self.assertTrue(a in b), but with a nicer default message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertIs">
+<span class="sig-name descname"><span class="pre">assertIs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expr1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expr2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertIs" title="Permalink to this definition"></a></dt>
+<dd><p>Just like self.assertTrue(a is b), but with a nicer default message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertIsInstance">
+<span class="sig-name descname"><span class="pre">assertIsInstance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertIsInstance" title="Permalink to this definition"></a></dt>
+<dd><p>Same as self.assertTrue(isinstance(obj, cls)), with a nicer
+default message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertIsNone">
+<span class="sig-name descname"><span class="pre">assertIsNone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertIsNone" title="Permalink to this definition"></a></dt>
+<dd><p>Same as self.assertTrue(obj is None), with a nicer default message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertIsNot">
+<span class="sig-name descname"><span class="pre">assertIsNot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expr1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expr2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertIsNot" title="Permalink to this definition"></a></dt>
+<dd><p>Just like self.assertTrue(a is not b), but with a nicer default message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertIsNotNone">
+<span class="sig-name descname"><span class="pre">assertIsNotNone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertIsNotNone" title="Permalink to this definition"></a></dt>
+<dd><p>Included for symmetry with assertIsNone.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertLess">
+<span class="sig-name descname"><span class="pre">assertLess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertLess" title="Permalink to this definition"></a></dt>
+<dd><p>Just like self.assertTrue(a &lt; b), but with a nicer default message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertLessEqual">
+<span class="sig-name descname"><span class="pre">assertLessEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertLessEqual" title="Permalink to this definition"></a></dt>
+<dd><p>Just like self.assertTrue(a &lt;= b), but with a nicer default message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertListEqual">
+<span class="sig-name descname"><span class="pre">assertListEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertListEqual" title="Permalink to this definition"></a></dt>
+<dd><p>A list-specific equality assertion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>list1</strong> – The first list to compare.</p></li>
+<li><p><strong>list2</strong> – The second list to compare.</p></li>
+<li><p><strong>msg</strong> – Optional message to use on failure instead of a list of
+differences.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertLogs">
+<span class="sig-name descname"><span class="pre">assertLogs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertLogs" title="Permalink to this definition"></a></dt>
+<dd><p>Fail unless a log message of level <em>level</em> or higher is emitted
+on <em>logger_name</em> or its children.  If omitted, <em>level</em> defaults to
+INFO and <em>logger</em> defaults to the root logger.</p>
+<p>This method must be used as a context manager, and will yield
+a recording object with two attributes: <cite>output</cite> and <cite>records</cite>.
+At the end of the context manager, the <cite>output</cite> attribute will
+be a list of the matching formatted log messages and the
+<cite>records</cite> attribute will be a list of the corresponding LogRecord
+objects.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertLogs</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s1">&#39;INFO&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;first message&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;foo.bar&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;second message&#39;</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;INFO:foo:first message&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;ERROR:foo.bar:second message&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertMultiLineEqual">
+<span class="sig-name descname"><span class="pre">assertMultiLineEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertMultiLineEqual" title="Permalink to this definition"></a></dt>
+<dd><p>Assert that two multi-line strings are equal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertNotAlmostEqual">
+<span class="sig-name descname"><span class="pre">assertNotAlmostEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">places</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertNotAlmostEqual" title="Permalink to this definition"></a></dt>
+<dd><p>Fail if the two objects are equal as determined by their
+difference rounded to the given number of decimal places
+(default 7) and comparing to zero, or by comparing that the
+difference between the two objects is less than the given delta.</p>
+<p>Note that decimal places (from zero) are usually not the same
+as significant digits (measured from the most significant digit).</p>
+<p>Objects that are equal automatically fail.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertNotAlmostEquals">
+<span class="sig-name descname"><span class="pre">assertNotAlmostEquals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertNotAlmostEquals" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertNotEqual">
+<span class="sig-name descname"><span class="pre">assertNotEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertNotEqual" title="Permalink to this definition"></a></dt>
+<dd><p>Fail if the two objects are equal as determined by the ‘!=’
+operator.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertNotEquals">
+<span class="sig-name descname"><span class="pre">assertNotEquals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertNotEquals" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertNotIn">
+<span class="sig-name descname"><span class="pre">assertNotIn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">member</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertNotIn" title="Permalink to this definition"></a></dt>
+<dd><p>Just like self.assertTrue(a not in b), but with a nicer default message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertNotIsInstance">
+<span class="sig-name descname"><span class="pre">assertNotIsInstance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertNotIsInstance" title="Permalink to this definition"></a></dt>
+<dd><p>Included for symmetry with assertIsInstance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertNotRegex">
+<span class="sig-name descname"><span class="pre">assertNotRegex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unexpected_regex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertNotRegex" title="Permalink to this definition"></a></dt>
+<dd><p>Fail the test if the text matches the regular expression.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertNotRegexpMatches">
+<span class="sig-name descname"><span class="pre">assertNotRegexpMatches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertNotRegexpMatches" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertRaises">
+<span class="sig-name descname"><span class="pre">assertRaises</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expected_exception</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertRaises" title="Permalink to this definition"></a></dt>
+<dd><p>Fail unless an exception of class expected_exception is raised
+by the callable when invoked with specified positional and
+keyword arguments. If a different type of exception is
+raised, it will not be caught, and the test case will be
+deemed to have suffered an error, exactly as for an
+unexpected exception.</p>
+<p>If called with the callable and arguments omitted, will return a
+context object used like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">SomeException</span><span class="p">):</span>
+    <span class="n">do_something</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>An optional keyword argument ‘msg’ can be provided when assertRaises
+is used as a context object.</p>
+<p>The context manager keeps a reference to the exception as
+the ‘exception’ attribute. This allows you to inspect the
+exception after the assertion:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">SomeException</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+    <span class="n">do_something</span><span class="p">()</span>
+<span class="n">the_exception</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">exception</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">the_exception</span><span class="o">.</span><span class="n">error_code</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertRaisesRegex">
+<span class="sig-name descname"><span class="pre">assertRaisesRegex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expected_exception</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_regex</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertRaisesRegex" title="Permalink to this definition"></a></dt>
+<dd><p>Asserts that the message in a raised exception matches a regex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>expected_exception</strong> – Exception class expected to be raised.</p></li>
+<li><p><strong>expected_regex</strong> – Regex (re.Pattern object or string) expected
+to be found in error message.</p></li>
+<li><p><strong>args</strong> – Function to be called and extra positional args.</p></li>
+<li><p><strong>kwargs</strong> – Extra kwargs.</p></li>
+<li><p><strong>msg</strong> – Optional message used in case of failure. Can only be used
+when assertRaisesRegex is used as a context manager.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertRaisesRegexp">
+<span class="sig-name descname"><span class="pre">assertRaisesRegexp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertRaisesRegexp" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertRegex">
+<span class="sig-name descname"><span class="pre">assertRegex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_regex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertRegex" title="Permalink to this definition"></a></dt>
+<dd><p>Fail the test unless the text matches the regular expression.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertRegexpMatches">
+<span class="sig-name descname"><span class="pre">assertRegexpMatches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertRegexpMatches" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertSequenceEqual">
+<span class="sig-name descname"><span class="pre">assertSequenceEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertSequenceEqual" title="Permalink to this definition"></a></dt>
+<dd><p>An equality assertion for ordered sequences (like lists and tuples).</p>
+<p>For the purposes of this function, a valid ordered sequence type is one
+which can be indexed, has a length, and has an equality operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seq1</strong> – The first sequence to compare.</p></li>
+<li><p><strong>seq2</strong> – The second sequence to compare.</p></li>
+<li><p><strong>seq_type</strong> – The expected datatype of the sequences, or None if no
+datatype should be enforced.</p></li>
+<li><p><strong>msg</strong> – Optional message to use on failure instead of a list of
+differences.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertSetEqual">
+<span class="sig-name descname"><span class="pre">assertSetEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">set1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertSetEqual" title="Permalink to this definition"></a></dt>
+<dd><p>A set-specific equality assertion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>set1</strong> – The first set to compare.</p></li>
+<li><p><strong>set2</strong> – The second set to compare.</p></li>
+<li><p><strong>msg</strong> – Optional message to use on failure instead of a list of
+differences.</p></li>
+</ul>
+</dd>
+</dl>
+<p>assertSetEqual uses ducktyping to support different types of sets, and
+is optimized for sets specifically (parameters must support a
+difference method).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertTrue">
+<span class="sig-name descname"><span class="pre">assertTrue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertTrue" title="Permalink to this definition"></a></dt>
+<dd><p>Check that the expression is true.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertTupleEqual">
+<span class="sig-name descname"><span class="pre">assertTupleEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tuple1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuple2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertTupleEqual" title="Permalink to this definition"></a></dt>
+<dd><p>A tuple-specific equality assertion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tuple1</strong> – The first tuple to compare.</p></li>
+<li><p><strong>tuple2</strong> – The second tuple to compare.</p></li>
+<li><p><strong>msg</strong> – Optional message to use on failure instead of a list of
+differences.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertWarns">
+<span class="sig-name descname"><span class="pre">assertWarns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expected_warning</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertWarns" title="Permalink to this definition"></a></dt>
+<dd><p>Fail unless a warning of class warnClass is triggered
+by the callable when invoked with specified positional and
+keyword arguments.  If a different type of warning is
+triggered, it will not be handled: depending on the other
+warning filtering rules in effect, it might be silenced, printed
+out, or raised as an exception.</p>
+<p>If called with the callable and arguments omitted, will return a
+context object used like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertWarns</span><span class="p">(</span><span class="n">SomeWarning</span><span class="p">):</span>
+    <span class="n">do_something</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>An optional keyword argument ‘msg’ can be provided when assertWarns
+is used as a context object.</p>
+<p>The context manager keeps a reference to the first matching
+warning as the ‘warning’ attribute; similarly, the ‘filename’
+and ‘lineno’ attributes give you information about the line
+of Python code from which the warning was triggered.
+This allows you to inspect the warning after the assertion:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertWarns</span><span class="p">(</span><span class="n">SomeWarning</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+    <span class="n">do_something</span><span class="p">()</span>
+<span class="n">the_warning</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">warning</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">the_warning</span><span class="o">.</span><span class="n">some_attribute</span><span class="p">,</span> <span class="mi">147</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assertWarnsRegex">
+<span class="sig-name descname"><span class="pre">assertWarnsRegex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expected_warning</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_regex</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assertWarnsRegex" title="Permalink to this definition"></a></dt>
+<dd><p>Asserts that the message in a triggered warning matches a regexp.
+Basic functioning is similar to assertWarns() with the addition
+that only warnings whose messages also match the regular expression
+are considered successful matches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>expected_warning</strong> – Warning class expected to be triggered.</p></li>
+<li><p><strong>expected_regex</strong> – Regex (re.Pattern object or string) expected
+to be found in error message.</p></li>
+<li><p><strong>args</strong> – Function to be called and extra positional args.</p></li>
+<li><p><strong>kwargs</strong> – Extra kwargs.</p></li>
+<li><p><strong>msg</strong> – Optional message used in case of failure. Can only be used
+when assertWarnsRegex is used as a context manager.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.assert_">
+<span class="sig-name descname"><span class="pre">assert_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.assert_" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.countTestCases">
+<span class="sig-name descname"><span class="pre">countTestCases</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.countTestCases" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.debug">
+<span class="sig-name descname"><span class="pre">debug</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.debug" title="Permalink to this definition"></a></dt>
+<dd><p>Run the test without collecting errors in a TestResult</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.defaultTestResult">
+<span class="sig-name descname"><span class="pre">defaultTestResult</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.defaultTestResult" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.doClassCleanups">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">doClassCleanups</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.doClassCleanups" title="Permalink to this definition"></a></dt>
+<dd><p>Execute all class cleanup functions. Normally called for you after
+tearDownClass.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.doCleanups">
+<span class="sig-name descname"><span class="pre">doCleanups</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.doCleanups" title="Permalink to this definition"></a></dt>
+<dd><p>Execute all cleanup functions. Normally called for you after
+tearDown.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.fail">
+<span class="sig-name descname"><span class="pre">fail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.fail" title="Permalink to this definition"></a></dt>
+<dd><p>Fail immediately, with the given message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.failIf">
+<span class="sig-name descname"><span class="pre">failIf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.failIf" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.failIfAlmostEqual">
+<span class="sig-name descname"><span class="pre">failIfAlmostEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.failIfAlmostEqual" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.failIfEqual">
+<span class="sig-name descname"><span class="pre">failIfEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.failIfEqual" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.failUnless">
+<span class="sig-name descname"><span class="pre">failUnless</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.failUnless" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.failUnlessAlmostEqual">
+<span class="sig-name descname"><span class="pre">failUnlessAlmostEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.failUnlessAlmostEqual" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.failUnlessEqual">
+<span class="sig-name descname"><span class="pre">failUnlessEqual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.failUnlessEqual" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.failUnlessRaises">
+<span class="sig-name descname"><span class="pre">failUnlessRaises</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.failUnlessRaises" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.failureException">
+<span class="sig-name descname"><span class="pre">failureException</span></span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.failureException" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#AssertionError" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AssertionError</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.id">
+<span class="sig-name descname"><span class="pre">id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.longMessage">
+<span class="sig-name descname"><span class="pre">longMessage</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.longMessage" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.maxDiff">
+<span class="sig-name descname"><span class="pre">maxDiff</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">640</span></em><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.maxDiff" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.run" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.setUp" title="Permalink to this definition"></a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.shortDescription">
+<span class="sig-name descname"><span class="pre">shortDescription</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.shortDescription" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a one-line description of the test, or None if no
+description has been provided.</p>
+<p>The default implementation of this method returns the first line of
+the specified test method’s docstring.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.skipTest">
+<span class="sig-name descname"><span class="pre">skipTest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reason</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.skipTest" title="Permalink to this definition"></a></dt>
+<dd><p>Skip this test.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.subTest">
+<span class="sig-name descname"><span class="pre">subTest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg=&lt;object</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.subTest" title="Permalink to this definition"></a></dt>
+<dd><p>Return a context manager that will return the enclosed block
+of code in a subtest identified by the optional message and
+keyword parameters.  A failure in the subtest marks the test
+case as failed but resumes execution at the end of the enclosed
+block, allowing further test code to be executed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.tearDown">
+<span class="sig-name descname"><span class="pre">tearDown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.tearDown" title="Permalink to this definition"></a></dt>
+<dd><p>Hook method for deconstructing the test fixture after testing it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.DriverTestCase.tearDownClass">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tearDownClass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.instrument_drivers.test.DriverTestCase.tearDownClass" title="Permalink to this definition"></a></dt>
+<dd><p>Hook method for deconstructing the class fixture after running all tests in the class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.test_instrument">
+<span class="sig-prename descclassname"><span class="pre">qcodes.instrument_drivers.test.</span></span><span class="sig-name descname"><span class="pre">test_instrument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instrument_testcase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbosity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/instrument_drivers/test.html#test_instrument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.instrument_drivers.test.test_instrument" title="Permalink to this definition"></a></dt>
+<dd><p>Runs one instrument testcase
+Reloads the test case before running it</p>
+<p>optional verbosity (default 2)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qcodes.instrument_drivers.test.test_instruments">
+<span class="sig-prename descclassname"><span class="pre">qcodes.instrument_drivers.test.</span></span><span class="sig-name descname"><span class="pre">test_instruments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbosity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/instrument_drivers/test.html#test_instruments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.instrument_drivers.test.test_instruments" title="Permalink to this definition"></a></dt>
+<dd><p>Discover available instruments and test them all
+Unlike test_instrument, this does NOT reload tests prior to running them</p>
+<p>optional verbosity (default 1)</p>
+</dd></dl>
+
+</section>
+<section id="module-qcodes.instrument_drivers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-qcodes.instrument_drivers" title="Permalink to this headline"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../plots/qcmatplotlib.html" class="btn btn-neutral float-left" title="qcodes.plots.qcmatplotlib" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="qcodes.instrument_drivers.AimTTi.html" class="btn btn-neutral float-right" title="qcodes.instrument_drivers.AimTTi package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

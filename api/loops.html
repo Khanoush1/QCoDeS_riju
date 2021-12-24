@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.loops &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="qcodes.actions" href="actions.html" />
+    <link rel="prev" title="qcodes.utils.validators" href="utils/validators.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">QCoDes API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#qcodes-api">QCoDeS API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#legacy-api">Legacy API</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">qcodes.loops</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions.html">qcodes.actions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="measure.html">qcodes.measure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data/index.html">qcodes.data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots/index.html">qcodes.plots</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">QCoDes API documentation</a> &raquo;</li>
+      <li>qcodes.loops</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/loops.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="module-qcodes.loops">
+<span id="qcodes-loops"></span><span id="loops-api"></span><h1>qcodes.loops<a class="headerlink" href="#module-qcodes.loops" title="Permalink to this headline"></a></h1>
+<p>Data acquisition loops.</p>
+<p>The general scheme is:</p>
+<p>1. create a (potentially nested) Loop, which defines the sweep setpoints and
+delays</p>
+<ol class="arabic simple" start="2">
+<li><p>activate the loop (which changes it to an ActiveLoop object),</p></li>
+</ol>
+<p>3. run it with the .run method, which creates a DataSet to hold the data,
+and defines how and where to save the data.</p>
+<p>Some examples:</p>
+<ul class="simple">
+<li><p>1D sweep, using the default measurement set</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Loop</span><span class="p">(</span><span class="n">sweep_values</span><span class="p">,</span> <span class="n">delay</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>2D sweep, using the default measurement set sv1 is the outer loop, sv2 is the
+inner.</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Loop</span><span class="p">(</span><span class="n">sv1</span><span class="p">,</span> <span class="n">delay1</span><span class="p">)</span><span class="o">.</span><span class="n">loop</span><span class="p">(</span><span class="n">sv2</span><span class="p">,</span> <span class="n">delay2</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>1D sweep with specific measurements to take at each point</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Loop</span><span class="p">(</span><span class="n">sv</span><span class="p">,</span> <span class="n">delay</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">param4</span><span class="p">,</span> <span class="n">param5</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Multidimensional sweep: 1D measurement of param6 on the outer loop, and another
+measurement in an inner loop.</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Loop</span><span class="p">(</span><span class="n">sv1</span><span class="p">,</span> <span class="n">delay</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">param6</span><span class="p">,</span> <span class="n">Loop</span><span class="p">(</span><span class="n">sv2</span><span class="p">,</span> <span class="n">delay</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">sv3</span><span class="p">,</span> <span class="n">delay</span><span class="p">))</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Supported commands to .each are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Parameter: anything with a .get method and .name or .names see
+parameter.py for options</p></li>
+<li><p>ActiveLoop</p></li>
+<li><p>Task: any callable that does not generate data</p></li>
+<li><p>Wait: a delay</p></li>
+</ul>
+</div></blockquote>
+<dl class="py class">
+<dt class="sig sig-object py" id="qcodes.loops.ActiveLoop">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qcodes.loops.</span></span><span class="sig-name descname"><span class="pre">ActiveLoop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sweep_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">actions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">then_actions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg_task</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg_final_task</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg_min_delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#ActiveLoop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.ActiveLoop" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/metadata.html#qcodes.utils.metadata.Metadatable" title="qcodes.utils.metadata.Metadatable"><code class="xref py py-class docutils literal notranslate"><span class="pre">qcodes.utils.metadata.Metadatable</span></code></a></p>
+<p>Created by attaching <code class="docutils literal notranslate"><span class="pre">actions</span></code> to a <code class="docutils literal notranslate"><span class="pre">Loop</span></code>, this is the object that
+actually runs a measurement loop. An <code class="docutils literal notranslate"><span class="pre">ActiveLoop</span></code> can no longer be nested,
+only run, or used as an action inside another <code class="docutils literal notranslate"><span class="pre">Loop</span></code> which will run the
+whole thing.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ActiveLoop</span></code> determines what <code class="docutils literal notranslate"><span class="pre">DataArrays</span></code> it will need to hold the
+data it collects, and it creates a <code class="docutils literal notranslate"><span class="pre">DataSet</span></code> holding these <code class="docutils literal notranslate"><span class="pre">DataArrays</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.loops.ActiveLoop.active_loop">
+<span class="sig-name descname"><span class="pre">active_loop</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#qcodes.loops.ActiveLoop.active_loop" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.ActiveLoop.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#ActiveLoop.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.ActiveLoop.__getitem__" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieves action with index <cite>item</cite>
+:param item: actions index</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>loop.actions[item]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.ActiveLoop.then">
+<span class="sig-name descname"><span class="pre">then</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">actions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#ActiveLoop.then"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.ActiveLoop.then" title="Permalink to this definition"></a></dt>
+<dd><p>Attach actions to be performed after the loop completes.</p>
+<p>These can only be <code class="docutils literal notranslate"><span class="pre">Task</span></code> and <code class="docutils literal notranslate"><span class="pre">Wait</span></code> actions, as they may not
+generate any data.</p>
+<p>returns a new ActiveLoop object - the original is untouched</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*actions</strong> – <code class="docutils literal notranslate"><span class="pre">Task</span></code> and <code class="docutils literal notranslate"><span class="pre">Wait</span></code> objects to execute in order</p></li>
+<li><p><strong>overwrite</strong> – (default False) whether subsequent .then() calls (including
+calls in an ActiveLoop after .then() has already been called on
+the Loop) will add to each other or overwrite the earlier ones.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.ActiveLoop.with_bg_task">
+<span class="sig-name descname"><span class="pre">with_bg_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg_final_task</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#ActiveLoop.with_bg_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.ActiveLoop.with_bg_task" title="Permalink to this definition"></a></dt>
+<dd><p>Attaches a background task to this loop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task</strong> – A callable object with no parameters. This object will be
+invoked periodically during the measurement loop.</p></li>
+<li><p><strong>bg_final_task</strong> – A callable object with no parameters. This object will be
+invoked to clean up after or otherwise finish the background
+task work.</p></li>
+<li><p><strong>min_delay</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – The minimum number of seconds to wait
+between task invocations. Note that the actual time between
+task invocations may be much longer than this, as the task is
+only run between passes through the loop. Defaults to 0.01 s.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.ActiveLoop.snapshot_base">
+<span class="sig-name descname"><span class="pre">snapshot_base</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">update</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params_to_skip_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#ActiveLoop.snapshot_base"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.ActiveLoop.snapshot_base" title="Permalink to this definition"></a></dt>
+<dd><p>Snapshot of this ActiveLoop’s definition.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.ActiveLoop.containers">
+<span class="sig-name descname"><span class="pre">containers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#ActiveLoop.containers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.ActiveLoop.containers" title="Permalink to this definition"></a></dt>
+<dd><p>Finds the data arrays that will be created by the actions in this
+loop, and nests them inside this level of the loop.</p>
+<p>Recursively calls <cite>.containers</cite> on any enclosed actions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.ActiveLoop.set_common_attrs">
+<span class="sig-name descname"><span class="pre">set_common_attrs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_threads</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#ActiveLoop.set_common_attrs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.ActiveLoop.set_common_attrs" title="Permalink to this definition"></a></dt>
+<dd><p>set a couple of common attributes that the main and nested loops
+all need to have:
+- the DataSet collecting all our measurements
+- a queue for communicating with the main process</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.ActiveLoop.get_data_set">
+<span class="sig-name descname"><span class="pre">get_data_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#ActiveLoop.get_data_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.ActiveLoop.get_data_set" title="Permalink to this definition"></a></dt>
+<dd><p>Return the data set for this loop.</p>
+<p>If no data set has been created yet, a new one will be created and
+returned. Note that all arguments can only be provided when the
+<cite>DataSet</cite> is first created; giving these during <cite>run</cite> when
+<cite>get_data_set</cite> has already been called on its own is an error.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data_manager</strong> – a DataManager instance (omit to use default,
+False to store locally)</p>
+</dd>
+</dl>
+<p>kwargs are passed along to data_set.new_data. The key ones are:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>location</strong> – the location of the DataSet, a string whose meaning
+depends on formatter and io, or False to only keep in memory.
+May be a callable to provide automatic locations. If omitted, will
+use the default DataSet.location_provider</p></li>
+<li><p><strong>name</strong> – if location is default or another provider function, name is
+a string to add to location to make it more readable/meaningful
+to users</p></li>
+<li><p><strong>formatter</strong> – knows how to read and write the file format
+default can be set in DataSet.default_formatter</p></li>
+<li><p><strong>io</strong> – knows how to connect to the storage (disk vs cloud etc)</p></li>
+<li><p><strong>write_period</strong> – how often to save to storage during the loop.
+default 5 sec, use None to write only at the end</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a DataSet object that we can use to plot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.ActiveLoop.run_temp">
+<span class="sig-name descname"><span class="pre">run_temp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#ActiveLoop.run_temp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.ActiveLoop.run_temp" title="Permalink to this definition"></a></dt>
+<dd><p>wrapper to run this loop in the foreground as a temporary data set,
+especially for use in composite parameters that need to run a Loop
+as part of their get method</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.ActiveLoop.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_threads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_active</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#ActiveLoop.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.ActiveLoop.run" title="Permalink to this definition"></a></dt>
+<dd><p>Execute this loop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>use_threads</strong> – (default False): whenever there are multiple <cite>get</cite> calls
+back-to-back, execute them in separate threads so they run in
+parallel (as long as they don’t block each other)</p></li>
+<li><p><strong>quiet</strong> – (default False): set True to not print anything except errors</p></li>
+<li><p><strong>station</strong> – a Station instance for snapshots (omit to use a previously
+provided Station, or the default Station)</p></li>
+<li><p><strong>progress_interval</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – show progress of the loop every x
+seconds. If provided here, will override any interval provided
+with the Loop definition. Defaults to None</p></li>
+</ul>
+</dd>
+</dl>
+<p>kwargs are passed along to data_set.new_data. These can only be
+provided when the <cite>DataSet</cite> is first created; giving these during <cite>run</cite>
+when <cite>get_data_set</cite> has already been called on its own is an error.
+The key ones are:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>location</strong> – the location of the DataSet, a string whose meaning
+depends on formatter and io, or False to only keep in memory.
+May be a callable to provide automatic locations. If omitted, will
+use the default DataSet.location_provider</p></li>
+<li><p><strong>name</strong> – if location is default or another provider function, name is
+a string to add to location to make it more readable/meaningful
+to users</p></li>
+<li><p><strong>formatter</strong> – knows how to read and write the file format
+default can be set in DataSet.default_formatter</p></li>
+<li><p><strong>io</strong> – knows how to connect to the storage (disk vs cloud etc)
+write_period: how often to save to storage during the loop.
+default 5 sec, use None to write only at the end</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a DataSet object that we can use to plot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.ActiveLoop.load_metadata">
+<span class="sig-name descname"><span class="pre">load_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.7/library/constants.html#None" title="(in Python v3.7)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#qcodes.loops.ActiveLoop.load_metadata" title="Permalink to this definition"></a></dt>
+<dd><p>Load metadata into this classes metadata dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>metadata</strong> – Metadata to load.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.ActiveLoop.snapshot">
+<span class="sig-name descname"><span class="pre">snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#qcodes.loops.ActiveLoop.snapshot" title="Permalink to this definition"></a></dt>
+<dd><p>Decorate a snapshot dictionary with metadata.
+DO NOT override this method if you want metadata in the snapshot
+instead, override <a class="reference internal" href="#qcodes.loops.ActiveLoop.snapshot_base" title="qcodes.loops.ActiveLoop.snapshot_base"><code class="xref py py-meth docutils literal notranslate"><span class="pre">snapshot_base()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>update</strong> – Passed to snapshot_base.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Base snapshot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="qcodes.loops.Loop">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qcodes.loops.</span></span><span class="sig-name descname"><span class="pre">Loop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sweep_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#Loop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.Loop" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="utils/metadata.html#qcodes.utils.metadata.Metadatable" title="qcodes.utils.metadata.Metadatable"><code class="xref py py-class docutils literal notranslate"><span class="pre">qcodes.utils.metadata.Metadatable</span></code></a></p>
+<p>The entry point for creating measurement loops</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sweep_values</strong> – a SweepValues or compatible object describing what
+parameter to set in the loop and over what values</p></li>
+<li><p><strong>delay</strong> – a number of seconds to wait after setting a value before
+continuing. 0 (default) means no waiting and no warnings. &gt; 0
+means to wait, potentially filling the delay time with monitoring,
+and give an error if you wait longer than expected.</p></li>
+<li><p><strong>progress_interval</strong> – should progress of the loop every x seconds. Default
+is None (no output)</p></li>
+</ul>
+</dd>
+</dl>
+<p>After creating a Loop, you attach one or more <code class="docutils literal notranslate"><span class="pre">actions</span></code> to it, making an
+<code class="docutils literal notranslate"><span class="pre">ActiveLoop</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">actions</span></code> is a sequence of things to do at each <code class="docutils literal notranslate"><span class="pre">Loop</span></code> step: that can be
+a <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> to measure, a <code class="docutils literal notranslate"><span class="pre">Task</span></code> to do (any callable that does not
+yield data), <code class="docutils literal notranslate"><span class="pre">Wait</span></code> times, or another <code class="docutils literal notranslate"><span class="pre">ActiveLoop</span></code> or <code class="docutils literal notranslate"><span class="pre">Loop</span></code> to nest
+inside this one.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.Loop.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#Loop.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.Loop.__getitem__" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieves action with index <cite>item</cite>
+:param item: actions index</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>loop.actions[item]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.Loop.loop">
+<span class="sig-name descname"><span class="pre">loop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sweep_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#Loop.loop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.Loop.loop" title="Permalink to this definition"></a></dt>
+<dd><p>Nest another loop inside this one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sweep_values</strong> – </p></li>
+<li><p><strong>delay</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Loop</span><span class="p">(</span><span class="n">sv1</span><span class="p">,</span> <span class="n">d1</span><span class="p">)</span><span class="o">.</span><span class="n">loop</span><span class="p">(</span><span class="n">sv2</span><span class="p">,</span> <span class="n">d2</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>is equivalent to:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Loop</span><span class="p">(</span><span class="n">sv1</span><span class="p">,</span> <span class="n">d1</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">Loop</span><span class="p">(</span><span class="n">sv2</span><span class="p">,</span> <span class="n">d2</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Returns: a new Loop object - the original is untouched</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.Loop.each">
+<span class="sig-name descname"><span class="pre">each</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">actions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#Loop.each"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.Loop.each" title="Permalink to this definition"></a></dt>
+<dd><p>Perform a set of actions at each setting of this loop.
+TODO(setting vs setpoints) ? better be verbose.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*actions</strong> (<em>Any</em>) – actions to perform at each setting of the loop</p>
+</dd>
+</dl>
+<p>Each action can be:</p>
+<ul class="simple">
+<li><p>a Parameter to measure</p></li>
+<li><p>a Task to execute</p></li>
+<li><p>a Wait</p></li>
+<li><p>another Loop or ActiveLoop</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.Loop.with_bg_task">
+<span class="sig-name descname"><span class="pre">with_bg_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg_final_task</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#Loop.with_bg_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.Loop.with_bg_task" title="Permalink to this definition"></a></dt>
+<dd><p>Attaches a background task to this loop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task</strong> – A callable object with no parameters. This object will be
+invoked periodically during the measurement loop.</p></li>
+<li><p><strong>bg_final_task</strong> – A callable object with no parameters. This object will be
+invoked to clean up after or otherwise finish the background
+task work.</p></li>
+<li><p><strong>min_delay</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a>) – The minimum number of seconds to wait
+between task invocations. Defaults to 0.01 s.
+Note that if a task is doing a lot of processing it is recommended
+to increase min_delay.
+Note that the actual time between task invocations may be much
+longer than this, as the task is only run between passes
+through the loop.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.Loop.validate_actions">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_actions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">actions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#Loop.validate_actions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.Loop.validate_actions" title="Permalink to this definition"></a></dt>
+<dd><p>Whitelist acceptable actions, so we can give nice error messages
+if an action is not recognized</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.Loop.then">
+<span class="sig-name descname"><span class="pre">then</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">actions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#Loop.then"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.Loop.then" title="Permalink to this definition"></a></dt>
+<dd><p>Attach actions to be performed after the loop completes.</p>
+<p>These can only be <code class="docutils literal notranslate"><span class="pre">Task</span></code> and <code class="docutils literal notranslate"><span class="pre">Wait</span></code> actions, as they may not generate
+any data.</p>
+<p>returns a new Loop object - the original is untouched</p>
+<p>This is more naturally done to an ActiveLoop (ie after .each())
+and can also be done there, but it’s allowed at this stage too so that
+you can define final actions and share them among several <code class="docutils literal notranslate"><span class="pre">Loops</span></code> that
+have different loop actions, or attach final actions to a Loop run</p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>examples of this ? with default actions.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*actions</strong> – <code class="docutils literal notranslate"><span class="pre">Task</span></code> and <code class="docutils literal notranslate"><span class="pre">Wait</span></code> objects to execute in order</p></li>
+<li><p><strong>overwrite</strong> – (default False) whether subsequent .then() calls (including
+calls in an ActiveLoop after .then() has already been called on
+the Loop) will add to each other or overwrite the earlier ones.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new Loop object - the original is untouched</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.Loop.snapshot_base">
+<span class="sig-name descname"><span class="pre">snapshot_base</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params_to_skip_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#Loop.snapshot_base"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.Loop.snapshot_base" title="Permalink to this definition"></a></dt>
+<dd><p>State of the loop as a JSON-compatible dict (everything that
+the custom JSON encoder class :class:’qcodes.utils.helpers.NumpyJSONEncoder’
+supports).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>update</strong> – If True, update the state by querying the underlying
+sweep_values and actions. If None only update state if known
+to be invalid. If False, just use the latest values
+in memory.</p></li>
+<li><p><strong>params_to_skip_update</strong> – Unused in this implementation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>base snapshot</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.Loop.load_metadata">
+<span class="sig-name descname"><span class="pre">load_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.7/library/constants.html#None" title="(in Python v3.7)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#qcodes.loops.Loop.load_metadata" title="Permalink to this definition"></a></dt>
+<dd><p>Load metadata into this classes metadata dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>metadata</strong> – Metadata to load.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.loops.Loop.snapshot">
+<span class="sig-name descname"><span class="pre">snapshot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#qcodes.loops.Loop.snapshot" title="Permalink to this definition"></a></dt>
+<dd><p>Decorate a snapshot dictionary with metadata.
+DO NOT override this method if you want metadata in the snapshot
+instead, override <a class="reference internal" href="#qcodes.loops.Loop.snapshot_base" title="qcodes.loops.Loop.snapshot_base"><code class="xref py py-meth docutils literal notranslate"><span class="pre">snapshot_base()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>update</strong> – Passed to snapshot_base.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Base snapshot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qcodes.loops.active_data_set">
+<span class="sig-prename descclassname"><span class="pre">qcodes.loops.</span></span><span class="sig-name descname"><span class="pre">active_data_set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#active_data_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.active_data_set" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qcodes.loops.active_loop">
+<span class="sig-prename descclassname"><span class="pre">qcodes.loops.</span></span><span class="sig-name descname"><span class="pre">active_loop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qcodes/loops.html#active_loop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.loops.active_loop" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="utils/validators.html" class="btn btn-neutral float-left" title="qcodes.utils.validators" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="actions.html" class="btn btn-neutral float-right" title="qcodes.actions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog for QCoDeS 0.2.0 &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Changelog for QCoDeS 0.1.11" href="0.1.11.html" />
+    <link rel="prev" title="Changelog for QCoDeS 0.2.1" href="0.2.1.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Changelogs</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="unreleased.html">Unreleased</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.31.0.html">0.31.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.30.1.html">0.30.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.30.0.html">0.30.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.29.1.html">0.29.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.29.0.html">0.29.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.28.0.html">0.28.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.27.0.html">0.27.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.26.0.html">0.26.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.25.0.html">0.25.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.24.0.html">0.24.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.23.0.html">0.23.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.22.0.html">0.22.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.21.0.html">0.21.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.20.1.html">0.20.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.20.0.html">0.20.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.19.2.html">0.19.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.19.1.html">0.19.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.19.0.html">0.19.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.18.0.html">0.18.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.17.0.html">0.17.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.16.0.html">0.16.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.15.0.html">0.15.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.15.0a1.html">0.15.0a1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.14.0.html">0.14.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.13.0.html">0.13.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.12.1.html">0.12.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.12.0.html">0.12.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.11.0.html">0.11.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.10.0.html">0.10.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.9.0.html">0.9.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.8.1.html">0.8.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.8.0.html">0.8.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.7.0.html">0.7.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.6.0.html">0.6.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.5.2.html">0.5.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.5.1.html">0.5.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.5.0.html">0.5.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.4.0.html">0.4.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.3.0.html">0.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.2.1.html">0.2.1</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">0.2.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#new-improved">New &amp; Improved</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.11.html">0.1.11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.10.html">0.1.10</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.9.html">0.1.9</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.7.html">0.1.7</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.6.html">0.1.6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.5.html">0.1.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.4.html">0.1.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.3.html">0.1.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.2.html">0.1.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.0.html">0.1.0</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Changelogs</a> &raquo;</li>
+      <li>Changelog for QCoDeS 0.2.0</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/changes/0.2.0.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="changelog-for-qcodes-0-2-0">
+<h1>Changelog for QCoDeS 0.2.0<a class="headerlink" href="#changelog-for-qcodes-0-2-0" title="Permalink to this headline"></a></h1>
+<p>This release contains large number of driver updates as well as significant improvements to the dataset and
+documentation. It also introduces a new Parameter Class (ParameterWithSetpoints) that is intended to replace
+ArrayParameter.</p>
+<section id="new-improved">
+<h2>New &amp; Improved<a class="headerlink" href="#new-improved" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>New and Improved drivers:</p>
+<ul>
+<li><p>Alazar cards:</p>
+<ul>
+<li><p>Alazar 9870 Don’t assign to instrument property (#1182)</p></li>
+<li><p>Alazar add buffer completed callback (#1234)</p></li>
+<li><p>updated/fixed ATS9870 driver (#1290)</p></li>
+<li><p>Alazar remove AlazarParameter support (#1184)</p></li>
+<li><p>Add firmware version to Alazar get_idn (#1308)</p></li>
+<li><p>Add Alazar ATS9373 driver (#1324)</p></li>
+<li><p>Add functions to read and write registers on Alazar and Trigger holdoff for 9360 (#1307)</p></li>
+<li><p>Alazar add get/set parameter (#1523)</p></li>
+<li><p>Alazar: refactor DLL API related things (#1471)</p></li>
+</ul>
+</li>
+<li><p>Lock-in amplifiers:</p>
+<ul>
+<li><p>Fix maximum frequency for SRS860 - it is 500 kHz (#1164)</p></li>
+<li><p>Standford Research SR860 lock-in amplifier driver improvements and bug fixes (#1160)</p></li>
+<li><p>SR86x lockin: get values of many parameters at once (#1245)</p></li>
+<li><p>SR830: Add increment/decrement sensitivity functions. (#1380)</p></li>
+<li><p>driver / SR830 : add the snap XY command to read X and Y together (#1333)</p></li>
+<li><p>Fix SR830’s _change_sensitivity function. (#1411)</p></li>
+<li><p>Feature/dem 805/implement sampling rate float parameter (#1510)</p></li>
+<li><p>Feature/dem 804/implement missing uhfli commands (#1500)</p></li>
+<li><p>Driver: ziuhfli - demod{}_harmonic now return int (#1534)</p></li>
+</ul>
+</li>
+<li><p>Magnets:</p>
+<ul>
+<li><p>AMI430 driver setting set point despite being outside safe region (#1162)</p></li>
+<li><p>Driver/Mercury iPS with VISA (#897)</p></li>
+<li><p>driver / add block_during_ramp parameter to AMI430_3D (#1228)</p></li>
+<li><p>Fix / driver / mercury ips / firmware 2.6 (#1385)</p></li>
+<li><p>Homogeneous coordinates for field vectors in Mercury iPS (#1398)</p></li>
+<li><p>Add simultaneous blocking ramp parameters MercuryIPS (#1467)</p></li>
+<li><p>Various IPS120 driver improvements (#1402)</p></li>
+<li><p>Field Vectors attributes should only be floats (#1458)</p></li>
+</ul>
+</li>
+<li><p>Multi Meters:</p>
+<ul>
+<li><p>Keithley 2400 protect read commands (#1171)</p></li>
+<li><p>Refactor Keysight 344xxA code and small fixes (#1169)</p></li>
+<li><p>Fix keithley 2600 formatting (#1301)</p></li>
+<li><p>add driver for keithley6500 (#1233)</p></li>
+<li><p>Driver: Keysight 344xxA - flexible measurements and modularization (#1433)</p></li>
+<li><p>adds a very basic pyvisa-sim yaml for the Keithley 2600 (#1465)</p></li>
+<li><p>Driver/gentec maestro (#1507)</p></li>
+</ul>
+</li>
+<li><p>Oscilloscopes:</p>
+<ul>
+<li><p>Driver/infiniium additional parameters (#1203)</p></li>
+<li><p>Set minimum version of firmware for Rigol DS4000 (#1206)</p></li>
+<li><p>Extend RTO1000 driver (#1410)</p></li>
+</ul>
+</li>
+<li><p>Signal and Waveform generators:</p>
+<ul>
+<li><p>Added support for N5183B Signal Generator (#1153, #1155)</p></li>
+<li><p>Refactor awg file handling in awg5014 driver (#1066)</p></li>
+<li><p>Rigol dg1062 (#1082)</p></li>
+<li><p>Hotfix/awg70000 makeseqxfile (#1213)</p></li>
+<li><p>AWG5208:  Consider wait for trigger equivalent to running in wait for trigger (#1283)</p></li>
+<li><p>fix: N52xx various fixes (#1299)</p></li>
+<li><p>Use log instead of print in AWG70000A driver (#1390)</p></li>
+<li><p>Driver/awg5014 upload lomentum sequence (#1381)</p></li>
+<li><p>Feature/keysight 33xx pulsewidth (#1405)</p></li>
+<li><p>Feature/dem 564/driver for zi hdawg8 (#1331)</p></li>
+<li><p>feat: add specs for model ‘33512B’ in KeysightAgilent_33XXX (#1422)</p></li>
+<li><p>Remove deprecated keysight waveform drivers drivers (#1435)</p></li>
+<li><p>Feature/rigol dg1062/adding duty cycle parameter (#1456)</p></li>
+<li><p>[DEM-831] Compiler warnings in ZIHDAWG8 should be logged or raised. (#1522)</p></li>
+</ul>
+</li>
+<li><p>Spectrum and Vector Network Analyzers:</p>
+<ul>
+<li><p>Driver / signalhound use standard logging (#1154)</p></li>
+<li><p>driver/Keysight N5245A (#807)</p></li>
+<li><p>Remove unused function in N52xx driver (#1219)</p></li>
+<li><p>Spectrum analyser update (#1248)</p></li>
+<li><p>Signal hound a few more changes (#1318)</p></li>
+<li><p>Znb read from existing channels (#1111)</p></li>
+</ul>
+</li>
+<li><p>Temperature controllers:</p>
+<ul>
+<li><p>Driver/lakeshore336 and lakeshore 372 (#972)</p></li>
+<li><p>Extension/lakeshore read curve file (#1421)</p></li>
+<li><p>Lakeshore Model 336: make runnable, add minimal test, and fixes along the way (#1526)</p></li>
+</ul>
+</li>
+<li><p>Others:</p>
+<ul>
+<li><p>Change loglevel for send/recv in IPInstrument (#1146)</p></li>
+<li><p>M4i: bugfix spectrum digitizer driver (#1145)</p></li>
+<li><p>Add set_parameter_bounds to IVVI.py (#1128)</p></li>
+<li><p>Reorder initialization of IVVI (#1212)</p></li>
+<li><p>Add new driver for Newport AG-UC8 (#1230)</p></li>
+<li><p>IVVI add missing underscore in parameter name (#1246)</p></li>
+<li><p>Fix decadac docstring (#1282)</p></li>
+<li><p>Remove all remaining uses of get/set in instrument drivers (#1325)</p></li>
+<li><p>Update CryogenicSMS driver (#1346)</p></li>
+<li><p>MiniCircuits: wrong USB packet size resulting in error on Windows 7 (#1366)</p></li>
+<li><p>Minicircuits USB_SPDT catch the correct error (#1376)</p></li>
+<li><p>add M2j driver (#1188)</p></li>
+<li><p>Feature/dem 613/update s5i driver (#1392)</p></li>
+<li><p>Driver dev/switch matrix (#1373)</p></li>
+<li><p>Driver / DynaCool PPMS (#1218)</p></li>
+<li><p>Driver/stahl (#1390)</p></li>
+<li><p>Driver/keithley s46 (#1409)</p></li>
+<li><p>Added driver for Basel current preamplifier. (#1327)</p></li>
+<li><p>add option for pretrigger memsize to channel readout (#1461)</p></li>
+<li><p>Dev/b2200 switch matrix multiple channel connect (#1480)</p></li>
+<li><p>Add boxcar average option to M4i driver (#1509)</p></li>
+<li><p>fix bug in averaging of m4i blockavg (#1528)</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Other changes:</p>
+<ul>
+<li><p>Config:</p>
+<ul>
+<li><p>allow config to update based on specified path (#1226)</p></li>
+<li><p>Config cleanup (#1242)</p></li>
+<li><p>Bugfix: fix __repr__ of Config (#1403)</p></li>
+</ul>
+</li>
+<li><p>Dataset:</p>
+<ul>
+<li><p>Add some minor DataSet conveniences (#1211)</p></li>
+<li><p>Make data saver accept numpy type floats/ints (#1225)</p></li>
+<li><p>Dataset Context manager. Allow insertion of Data direcly as arrays (#1207)</p></li>
+<li><p>Fix requirements of ordering of setpoints as dependencies (#1250)</p></li>
+<li><p>Dataset support multiparameter (#1249)</p></li>
+<li><p>String-valued parameters support (#1248)</p></li>
+<li><p>Ensure that post actions are performed in some context managers (#1289)</p></li>
+<li><p>Enhance run table query performance with indices (#1277)</p></li>
+<li><p>DataSaver.add_result ‘array’ before ‘numeric’ now works (#1306)</p></li>
+<li><p>Refactor / dataset __init__ method (#1323, #1332)</p></li>
+<li><p>Feature: access snapshot of a DataSet, and docs (also, Station bug fix + tests) (#1322)</p></li>
+<li><p>Meaningful exception when loading/creating dataset for non-existing run id (#1328)</p></li>
+<li><p>Fix JSON-dumping of snapshots with numpy-typed values (and other) (#1328)</p></li>
+<li><p>qcodes.dataset.* fool-proofing and minor fixes (#1334)</p></li>
+<li><p>Development/dependencies dsl (#1227)</p></li>
+<li><p>Add Subscribers from config (#1365)</p></li>
+<li><p>Improvement / dataset metadata (#1382)</p></li>
+<li><p>DataSet.get_data bugs with start/end arguments (#1386)</p></li>
+<li><p>Add function to fix wrong descriptions (#1396)</p></li>
+<li><p>Feature / let database show version without upgrading (#1395)</p></li>
+<li><p>Fix bug where atomic and ConnectionPlus might not commit to database (+ fix DataSet.unsubscribe) (+ deprecate DataSet modify_results, modify_result, add_parameter_values) (#1389)</p></li>
+<li><p>Feature / database extract runs (#1397)</p></li>
+<li><p>Add <cite>get_parameter_data</cite> aka <cite>get_columns</cite> (#1400)</p></li>
+<li><p>Ensure that partial run creation is completly rolled back (#1445)</p></li>
+<li><p>Hashable and Immutable ParamSpec (#1367)</p></li>
+<li><p>Don’t allow connection to db that is newer than the one we support (#1454)</p></li>
+<li><p>Dataset: Fixed issue with legacy import (#1459)</p></li>
+<li><p>Add Pandas exporter to dataset (#1423, #1508)</p></li>
+<li><p>Fix issues with infered_from and add checks for infered_from and depends_on that are strings (#1453)</p></li>
+<li><p>Document exporting of data from dataset (#1462)</p></li>
+<li><p>Feature: give DataSet an explicit start method (#1482, #1486)</p></li>
+<li><p>Rename mark_complete to mark_completed (#1495)</p></li>
+<li><p>Cast array params to np array before inserting (#1497)</p></li>
+<li><p>Remove redundant reshape (#1499)</p></li>
+<li><p>fix: Handle ‘inf’ in _convert_numeric (#1449)</p></li>
+<li><p>Dataset: Fix/do not retrive nulls (#1512)</p></li>
+<li><p>Update Offline Plotting Tutorial with kwargs examples (#1516)</p></li>
+</ul>
+</li>
+<li><p>Documentation:</p>
+<ul>
+<li><p>Build and execute notebooks with nbsphinx (#1330)</p></li>
+<li><p>Documentation improvements (#1349, #1358, #1362, , #1436, #1479, #1485, #1478, #1514, #1515, #1518, #1517)</p></li>
+</ul>
+</li>
+<li><p>Instruments and Parameters:</p>
+<ul>
+<li><p>Add option to remove channels from ChannelList (#1045)</p></li>
+<li><p>Fix validation of steps (#1176)</p></li>
+<li><p>Add paramterScaler with an usage example (#1069)</p></li>
+<li><p>Bug: snapshot fails when instantiating InstrumentBase (#1209)</p></li>
+<li><p>Find or create an instrument without worrying about existing instances (#1210)</p></li>
+<li><p>GroupParameter and Group (for visa commands that set/get more than one parameter at once) (#1232, #1266)</p></li>
+<li><p>Make Array validators shape optionally callable (#1312)</p></li>
+<li><p>Ensure Parameter name is an identifer (#1326)</p></li>
+<li><p>Don’t use deprecated add_parameters in tests (#1343)</p></li>
+<li><p>Snapshot diff and method chaining (#1363)</p></li>
+<li><p>Bugfix: removing a channel instance that was added with <cite>extend</cite> (#1368)</p></li>
+<li><p>Discourage the use of QCoDeS functions (#1378)</p></li>
+<li><p>Extension/dynamic module (#1353)</p></li>
+<li><p>Fix unclarity about post_delay/inter_delay of Parameter, remove deprecated get/set delay and get/set step (#1387)</p></li>
+<li><p>Use getattr to get ask/write from instruments (#1451)</p></li>
+<li><p>New Parameter Class ParameterWithSetpoints (#1263)</p></li>
+<li><p>val_mapping creator function to solve on/off/true/false issue (#1413, #1502)</p></li>
+<li><p>Add origin to parameter warnings (#1481)</p></li>
+</ul>
+</li>
+<li><p>Legacy dataset:</p>
+<ul>
+<li><p>fix read and write of NaN to hdf5, issue (#1180)</p></li>
+<li><p>add flush option to hdf5 write_metadata (#1455)</p></li>
+</ul>
+</li>
+<li><p>Logging:</p>
+<ul>
+<li><p>Log the instrument that a failed parameter update comes from (#1173)</p></li>
+<li><p>Feat / logfile analysis (#1093)</p></li>
+<li><p>logging module (#1309, #1364)</p></li>
+</ul>
+</li>
+<li><p>Plotting:</p>
+<ul>
+<li><p>Feature / add label to plot_by_id (#1235)</p></li>
+<li><p>Feature / rescale ticks and units in plot_by_id (#1239)</p></li>
+<li><p>Smart color scale (#1253, #1255, #1259, #1294)</p></li>
+<li><p>Format ticks for non-SI-unit axis in a more readable way (#1243)</p></li>
+<li><p>plot_by_id: pass kwargs to subplots and plot function (#1258)</p></li>
+<li><p>Fix potential divide_by_zero warning in scale selection (#1261)</p></li>
+<li><p>Plot_by_id rasterise 2d plots for large datasets (#1305)</p></li>
+<li><p>Feature: plot_by_id string-valued data for 2D plots (#1311)</p></li>
+<li><p>Fix / plot by id cmap kwar (#1427)</p></li>
+</ul>
+</li>
+<li><p>Other:</p>
+<ul>
+<li><p>Setup benchmarking and add simple dataset benchmark (#1202)</p></li>
+<li><p>Set up CI with Azure Pipelines (#1292,  #1293, #1300)</p></li>
+<li><p>Catch generic exceptions in import of dependencies. (#1316)</p></li>
+<li><p>Test with python 3.7 on travis (#1321)</p></li>
+<li><p>Adapt workaround for spyder UMR to work with newest version of spyder (#1338)</p></li>
+<li><p>Monitor: Support for new versions of Websocket (#1407, #1420)</p></li>
+<li><p>Make error_caused_by more robust (#1532)</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="0.2.1.html" class="btn btn-neutral float-left" title="Changelog for QCoDeS 0.2.1" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="0.1.11.html" class="btn btn-neutral float-right" title="Changelog for QCoDeS 0.1.11" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

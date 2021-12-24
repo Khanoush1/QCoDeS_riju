@@ -1,0 +1,21 @@
+qcodes.instrument\_drivers.Galil package
+========================================
+
+Submodules
+----------
+
+qcodes.instrument\_drivers.Galil.dmc\_41x3 module
+-------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.Galil.dmc_41x3
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: qcodes.instrument_drivers.Galil
+   :members:
+   :undoc-members:
+   :show-inheritance:

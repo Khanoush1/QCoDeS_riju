@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.instrument_drivers.AlazarTech.helpers &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link href="../../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.instrument_drivers.AlazarTech.helpers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.instrument_drivers.AlazarTech.helpers</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module provides helper objects for Alazar driver class. The objects allow</span>
+<span class="sd">to hide realted pieces of logic into a form of &quot;submodule&quot; (analogious to</span>
+<span class="sd">:meth:`.InstrumentBase.add_submodule`) that can be included into the driver</span>
+<span class="sd">class in some way.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">.ats_api</span> <span class="kn">import</span> <span class="n">AlazarATSAPI</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">Capability</span>
+
+
+<div class="viewcode-block" id="CapabilityHelper"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.helpers.CapabilityHelper">[docs]</a><span class="k">class</span> <span class="nc">CapabilityHelper</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A helper class providing convenient methods for various useful</span>
+<span class="sd">    &#39;query capability&#39; (``AlazarQueryCapability``) calls for a given</span>
+<span class="sd">    Alazar board.</span>
+
+<span class="sd">    Most common capabilities are enumerated in :attr:`.CAPABILITIES`.</span>
+
+<span class="sd">    For frequently used capabilities, dedicated convenience ``query_&lt;...&gt;()``</span>
+<span class="sd">    methods are available.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        api: Instance of Alazar ATS API class</span>
+<span class="sd">        handle: Handle of a specific board (from ``AlazarGetBoardBySystemId``)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">CAPABILITIES</span> <span class="o">=</span> <span class="n">Capability</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">api</span><span class="p">:</span> <span class="n">AlazarATSAPI</span><span class="p">,</span> <span class="n">handle</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_api</span> <span class="o">=</span> <span class="n">api</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span> <span class="o">=</span> <span class="n">handle</span>
+
+<div class="viewcode-block" id="CapabilityHelper.query"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.helpers.CapabilityHelper.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">capability</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Query the given &#39;capability&#39; of the board&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api</span><span class="o">.</span><span class="n">query_capability_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="p">,</span> <span class="n">capability</span><span class="p">)</span></div>
+
+    <span class="c1"># Convenience and specific methods</span>
+
+<div class="viewcode-block" id="CapabilityHelper.query_serial"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.helpers.CapabilityHelper.query_serial">[docs]</a>    <span class="k">def</span> <span class="nf">query_serial</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CAPABILITIES</span><span class="o">.</span><span class="n">GET_SERIAL_NUMBER</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="CapabilityHelper.query_latest_calibration"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.helpers.CapabilityHelper.query_latest_calibration">[docs]</a>    <span class="k">def</span> <span class="nf">query_latest_calibration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Query latest calibration date in &#39;12-34-56&#39; format&quot;&quot;&quot;</span>
+        <span class="c1"># ``date_int`` is a decimal number with the format DDMMYY where</span>
+        <span class="c1"># DD is 1-31, MM is 1-12, and YY is 00-99 from 2000.</span>
+        <span class="n">date_int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CAPABILITIES</span><span class="o">.</span><span class="n">GET_LATEST_CAL_DATE</span><span class="p">)</span>
+        <span class="n">date_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">date_int</span><span class="p">)</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">date_str</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">date_str</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="n">date_str</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">date</span></div>
+
+<div class="viewcode-block" id="CapabilityHelper.query_memory_size"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.helpers.CapabilityHelper.query_memory_size">[docs]</a>    <span class="k">def</span> <span class="nf">query_memory_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Query board memory size in samples&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CAPABILITIES</span><span class="o">.</span><span class="n">MEMORY_SIZE</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CapabilityHelper.query_asopc_type"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.helpers.CapabilityHelper.query_asopc_type">[docs]</a>    <span class="k">def</span> <span class="nf">query_asopc_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CAPABILITIES</span><span class="o">.</span><span class="n">ASOPC_TYPE</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CapabilityHelper.query_pcie_link_speed"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.helpers.CapabilityHelper.query_pcie_link_speed">[docs]</a>    <span class="k">def</span> <span class="nf">query_pcie_link_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Query PCIE link speed in GB/s&quot;&quot;&quot;</span>
+        <span class="c1"># See the ATS-SDK programmer&#39;s guide about the encoding</span>
+        <span class="c1"># of the PCIE link speed.</span>
+        <span class="n">link_speed_int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CAPABILITIES</span><span class="o">.</span><span class="n">GET_PCIE_LINK_SPEED</span><span class="p">)</span>
+        <span class="n">link_speed</span> <span class="o">=</span> <span class="n">link_speed_int</span> <span class="o">*</span> <span class="mf">2.5</span> <span class="o">/</span> <span class="mi">10</span>
+        <span class="k">return</span> <span class="n">link_speed</span></div>
+
+<div class="viewcode-block" id="CapabilityHelper.query_pcie_link_width"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.helpers.CapabilityHelper.query_pcie_link_width">[docs]</a>    <span class="k">def</span> <span class="nf">query_pcie_link_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Query PCIE link width&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CAPABILITIES</span><span class="o">.</span><span class="n">GET_PCIE_LINK_WIDTH</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CapabilityHelper.query_firmware_version"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.helpers.CapabilityHelper.query_firmware_version">[docs]</a>    <span class="k">def</span> <span class="nf">query_firmware_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Query firmware version in &quot;&lt;major&gt;.&lt;minor&gt;&quot; format</span>
+
+<span class="sd">        The firmware version reported should match the version number of</span>
+<span class="sd">        downloadable fw files from AlazarTech. But note that the firmware</span>
+<span class="sd">        version has often been found to be incorrect for several firmware</span>
+<span class="sd">        versions. At the time of writing it is known to be correct for the</span>
+<span class="sd">        9360 (v 21.07) and 9373 (v 30.04) but incorrect for several earlier</span>
+<span class="sd">        versions. In Alazar DSO this is reported as FPGA Version.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">asopc_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_asopc_type</span><span class="p">()</span>
+        <span class="c1"># AlazarTech has confirmed in a support mail that this</span>
+        <span class="c1"># is the way to get the firmware version</span>
+        <span class="n">firmware_major</span> <span class="o">=</span> <span class="p">(</span><span class="n">asopc_type</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xff</span>
+        <span class="n">firmware_minor</span> <span class="o">=</span> <span class="p">(</span><span class="n">asopc_type</span> <span class="o">&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xf</span>
+        <span class="c1"># firmware_minor above does not contain any prefixed zeros</span>
+        <span class="c1"># but the minor version is always 2 digits.</span>
+        <span class="n">firmware_version</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">firmware_major</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">firmware_minor</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">firmware_version</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

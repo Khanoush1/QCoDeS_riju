@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.data.hdf5_format &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="qcodes.data.hdf5_format_hickle" href="hdf5_format_hickle.html" />
+    <link rel="prev" title="qcodes.data.gnuplot_format" href="gnuplot_format.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">QCoDes API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#qcodes-api">QCoDeS API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#legacy-api">Legacy API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../loops.html">qcodes.loops</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../actions.html">qcodes.actions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../measure.html">qcodes.measure</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">qcodes.data</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="data_array.html">qcodes.data.data_array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="data_set.html">qcodes.data.data_set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="format.html">qcodes.data.format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gnuplot_format.html">qcodes.data.gnuplot_format</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">qcodes.data.hdf5_format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hdf5_format_hickle.html">qcodes.data.hdf5_format_hickle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="io.html">qcodes.data.io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="location.html">qcodes.data.location</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../plots/index.html">qcodes.plots</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">QCoDes API documentation</a> &raquo;</li>
+          <li><a href="index.html">qcodes.data</a> &raquo;</li>
+      <li>qcodes.data.hdf5_format</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/data/hdf5_format.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="module-qcodes.data.hdf5_format">
+<span id="qcodes-data-hdf5-format"></span><h1>qcodes.data.hdf5_format<a class="headerlink" href="#module-qcodes.data.hdf5_format" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qcodes.data.hdf5_format.</span></span><span class="sig-name descname"><span class="pre">HDF5Format</span></span><a class="reference internal" href="../../_modules/qcodes/data/hdf5_format.html#HDF5Format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="format.html#qcodes.data.format.Formatter" title="qcodes.data.format.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">qcodes.data.format.Formatter</span></code></a></p>
+<p>HDF5 formatter for saving qcodes datasets.</p>
+<p>Capable of storing (write) and recovering (read) qcodes datasets.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.close_file">
+<span class="sig-name descname"><span class="pre">close_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataSet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/hdf5_format.html#HDF5Format.close_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.close_file" title="Permalink to this definition"></a></dt>
+<dd><p>Closes the hdf5 file open in the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data_set</strong> – DataSet object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataSet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/hdf5_format.html#HDF5Format.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.read" title="Permalink to this definition"></a></dt>
+<dd><p>Reads an hdf5 file specified by location into a data_set object.
+If no data_set is provided will create an empty data_set to read into.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_set</strong> – the data to read into. Should already have
+attributes <code class="docutils literal notranslate"><span class="pre">io</span></code> (an io manager), <code class="docutils literal notranslate"><span class="pre">location</span></code> (string),
+and <code class="docutils literal notranslate"><span class="pre">arrays</span></code> (dict of <code class="docutils literal notranslate"><span class="pre">{array_id:</span> <span class="pre">array}</span></code>, can be empty
+or can already have some or all of the arrays present, they
+expect to be overwritten)</p></li>
+<li><p><strong>location</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Location to write the data. If no location
+is provided will use the location specified in the dataset.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">io_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_write</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_complete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/hdf5_format.html#HDF5Format.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.write" title="Permalink to this definition"></a></dt>
+<dd><p>Writes a data_set to an hdf5 file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_set</strong> – qcodes data_set to write to hdf5 file</p></li>
+<li><p><strong>io_manager</strong> – io_manger used for providing path</p></li>
+<li><p><strong>location</strong> – location can be used to specify custom location</p></li>
+<li><p><strong>force_write</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – if True creates a new file to write to</p></li>
+<li><p><strong>flush</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether to flush after writing, can be disabled
+for testing or performance reasons</p></li>
+<li><p><strong>write_metadata</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If True write the dataset metadata to disk</p></li>
+<li><p><strong>only_complete</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Not used by this formatter, but must be
+included in the call signature to avoid an “unexpected
+keyword argument” TypeError.</p></li>
+</ul>
+</dd>
+</dl>
+<p>N.B. It is recommended to close the file after writing, this can be
+done by calling <code class="docutils literal notranslate"><span class="pre">HDF5Format.close_file(data_set)</span></code> or
+<code class="docutils literal notranslate"><span class="pre">data_set.finalize()</span></code> if the data_set formatter is set to an
+hdf5 formatter.  Note that this is not required if the dataset
+is created from a Loop as this includes a data_set.finalize()
+statement.</p>
+<p>The write function consists of two parts, writing DataArrays and
+writing metadata.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The main part of write consists of writing and resizing arrays,
+the resizing providing support for incremental writes.</p></li>
+<li><p>write_metadata is called at the end of write and dumps a
+dictionary to an hdf5 file. If there already is metadata it will
+delete this and overwrite it with current metadata.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.write_metadata">
+<span class="sig-name descname"><span class="pre">write_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">io_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_first</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/hdf5_format.html#HDF5Format.write_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.write_metadata" title="Permalink to this definition"></a></dt>
+<dd><p>Writes metadata of dataset to file using write_dict_to_hdf5 method</p>
+<p>Note that io and location are arguments that are only here because
+of backwards compatibility with the loop.
+This formatter uses io and location as specified for the main
+dataset.
+The read_first argument is ignored.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.write_dict_to_hdf5">
+<span class="sig-name descname"><span class="pre">write_dict_to_hdf5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entry_point</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/hdf5_format.html#HDF5Format.write_dict_to_hdf5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.write_dict_to_hdf5" title="Permalink to this definition"></a></dt>
+<dd><p>Write a (nested) dictionary to HDF5</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dict</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – Dicionary to be written</p></li>
+<li><p><strong>entry_point</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – Object to write to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.read_metadata">
+<span class="sig-name descname"><span class="pre">read_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataSet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/hdf5_format.html#HDF5Format.read_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.read_metadata" title="Permalink to this definition"></a></dt>
+<dd><p>Reads in the metadata, this is also called at the end of a read
+statement so there should be no need to call this explicitly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data_set</strong> – Dataset object to read the metadata into</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.read_dict_from_hdf5">
+<span class="sig-name descname"><span class="pre">read_dict_from_hdf5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h5_group</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/hdf5_format.html#HDF5Format.read_dict_from_hdf5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.read_dict_from_hdf5" title="Permalink to this definition"></a></dt>
+<dd><p>Read a dictionary from HDF5</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dict</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – Dataset to read from</p></li>
+<li><p><strong>h5_group</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – HDF5 object to read from</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.ArrayGroup">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ArrayGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_arrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.ArrayGroup" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+<p>Create new instance of ArrayGroup(shape, set_arrays, data, name)</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.ArrayGroup.count">
+<span class="sig-name descname"><span class="pre">count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.ArrayGroup.count" title="Permalink to this definition"></a></dt>
+<dd><p>Return number of occurrences of value.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.ArrayGroup.data">
+<span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.ArrayGroup.data" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.ArrayGroup.index">
+<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9223372036854775807</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.ArrayGroup.index" title="Permalink to this definition"></a></dt>
+<dd><p>Return first index of value.</p>
+<p>Raises ValueError if the value is not present.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.ArrayGroup.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.ArrayGroup.name" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.ArrayGroup.set_arrays">
+<span class="sig-name descname"><span class="pre">set_arrays</span></span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.ArrayGroup.set_arrays" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.ArrayGroup.shape">
+<span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.ArrayGroup.shape" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.group_arrays">
+<span class="sig-name descname"><span class="pre">group_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arrays</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.group_arrays" title="Permalink to this definition"></a></dt>
+<dd><p>Find the sets of arrays which share all the same setpoint arrays.</p>
+<p>Some Formatters use this grouping to determine which arrays to save
+together in one file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>arrays</strong> (<a class="reference internal" href="../utils/validators.html#qcodes.utils.validators.Dict" title="qcodes.utils.validators.Dict"><em>Dict</em></a><em>[</em><a class="reference internal" href="data_array.html#qcodes.data.data_array.DataArray" title="qcodes.data.data_array.DataArray"><em>DataArray</em></a><em>]</em>) – all the arrays in a DataSet</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>namedtuples giving:</p>
+<ul class="simple">
+<li><p>shape (Tuple[int]): dimensions as in numpy</p></li>
+<li><p>set_arrays (Tuple[DataArray]): the setpoints of this group</p></li>
+<li><p>data (Tuple[DataArray]): measured arrays in this group</p></li>
+<li><p>name (str): a unique name of this group, obtained by joining
+the setpoint array ids.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="format.html#qcodes.data.format.Formatter.ArrayGroup" title="qcodes.data.format.Formatter.ArrayGroup">Formatter.ArrayGroup</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.match_save_range">
+<span class="sig-name descname"><span class="pre">match_save_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_exists</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_complete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.match_save_range" title="Permalink to this definition"></a></dt>
+<dd><p>Find the save range that will joins all changes in an array group.</p>
+<p>Matches all full-sized arrays: the data arrays plus the inner loop
+setpoint array.</p>
+<p>Note: if an outer loop has changed values (without the inner
+loop or measured data changing) we won’t notice it here. We assume
+that before an iteration of the inner loop starts, the outer loop
+setpoint gets set and then does not change later.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>group</strong> (<a class="reference internal" href="format.html#qcodes.data.format.Formatter.ArrayGroup" title="qcodes.data.format.Formatter.ArrayGroup"><em>Formatter.ArrayGroup</em></a>) – a <code class="docutils literal notranslate"><span class="pre">namedtuple</span></code> containing the
+arrays that go together in one file, as tuple <code class="docutils literal notranslate"><span class="pre">group.data</span></code>.</p></li>
+<li><p><strong>file_exists</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Does this file already exist? If True, and
+all arrays in the group agree on <code class="docutils literal notranslate"><span class="pre">last_saved_index</span></code>, we
+assume the file has been written up to this index and we can
+append to it. Otherwise we will set the returned range to start
+from zero (so if the file does exist, it gets completely
+overwritten).</p></li>
+<li><p><strong>only_complete</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Should we write all available new data,
+or only complete rows? If True, we write only the range of
+array indices which all arrays in the group list as modified,
+so that future writes will be able to do a clean append to
+the data file as more data arrives.
+Default True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>the first and last raveled indices that should</dt><dd><dl class="simple">
+<dt>be saved. Returns None if:</dt><dd><ul class="simple">
+<li><p>no data is present</p></li>
+<li><p>no new data can be found</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple(<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3.7/library/functions.html#int" title="(in Python v3.7)">int</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5Format.read_one_file">
+<span class="sig-name descname"><span class="pre">read_one_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataSet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids_read</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5Format.read_one_file" title="Permalink to this definition"></a></dt>
+<dd><p>Read data from a single file into a <code class="docutils literal notranslate"><span class="pre">DataSet</span></code>.</p>
+<p>Formatter subclasses that break a DataSet into multiple data files may
+choose to override either this method, which handles one file at a
+time, or <code class="docutils literal notranslate"><span class="pre">read</span></code> which finds matching files on its own.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_set</strong> – the data we are reading into.</p></li>
+<li><p><strong>f</strong> – a file-like object to read from, as provided by
+<code class="docutils literal notranslate"><span class="pre">io_manager.open</span></code>.</p></li>
+<li><p><strong>ids_read</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#set" title="(in Python v3.7)"><em>set</em></a>) – <code class="docutils literal notranslate"><span class="pre">array_ids</span></code> that we have already read.
+When you read an array, check that it’s not in this set (except
+setpoints, which can be in several files with different inner
+loops) then add it to the set so other files know it should not
+be read again.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#ValueError" title="(in Python v3.7)"><strong>ValueError</strong></a> – if a duplicate array_id of measured data is found</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qcodes.data.hdf5_format.</span></span><span class="sig-name descname"><span class="pre">HDF5FormatMetadata</span></span><a class="reference internal" href="../../_modules/qcodes/data/hdf5_format.html#HDF5FormatMetadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#qcodes.data.hdf5_format.HDF5Format" title="qcodes.data.hdf5_format.HDF5Format"><code class="xref py py-class docutils literal notranslate"><span class="pre">qcodes.data.hdf5_format.HDF5Format</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.metadata_file">
+<span class="sig-name descname"><span class="pre">metadata_file</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'snapshot.json'</span></em><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.metadata_file" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.write_metadata">
+<span class="sig-name descname"><span class="pre">write_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataSet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">io_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_first</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/hdf5_format.html#HDF5FormatMetadata.write_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.write_metadata" title="Permalink to this definition"></a></dt>
+<dd><p>Write all metadata in this DataSet to storage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_set</strong> – the data we’re storing</p></li>
+<li><p><strong>io_manager</strong> (<em>io_manager</em>) – the base location to write to</p></li>
+<li><p><strong>location</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the file location within io_manager</p></li>
+<li><p><strong>read_first</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>]</em>) – read previously saved metadata before
+writing? The current metadata will still be the used if
+there are changes, but if the saved metadata has information
+not present in the current metadata, it will be retained.
+Default True.</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – From the dicionary the key sort_keys is extracted (default value: False). If True, then the
+keys of the metadata will be stored sorted in the json file. Note: sorting is only possible if
+the keys of the metadata dictionary can be compared.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.read_metadata">
+<span class="sig-name descname"><span class="pre">read_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_set</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/hdf5_format.html#HDF5FormatMetadata.read_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.read_metadata" title="Permalink to this definition"></a></dt>
+<dd><p>Reads in the metadata, this is also called at the end of a read
+statement so there should be no need to call this explicitly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data_set</strong> – Dataset object to read the metadata into</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.ArrayGroup">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ArrayGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_arrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.ArrayGroup" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+<p>Create new instance of ArrayGroup(shape, set_arrays, data, name)</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.ArrayGroup.count">
+<span class="sig-name descname"><span class="pre">count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.ArrayGroup.count" title="Permalink to this definition"></a></dt>
+<dd><p>Return number of occurrences of value.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.ArrayGroup.data">
+<span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.ArrayGroup.data" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.ArrayGroup.index">
+<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9223372036854775807</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.ArrayGroup.index" title="Permalink to this definition"></a></dt>
+<dd><p>Return first index of value.</p>
+<p>Raises ValueError if the value is not present.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.ArrayGroup.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.ArrayGroup.name" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.ArrayGroup.set_arrays">
+<span class="sig-name descname"><span class="pre">set_arrays</span></span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.ArrayGroup.set_arrays" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.ArrayGroup.shape">
+<span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.ArrayGroup.shape" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.close_file">
+<span class="sig-name descname"><span class="pre">close_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataSet</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.close_file" title="Permalink to this definition"></a></dt>
+<dd><p>Closes the hdf5 file open in the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data_set</strong> – DataSet object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.group_arrays">
+<span class="sig-name descname"><span class="pre">group_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arrays</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.group_arrays" title="Permalink to this definition"></a></dt>
+<dd><p>Find the sets of arrays which share all the same setpoint arrays.</p>
+<p>Some Formatters use this grouping to determine which arrays to save
+together in one file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>arrays</strong> (<a class="reference internal" href="../utils/validators.html#qcodes.utils.validators.Dict" title="qcodes.utils.validators.Dict"><em>Dict</em></a><em>[</em><a class="reference internal" href="data_array.html#qcodes.data.data_array.DataArray" title="qcodes.data.data_array.DataArray"><em>DataArray</em></a><em>]</em>) – all the arrays in a DataSet</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>namedtuples giving:</p>
+<ul class="simple">
+<li><p>shape (Tuple[int]): dimensions as in numpy</p></li>
+<li><p>set_arrays (Tuple[DataArray]): the setpoints of this group</p></li>
+<li><p>data (Tuple[DataArray]): measured arrays in this group</p></li>
+<li><p>name (str): a unique name of this group, obtained by joining
+the setpoint array ids.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="format.html#qcodes.data.format.Formatter.ArrayGroup" title="qcodes.data.format.Formatter.ArrayGroup">Formatter.ArrayGroup</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.match_save_range">
+<span class="sig-name descname"><span class="pre">match_save_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_exists</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_complete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.match_save_range" title="Permalink to this definition"></a></dt>
+<dd><p>Find the save range that will joins all changes in an array group.</p>
+<p>Matches all full-sized arrays: the data arrays plus the inner loop
+setpoint array.</p>
+<p>Note: if an outer loop has changed values (without the inner
+loop or measured data changing) we won’t notice it here. We assume
+that before an iteration of the inner loop starts, the outer loop
+setpoint gets set and then does not change later.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>group</strong> (<a class="reference internal" href="format.html#qcodes.data.format.Formatter.ArrayGroup" title="qcodes.data.format.Formatter.ArrayGroup"><em>Formatter.ArrayGroup</em></a>) – a <code class="docutils literal notranslate"><span class="pre">namedtuple</span></code> containing the
+arrays that go together in one file, as tuple <code class="docutils literal notranslate"><span class="pre">group.data</span></code>.</p></li>
+<li><p><strong>file_exists</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Does this file already exist? If True, and
+all arrays in the group agree on <code class="docutils literal notranslate"><span class="pre">last_saved_index</span></code>, we
+assume the file has been written up to this index and we can
+append to it. Otherwise we will set the returned range to start
+from zero (so if the file does exist, it gets completely
+overwritten).</p></li>
+<li><p><strong>only_complete</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Should we write all available new data,
+or only complete rows? If True, we write only the range of
+array indices which all arrays in the group list as modified,
+so that future writes will be able to do a clean append to
+the data file as more data arrives.
+Default True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>the first and last raveled indices that should</dt><dd><dl class="simple">
+<dt>be saved. Returns None if:</dt><dd><ul class="simple">
+<li><p>no data is present</p></li>
+<li><p>no new data can be found</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Tuple(<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3.7/library/functions.html#int" title="(in Python v3.7)">int</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataSet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.read" title="Permalink to this definition"></a></dt>
+<dd><p>Reads an hdf5 file specified by location into a data_set object.
+If no data_set is provided will create an empty data_set to read into.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_set</strong> – the data to read into. Should already have
+attributes <code class="docutils literal notranslate"><span class="pre">io</span></code> (an io manager), <code class="docutils literal notranslate"><span class="pre">location</span></code> (string),
+and <code class="docutils literal notranslate"><span class="pre">arrays</span></code> (dict of <code class="docutils literal notranslate"><span class="pre">{array_id:</span> <span class="pre">array}</span></code>, can be empty
+or can already have some or all of the arrays present, they
+expect to be overwritten)</p></li>
+<li><p><strong>location</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Location to write the data. If no location
+is provided will use the location specified in the dataset.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.read_dict_from_hdf5">
+<span class="sig-name descname"><span class="pre">read_dict_from_hdf5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h5_group</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.read_dict_from_hdf5" title="Permalink to this definition"></a></dt>
+<dd><p>Read a dictionary from HDF5</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dict</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – Dataset to read from</p></li>
+<li><p><strong>h5_group</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – HDF5 object to read from</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.read_one_file">
+<span class="sig-name descname"><span class="pre">read_one_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataSet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids_read</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.read_one_file" title="Permalink to this definition"></a></dt>
+<dd><p>Read data from a single file into a <code class="docutils literal notranslate"><span class="pre">DataSet</span></code>.</p>
+<p>Formatter subclasses that break a DataSet into multiple data files may
+choose to override either this method, which handles one file at a
+time, or <code class="docutils literal notranslate"><span class="pre">read</span></code> which finds matching files on its own.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_set</strong> – the data we are reading into.</p></li>
+<li><p><strong>f</strong> – a file-like object to read from, as provided by
+<code class="docutils literal notranslate"><span class="pre">io_manager.open</span></code>.</p></li>
+<li><p><strong>ids_read</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#set" title="(in Python v3.7)"><em>set</em></a>) – <code class="docutils literal notranslate"><span class="pre">array_ids</span></code> that we have already read.
+When you read an array, check that it’s not in this set (except
+setpoints, which can be in several files with different inner
+loops) then add it to the set so other files know it should not
+be read again.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#ValueError" title="(in Python v3.7)"><strong>ValueError</strong></a> – if a duplicate array_id of measured data is found</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">io_manager</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_write</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flush</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write_metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_complete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.write" title="Permalink to this definition"></a></dt>
+<dd><p>Writes a data_set to an hdf5 file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_set</strong> – qcodes data_set to write to hdf5 file</p></li>
+<li><p><strong>io_manager</strong> – io_manger used for providing path</p></li>
+<li><p><strong>location</strong> – location can be used to specify custom location</p></li>
+<li><p><strong>force_write</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – if True creates a new file to write to</p></li>
+<li><p><strong>flush</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – whether to flush after writing, can be disabled
+for testing or performance reasons</p></li>
+<li><p><strong>write_metadata</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – If True write the dataset metadata to disk</p></li>
+<li><p><strong>only_complete</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – Not used by this formatter, but must be
+included in the call signature to avoid an “unexpected
+keyword argument” TypeError.</p></li>
+</ul>
+</dd>
+</dl>
+<p>N.B. It is recommended to close the file after writing, this can be
+done by calling <code class="docutils literal notranslate"><span class="pre">HDF5Format.close_file(data_set)</span></code> or
+<code class="docutils literal notranslate"><span class="pre">data_set.finalize()</span></code> if the data_set formatter is set to an
+hdf5 formatter.  Note that this is not required if the dataset
+is created from a Loop as this includes a data_set.finalize()
+statement.</p>
+<p>The write function consists of two parts, writing DataArrays and
+writing metadata.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The main part of write consists of writing and resizing arrays,
+the resizing providing support for incremental writes.</p></li>
+<li><p>write_metadata is called at the end of write and dumps a
+dictionary to an hdf5 file. If there already is metadata it will
+delete this and overwrite it with current metadata.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.HDF5FormatMetadata.write_dict_to_hdf5">
+<span class="sig-name descname"><span class="pre">write_dict_to_hdf5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entry_point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.data.hdf5_format.HDF5FormatMetadata.write_dict_to_hdf5" title="Permalink to this definition"></a></dt>
+<dd><p>Write a (nested) dictionary to HDF5</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_dict</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – Dicionary to be written</p></li>
+<li><p><strong>entry_point</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#object" title="(in Python v3.7)"><em>object</em></a>) – Object to write to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qcodes.data.hdf5_format.str_to_bool">
+<span class="sig-prename descclassname"><span class="pre">qcodes.data.hdf5_format.</span></span><span class="sig-name descname"><span class="pre">str_to_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/hdf5_format.html#str_to_bool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.hdf5_format.str_to_bool" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="gnuplot_format.html" class="btn btn-neutral float-left" title="qcodes.data.gnuplot_format" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hdf5_format_hickle.html" class="btn btn-neutral float-right" title="qcodes.data.hdf5_format_hickle" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

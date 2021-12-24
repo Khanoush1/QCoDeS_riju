@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Logging &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Combined Parameters" href="../legacy/Combined%20Parameters.html" />
+    <link rel="prev" title="Logfile parsing" href="logfile_parsing.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Examples of using QCoDeS</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#basic-examples">Basic examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#dataset">DataSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#plotting">Plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#drivers">Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#writing-drivers">Writing Drivers</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#logging">Logging</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="logfile_parsing.html">Logfile parsing</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Logging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#TL;DR">TL;DR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Contents">Contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Instrument-communication-loggers">Instrument communication loggers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Set-up-logging-in-QCoDeS">Set up logging in QCoDeS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Temporarily-elevating-the-logging-level">Temporarily elevating the logging level</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Filtering-log-messages-by-instrument">Filtering log messages by instrument</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Capturing-Pandas.DataFrame">Capturing Pandas.DataFrame</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#legacy-examples">Legacy examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Examples of using QCoDeS</a> &raquo;</li>
+      <li>Logging</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/logging/logging_example.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="admonition note">
+  <p>This page was generated from
+    <a class="reference external"
+    href="https://github.com/qcodes/qcodes/blob/master/docs/examples/logging/logging_example.ipynb">docs/examples/logging/logging_example.ipynb</a>.
+    Interactive online version:
+    <a href="https://mybinder.org/v2/gh/qcodes/qcodes/master?filepath=docs/examples/logging/logging_example.ipynb"><img
+alt="Binder badge"
+    src="https://mybinder.org/badge_logo.svg"
+    style="vertical-align:text-bottom"></a>.
+  </p>
+  <script>
+    if (document.location.host) {
+      var p = document.currentScript.previousSibling.previousSibling;
+      var a = document.createElement('a');
+      a.innerHTML = 'View in <em>nbviewer</em>';
+      a.href = `https://nbviewer.jupyter.org/url${
+        (window.location.protocol == 'https:' ? 's/' : '/') +
+        window.location.host +
+        window.location.pathname.slice(0, -4) }ipynb`;
+      a.classList.add('reference');
+      a.classList.add('external');
+      p.appendChild(a);
+      p.appendChild(document.createTextNode('.'));
+    }
+  </script>
+</div><section id="Logging">
+<h1>Logging<a class="headerlink" href="#Logging" title="Permalink to this headline"></a></h1>
+<p>(back to the overview <a class="reference internal" href="../Main.html"><span class="doc">offline</span></a>,<a class="reference external" href="https://nbviewer.jupyter.org/github/QCoDeS/Qcodes/tree/master/docs/examples/Main.ipynb">online</a>)</p>
+<p><a class="reference external" href="https://nbviewer.jupyter.org/github/QCoDeS/Qcodes/tree/master/docs/examples/logging/logging_example.ipynb">read on nbviewer</a></p>
+<section id="TL;DR">
+<h2>TL;DR<a class="headerlink" href="#TL;DR" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>There is a QCoDeS logging module: <code class="docutils literal notranslate"><span class="pre">qcodes.utils.logger</span></code></p></li>
+<li><p>Call <code class="docutils literal notranslate"><span class="pre">logger.start_all_logging</span></code> at the start of every script/session to make sure all log messages get stored to the <code class="docutils literal notranslate"><span class="pre">.qcodes/logs</span></code> folder in your home directory, or set <code class="docutils literal notranslate"><span class="pre">logger.start_logging_on_import</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code> in your <code class="docutils literal notranslate"><span class="pre">qcodesrc.json</span></code> configuration.</p></li>
+<li><p>For debugging purposes you can log messages of an individual instrument (and see the VISA dialog).</p></li>
+<li><p>You can obtain all logging messages in a <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> for further analysis.</p></li>
+</ul>
+</section>
+<section id="Contents">
+<h2>Contents<a class="headerlink" href="#Contents" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="#Introduction">Introduction</a></p></li>
+<li><p><a class="reference external" href="#Set-up-logging-in-QCoDeS">Set up logging in QCoDeS</a></p>
+<ul>
+<li><p><a class="reference external" href="#QCoDeS-default-handlers">QCoDeS default handlers</a></p></li>
+<li><p><a class="reference external" href="#IPython-command-history">IPython command history</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#Temporarily-elevating-the-logging-level">Temporarily elevating the logging level</a></p></li>
+<li><p><a class="reference external" href="#Filtering-log-messages-by-instrument">Filtering log messages by instrument</a></p></li>
+<li><p><a class="reference external" href="#Capturing-Pandas.DataFrame">Capturing Pandas.DataFrame</a></p></li>
+</ul>
+</section>
+<section id="Introduction">
+<h2>Introduction<a class="headerlink" href="#Introduction" title="Permalink to this headline"></a></h2>
+<p>Python offers an excellent logging framework that is widely used in QCoDeS. As a user, you might be interested in reading the log messages that are generated by QCoDeS for debugging and also profiling purposes.</p>
+<p>All log records(i.e., messages and metadata) are created using a python <code class="docutils literal notranslate"><span class="pre">logging.logger</span></code> object. In QCoDeS there is a logger for every module with the same name as the module itself, i.e., you can use <code class="docutils literal notranslate"><span class="pre">logging.getLogger('qcodes.instrument.base')</span></code> for getting the logger of the QCoDeS <code class="docutils literal notranslate"><span class="pre">Instrument</span></code>. From the dots in the names of the loggers a hierarchy is defined, at the top of which is the so called <em>root logger</em> that catches all messages. The log records created in a logger are processed by
+the <em>handlers</em> that have been attached to this specific <em>logger</em>. The handlers can, for example, be used to output the log messages into different locations, like the console or a log file.</p>
+<p>Every logger, handler and log record has an associated level. The default levels are: <code class="docutils literal notranslate"><span class="pre">CRITICAL</span></code>, <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>, <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, <code class="docutils literal notranslate"><span class="pre">INFO</span></code> and <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>. The levels determine how messages are passed: a logger passes only records that exceeds its minimal passing level to its handlers and the handlers in turn only output those messages that exceed their minimal passing level.</p>
+<p>For a more detailed description of Python logging refer to the <a class="reference external" href="https://docs.python.org/3.6/library/logging.html#module-logging">official manual</a> (This is all well summed up <a class="reference external" href="https://docs.python.org/3.6/howto/logging.html#logging-flow">in this chart</a>)</p>
+</section>
+<section id="Instrument-communication-loggers">
+<h2>Instrument communication loggers<a class="headerlink" href="#Instrument-communication-loggers" title="Permalink to this headline"></a></h2>
+<p>Not all the used loggers in QCoDeS follow the previously presented rule of naming the logger after the module. For instruments there are the following loggers: - <strong>qcodes.instrument.base.com</strong>: This logger logs all the communication of the <code class="docutils literal notranslate"><span class="pre">Instrument</span></code> and its descendants with the actual physical instruments, e.g., the messages generated by the <code class="docutils literal notranslate"><span class="pre">write</span></code> and <code class="docutils literal notranslate"><span class="pre">query</span></code> calls. - <strong>qcodes.instrument.base.com.visa</strong>: This is a sublogger that logs all the communication related messages of the
+<code class="docutils literal notranslate"><span class="pre">VisaInstrument</span></code> and its descendants.</p>
+</section>
+<section id="Set-up-logging-in-QCoDeS">
+<h2>Set up logging in QCoDeS<a class="headerlink" href="#Set-up-logging-in-QCoDeS" title="Permalink to this headline"></a></h2>
+<p>At the beginning of every experiment script file you should include the following lines:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">qcodes.logger</span> <span class="kn">import</span> <span class="n">start_all_logging</span>
+<span class="n">start_all_logging</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Logging hadn&#39;t been started.
+Activating auto-logging. Current session state plus future input saved.
+Filename       : /home/runner/.qcodes/logs/command_history.log
+Mode           : append
+Output logging : True
+Raw input log  : False
+Timestamping   : True
+State          : active
+Qcodes Logfile : /home/runner/.qcodes/logs/211224-19345-qcodes.log
+</pre></div></div>
+</div>
+<p>The call to <code class="docutils literal notranslate"><span class="pre">start_all_logging</span></code> does two things: 1. Create handlers to output logging messages from the root logger to the console and to a log file. 2. Enable logging of the IPython commands into a separate log file.</p>
+<p>Alternatively we can configure qcodes to automatically start logging on every import of qcodes, by running the following code once. (This will persist the current configuration in <code class="docutils literal notranslate"><span class="pre">~\qcodesrc.json</span></code>)</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">qcodes</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="n">config</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">start_logging_on_import</span> <span class="o">=</span> <span class="s1">&#39;always&#39;</span>
+<span class="n">config</span><span class="o">.</span><span class="n">save_to_home</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<section id="QCoDeS-default-handlers">
+<h3>QCoDeS default handlers<a class="headerlink" href="#QCoDeS-default-handlers" title="Permalink to this headline"></a></h3>
+<p>The effect of the console handler can be seen in the two printed lines with a red background below the previous code cell. Every line corresponds to a log record. The fields of the records are separated by <code class="docutils literal notranslate"><span class="pre">¦</span></code> and have the following meaning: 0. time stamp 1. logger name, here the module name 2. record log level 3. name of the function that created the log message 4. line at which the message has been issued 5. actual log message</p>
+<p>The same format is used for the file handler. By default QCoDeS logs to the file <code class="docutils literal notranslate"><span class="pre">&lt;user</span> <span class="pre">directory&gt;/.qcodes/logs/qcodes.log</span></code>. To avoid endlessly long files, the files roll over at midnight and get the date appended to their name where <code class="docutils literal notranslate"><span class="pre">qcodes.log</span></code> without date always gives you the log messages of the same day.</p>
+<p>To configure the levels you want to log/handle, you need to edit the <code class="docutils literal notranslate"><span class="pre">qcodesrc.json</span></code> file in you home directory. The default values are:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&quot;logger&quot;:{
+    &quot;console_level&quot;: &quot;WARNING&quot;,
+    &quot;file_level&quot;: &quot;INFO&quot;,
+    &quot;logger_levels&quot;:{
+        &quot;pyvisa&quot;: &quot;INFO&quot;
+    }
+</pre></div>
+</div>
+<p>While <code class="docutils literal notranslate"><span class="pre">console_level</span></code> and <code class="docutils literal notranslate"><span class="pre">file_level</span></code> describe the levels of the two default handlers described previously, <code class="docutils literal notranslate"><span class="pre">logger_levels</span></code> is a dictionary that can be used to limit the messages passed on by module level loggers. This means with these defaults, the <code class="docutils literal notranslate"><span class="pre">pyvisa</span></code> module will not log messages on a <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code> level. Therefore setting the <code class="docutils literal notranslate"><span class="pre">console_level</span></code> to <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code> will not show the <code class="docutils literal notranslate"><span class="pre">pyvisa</span></code> debug messages (you certainly don’t want to see them as they log every single character that is
+passed to an instrument with an individual message). On the other hand setting the console level to warning will still suppress <code class="docutils literal notranslate"><span class="pre">pyvisa</span></code> info messages.</p>
+</section>
+<section id="IPython-command-history">
+<h3>IPython command history<a class="headerlink" href="#IPython-command-history" title="Permalink to this headline"></a></h3>
+<p>The output above that follows these logging messages comes from IPython. It tells us that all issued IPython commands will be logged to a file. The file lives in the same log directory as the python logs and is called <code class="docutils literal notranslate"><span class="pre">command_history.log</span></code>. It will not roll over.</p>
+<p>To change the command history logging directory you will need to call <code class="docutils literal notranslate"><span class="pre">start_command_history_logger</span></code> with the new path as an argument.</p>
+</section>
+</section>
+<section id="Temporarily-elevating-the-logging-level">
+<h2>Temporarily elevating the logging level<a class="headerlink" href="#Temporarily-elevating-the-logging-level" title="Permalink to this headline"></a></h2>
+<p>Sometimes you might wish to catch more than that meets to the eye. To this end, one can temporarily elevate the logging level to catch all debug messages by using a context manager. This can simply be done via:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">qcodes.logger</span> <span class="k">as</span> <span class="nn">logger</span>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;example_logger&#39;</span><span class="p">)</span>
+
+<span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;This message will not be visible as the logging level is set to `DEBUG`&#39;</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">logger</span><span class="o">.</span><span class="n">console_level</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;This message is visible as the logging level is temporarily elevated to `DEBUG`&#39;</span><span class="p">)</span>
+
+<span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;The level is back to what it used to be&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2021-12-24 10:12:19,658 ¦ example_logger ¦ DEBUG ¦ 4053955214 ¦ &lt;module&gt; ¦ 8 ¦ This message is visible as the logging level is temporarily elevated to `DEBUG`
+</pre></div></div>
+</div>
+<p>For other handlers than the console handler, you can do the same thing using the <code class="docutils literal notranslate"><span class="pre">handler_level</span></code> context manager.</p>
+</section>
+<section id="Filtering-log-messages-by-instrument">
+<h2>Filtering log messages by instrument<a class="headerlink" href="#Filtering-log-messages-by-instrument" title="Permalink to this headline"></a></h2>
+<p>A very common use case for logging in QCoDeS is to analyze the communication with a VISA instrument. For this purpose the logger module provides a context manager to filter the logging messages by instrument.</p>
+<p>Generally one could of course simply attach a handler to the logger of <code class="docutils literal notranslate"><span class="pre">qcodes.instrument_drivers.Vendor.Type</span></code> but this would not show the messages that are generated by the visa communication in <code class="docutils literal notranslate"><span class="pre">qcodes.instrument.visa</span></code>. Additionally with the approach implemented here one can not only filter messages for a given type of instrument but also of a specific instance.</p>
+<p>To demonstrate this consider the following mock up of the AMI430 Magnet controller that consists of individual VISA instruments for each axis, here with the names <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code> and <code class="docutils literal notranslate"><span class="pre">z</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">qcodes.instrument.ip_to_visa</span> <span class="kn">import</span> <span class="n">AMI430_VISA</span>
+<span class="kn">from</span> <span class="nn">qcodes.instrument_drivers.american_magnetics.AMI430</span> <span class="kn">import</span> <span class="n">AMI430_3D</span><span class="p">,</span> <span class="n">AMI430Warning</span>
+
+<span class="kn">import</span> <span class="nn">qcodes.instrument.sims</span> <span class="k">as</span> <span class="nn">sims</span>
+
+<span class="n">visalib</span> <span class="o">=</span> <span class="n">sims</span><span class="o">.</span><span class="vm">__file__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;__init__.py&#39;</span><span class="p">,</span> <span class="s1">&#39;AMI430.yaml@sim&#39;</span><span class="p">)</span>
+
+<span class="n">mag_x</span> <span class="o">=</span> <span class="n">AMI430_VISA</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="s1">&#39;GPIB::1::INSTR&#39;</span><span class="p">,</span> <span class="n">visalib</span><span class="o">=</span><span class="n">visalib</span><span class="p">,</span>
+                        <span class="n">terminator</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">mag_y</span> <span class="o">=</span> <span class="n">AMI430_VISA</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="s1">&#39;GPIB::2::INSTR&#39;</span><span class="p">,</span> <span class="n">visalib</span><span class="o">=</span><span class="n">visalib</span><span class="p">,</span>
+                        <span class="n">terminator</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">mag_z</span> <span class="o">=</span> <span class="n">AMI430_VISA</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="s1">&#39;GPIB::3::INSTR&#39;</span><span class="p">,</span> <span class="n">visalib</span><span class="o">=</span><span class="n">visalib</span><span class="p">,</span>
+                        <span class="n">terminator</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">field_limit</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">z</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">2</span>
+<span class="p">]</span>
+
+<span class="n">driver</span> <span class="o">=</span> <span class="n">AMI430_3D</span><span class="p">(</span><span class="s2">&quot;AMI430-3D&quot;</span><span class="p">,</span> <span class="n">mag_x</span><span class="p">,</span> <span class="n">mag_y</span><span class="p">,</span> <span class="n">mag_z</span><span class="p">,</span> <span class="n">field_limit</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Connected to: QCoDeS AMI430_simulation (serial:1337, firmware:0.0.01) in 0.05s
+Connected to: QCoDeS AMI430_simulation (serial:1337, firmware:0.0.01) in 0.00s
+Connected to: QCoDeS AMI430_simulation (serial:1337, firmware:0.0.01) in 0.00s
+</pre></div></div>
+</div>
+<p>In the above messages you can see the prefix <code class="docutils literal notranslate"><span class="pre">[&lt;instrument_name&gt;(&lt;instrument_type&gt;)]</span></code>. To analyze the visa communication one can use <code class="docutils literal notranslate"><span class="pre">filter_instrument</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">driver</span><span class="o">.</span><span class="n">cartesian</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="k">with</span> <span class="n">logger</span><span class="o">.</span><span class="n">console_level</span><span class="p">(</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">logger</span><span class="o">.</span><span class="n">filter_instrument</span><span class="p">(</span><span class="n">mag_x</span><span class="p">):</span>
+        <span class="n">driver</span><span class="o">.</span><span class="n">cartesian</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2021-12-24 10:12:19,750 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 234 ¦ [x(AMI430_VISA)] Querying: STATE?
+2021-12-24 10:12:19,751 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 236 ¦ [x(AMI430_VISA)] Response: 2
+2021-12-24 10:12:19,752 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 234 ¦ [x(AMI430_VISA)] Querying: FIELD:MAG?
+2021-12-24 10:12:19,753 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 236 ¦ [x(AMI430_VISA)] Response: 0.0
+2021-12-24 10:12:19,754 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 234 ¦ [x(AMI430_VISA)] Querying: FIELD:MAG?
+2021-12-24 10:12:19,755 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 236 ¦ [x(AMI430_VISA)] Response: 0.0
+</pre></div></div>
+</div>
+<p>The output on the console shows as expected only messages from the <code class="docutils literal notranslate"><span class="pre">x</span></code> instrument. For multiple instruments pass a sequence of instruments to <code class="docutils literal notranslate"><span class="pre">filter_instrument</span></code> we write:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">driver</span><span class="o">.</span><span class="n">cartesian</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="k">with</span> <span class="n">logger</span><span class="o">.</span><span class="n">console_level</span><span class="p">(</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">logger</span><span class="o">.</span><span class="n">filter_instrument</span><span class="p">((</span><span class="n">mag_x</span><span class="p">,</span> <span class="n">mag_y</span><span class="p">)):</span>
+        <span class="n">driver</span><span class="o">.</span><span class="n">cartesian</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+2021-12-24 10:12:19,770 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 234 ¦ [x(AMI430_VISA)] Querying: STATE?
+2021-12-24 10:12:19,771 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 236 ¦ [x(AMI430_VISA)] Response: 2
+2021-12-24 10:12:19,772 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 234 ¦ [y(AMI430_VISA)] Querying: STATE?
+2021-12-24 10:12:19,772 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 236 ¦ [y(AMI430_VISA)] Response: 2
+2021-12-24 10:12:19,773 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 234 ¦ [x(AMI430_VISA)] Querying: FIELD:MAG?
+2021-12-24 10:12:19,774 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 236 ¦ [x(AMI430_VISA)] Response: 0.0
+2021-12-24 10:12:19,776 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 234 ¦ [y(AMI430_VISA)] Querying: FIELD:MAG?
+2021-12-24 10:12:19,776 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 236 ¦ [y(AMI430_VISA)] Response: 0.0
+2021-12-24 10:12:19,777 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 234 ¦ [x(AMI430_VISA)] Querying: FIELD:MAG?
+2021-12-24 10:12:19,778 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 236 ¦ [x(AMI430_VISA)] Response: 0.0
+2021-12-24 10:12:19,779 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 234 ¦ [y(AMI430_VISA)] Querying: FIELD:MAG?
+2021-12-24 10:12:19,779 ¦ qcodes.instrument.base.com.visa ¦ DEBUG ¦ visa ¦ ask_raw ¦ 236 ¦ [y(AMI430_VISA)] Response: 0.0
+</pre></div></div>
+</div>
+</section>
+<section id="Capturing-Pandas.DataFrame">
+<h2>Capturing Pandas.DataFrame<a class="headerlink" href="#Capturing-Pandas.DataFrame" title="Permalink to this headline"></a></h2>
+<p>To process the logs, especially with the timestamps, the <a class="reference external" href="https://pandas.pydata.org/">pandas module</a> is highly suited. With <code class="docutils literal notranslate"><span class="pre">logger.log_to_dataframe</span></code> or <code class="docutils literal notranslate"><span class="pre">logger.logfile_to_dataframe</span></code> you can convert a log(file) to a pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>. See this (<a class="reference external" href="https://nbviewer.jupyter.org/github/QCoDeS/Qcodes/tree/master/docs/examples/logging/logfile_parsing.ipynb">online</a>, <a class="reference internal" href="logfile_parsing.html"><span class="doc">offline</span></a>) notebook for an example.</p>
+<p>You can also use a context manager to capture the logs directly into a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">qcodes.logger.log_analysis</span> <span class="kn">import</span> <span class="n">capture_dataframe</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">with</span> <span class="n">logger</span><span class="o">.</span><span class="n">console_level</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">):</span>
+    <span class="n">driver</span><span class="o">.</span><span class="n">cartesian</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="k">with</span> <span class="n">capture_dataframe</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">get_dataframe</span><span class="p">):</span>
+        <span class="n">driver</span><span class="o">.</span><span class="n">cartesian</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">get_dataframe</span><span class="p">()</span>
+        <span class="n">driver</span><span class="o">.</span><span class="n">cartesian</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">df2</span> <span class="o">=</span> <span class="n">get_dataframe</span><span class="p">()</span> <span class="c1"># this is the cummulative log</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>asctime</th>
+      <th>name</th>
+      <th>levelname</th>
+      <th>module</th>
+      <th>funcName</th>
+      <th>lineno</th>
+      <th>message</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2021-12-24 10:12:19,807</td>
+      <td>qcodes.instrument.base</td>
+      <td>DEBUG</td>
+      <td>AMI430</td>
+      <td>_adjust_child_instruments</td>
+      <td>909</td>
+      <td>[AMI430-3D(AMI430_3D)] Checking whether fields...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2021-12-24 10:12:19,807</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[x(AMI430_VISA)] Querying: STATE?</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2021-12-24 10:12:19,807</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[x(AMI430_VISA)] Response: 2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2021-12-24 10:12:19,807</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[y(AMI430_VISA)] Querying: STATE?</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2021-12-24 10:12:19,807</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[y(AMI430_VISA)] Response: 2</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>2021-12-24 10:12:19,807</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[z(AMI430_VISA)] Querying: STATE?</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>2021-12-24 10:12:19,808</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[z(AMI430_VISA)] Response: 2</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>2021-12-24 10:12:19,808</td>
+      <td>qcodes.instrument.base</td>
+      <td>DEBUG</td>
+      <td>AMI430</td>
+      <td>_adjust_child_instruments</td>
+      <td>925</td>
+      <td>[AMI430-3D(AMI430_3D)] Field values OK, procee...</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>2021-12-24 10:12:19,808</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[x(AMI430_VISA)] Querying: FIELD:MAG?</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>2021-12-24 10:12:19,808</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[x(AMI430_VISA)] Response: 0.0</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>2021-12-24 10:12:19,808</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[y(AMI430_VISA)] Querying: FIELD:MAG?</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>2021-12-24 10:12:19,808</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[y(AMI430_VISA)] Response: 0.0</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>2021-12-24 10:12:19,808</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[z(AMI430_VISA)] Querying: FIELD:MAG?</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>2021-12-24 10:12:19,809</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[z(AMI430_VISA)] Response: 0.0</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>2021-12-24 10:12:19,809</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[x(AMI430_VISA)] Querying: FIELD:MAG?</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>2021-12-24 10:12:19,809</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[x(AMI430_VISA)] Response: 0.0</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>2021-12-24 10:12:19,809</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[y(AMI430_VISA)] Querying: FIELD:MAG?</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>2021-12-24 10:12:19,809</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[y(AMI430_VISA)] Response: 0.0</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>2021-12-24 10:12:19,809</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[z(AMI430_VISA)] Querying: FIELD:MAG?</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>2021-12-24 10:12:19,809</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[z(AMI430_VISA)] Response: 0.0</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>2021-12-24 10:12:19,810</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[z(AMI430_VISA)] Querying: COIL?</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>2021-12-24 10:12:19,810</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[z(AMI430_VISA)] Response: 2.0</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>2021-12-24 10:12:19,810</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[z(AMI430_VISA)] Querying: CURR:LIMIT?</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>2021-12-24 10:12:19,810</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[z(AMI430_VISA)] Response: 80</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>2021-12-24 10:12:19,810</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[z(AMI430_VISA)] Querying: QU?</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>2021-12-24 10:12:19,810</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[z(AMI430_VISA)] Response: 0</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>2021-12-24 10:12:19,810</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[z(AMI430_VISA)] Querying: PERS?</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>2021-12-24 10:12:19,810</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[z(AMI430_VISA)] Response: 0</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>2021-12-24 10:12:19,811</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[z(AMI430_VISA)] Querying: STATE?</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>2021-12-24 10:12:19,811</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[z(AMI430_VISA)] Response: 2</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>2021-12-24 10:12:19,811</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>write_raw</td>
+      <td>220</td>
+      <td>[z(AMI430_VISA)] Writing: PAUSE</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>2021-12-24 10:12:19,811</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>write_raw</td>
+      <td>220</td>
+      <td>[z(AMI430_VISA)] Writing: CONF:FIELD:TARG 1.0</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>2021-12-24 10:12:19,811</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[z(AMI430_VISA)] Querying: PS:INST?</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>2021-12-24 10:12:19,811</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[z(AMI430_VISA)] Response: 0</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>2021-12-24 10:12:19,811</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>write_raw</td>
+      <td>220</td>
+      <td>[z(AMI430_VISA)] Writing: RAMP</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>2021-12-24 10:12:19,812</td>
+      <td>qcodes.instrument.base</td>
+      <td>DEBUG</td>
+      <td>AMI430</td>
+      <td>set_field</td>
+      <td>358</td>
+      <td>[z(AMI430_VISA)] Starting blocking ramp of z t...</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>2021-12-24 10:12:19,812</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[z(AMI430_VISA)] Querying: STATE?</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>2021-12-24 10:12:19,812</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[z(AMI430_VISA)] Response: 2</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>2021-12-24 10:12:19,812</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[z(AMI430_VISA)] Querying: STATE?</td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>2021-12-24 10:12:19,812</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[z(AMI430_VISA)] Response: 2</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>2021-12-24 10:12:19,813</td>
+      <td>qcodes.instrument.base</td>
+      <td>DEBUG</td>
+      <td>AMI430</td>
+      <td>set_field</td>
+      <td>360</td>
+      <td>[z(AMI430_VISA)] Finished blocking ramp</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">df2</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>asctime</th>
+      <th>name</th>
+      <th>levelname</th>
+      <th>module</th>
+      <th>funcName</th>
+      <th>lineno</th>
+      <th>message</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2021-12-24 10:12:19,807</td>
+      <td>qcodes.instrument.base</td>
+      <td>DEBUG</td>
+      <td>AMI430</td>
+      <td>_adjust_child_instruments</td>
+      <td>909</td>
+      <td>[AMI430-3D(AMI430_3D)] Checking whether fields...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2021-12-24 10:12:19,807</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[x(AMI430_VISA)] Querying: STATE?</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2021-12-24 10:12:19,807</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[x(AMI430_VISA)] Response: 2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2021-12-24 10:12:19,807</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[y(AMI430_VISA)] Querying: STATE?</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2021-12-24 10:12:19,807</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[y(AMI430_VISA)] Response: 2</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>77</th>
+      <td>2021-12-24 10:12:19,819</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[z(AMI430_VISA)] Querying: STATE?</td>
+    </tr>
+    <tr>
+      <th>78</th>
+      <td>2021-12-24 10:12:19,819</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[z(AMI430_VISA)] Response: 2</td>
+    </tr>
+    <tr>
+      <th>79</th>
+      <td>2021-12-24 10:12:19,819</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[z(AMI430_VISA)] Querying: STATE?</td>
+    </tr>
+    <tr>
+      <th>80</th>
+      <td>2021-12-24 10:12:19,819</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[z(AMI430_VISA)] Response: 2</td>
+    </tr>
+    <tr>
+      <th>81</th>
+      <td>2021-12-24 10:12:19,819</td>
+      <td>qcodes.instrument.base</td>
+      <td>DEBUG</td>
+      <td>AMI430</td>
+      <td>set_field</td>
+      <td>360</td>
+      <td>[z(AMI430_VISA)] Finished blocking ramp</td>
+    </tr>
+  </tbody>
+</table>
+<p>82 rows × 7 columns</p>
+</div></div>
+</div>
+<p>You can of course combine the context managers:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">with</span> <span class="n">logger</span><span class="o">.</span><span class="n">console_level</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">):</span>
+    <span class="n">driver</span><span class="o">.</span><span class="n">cartesian</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="k">with</span> <span class="n">capture_dataframe</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">get_dataframe</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">logger</span><span class="o">.</span><span class="n">filter_instrument</span><span class="p">(</span><span class="n">mag_x</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="n">handler</span><span class="p">):</span>
+            <span class="n">driver</span><span class="o">.</span><span class="n">cartesian</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">get_dataframe</span><span class="p">()</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>asctime</th>
+      <th>name</th>
+      <th>levelname</th>
+      <th>module</th>
+      <th>funcName</th>
+      <th>lineno</th>
+      <th>message</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2021-12-24 10:12:19,872</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[x(AMI430_VISA)] Querying: STATE?</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2021-12-24 10:12:19,873</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[x(AMI430_VISA)] Response: 2</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2021-12-24 10:12:19,873</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[x(AMI430_VISA)] Querying: FIELD:MAG?</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2021-12-24 10:12:19,873</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[x(AMI430_VISA)] Response: 0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2021-12-24 10:12:19,874</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>234</td>
+      <td>[x(AMI430_VISA)] Querying: FIELD:MAG?</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>2021-12-24 10:12:19,874</td>
+      <td>qcodes.instrument.base.com.visa</td>
+      <td>DEBUG</td>
+      <td>visa</td>
+      <td>ask_raw</td>
+      <td>236</td>
+      <td>[x(AMI430_VISA)] Response: 0.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>For an analysis of the timestamps please also refer to the log analysis example notebook (<a class="reference external" href="https://nbviewer.jupyter.org/github/QCoDeS/Qcodes/tree/master/docs/examples/logging/logfile_parsing.ipynb">online</a>, <a class="reference internal" href="logfile_parsing.html"><span class="doc">offline</span></a>).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="logfile_parsing.html" class="btn btn-neutral float-left" title="Logfile parsing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../legacy/Combined%20Parameters.html" class="btn btn-neutral float-right" title="Combined Parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

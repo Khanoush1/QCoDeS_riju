@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.measure &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.measure</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.measure</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">qcodes.instrument.parameter</span> <span class="kn">import</span> <span class="n">Parameter</span>
+<span class="kn">from</span> <span class="nn">qcodes.loops</span> <span class="kn">import</span> <span class="n">Loop</span>
+<span class="kn">from</span> <span class="nn">qcodes.actions</span> <span class="kn">import</span> <span class="n">_actions_snapshot</span>
+<span class="kn">from</span> <span class="nn">qcodes.utils.helpers</span> <span class="kn">import</span> <span class="n">full_class</span>
+<span class="kn">from</span> <span class="nn">qcodes.utils.metadata</span> <span class="kn">import</span> <span class="n">Metadatable</span>
+
+
+<div class="viewcode-block" id="Measure"><a class="viewcode-back" href="../../api/measure.html#qcodes.measure.Measure">[docs]</a><span class="k">class</span> <span class="nc">Measure</span><span class="p">(</span><span class="n">Metadatable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a DataSet from a single (non-looped) set of actions.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        *actions (Any): sequence of actions to perform. Any action that is</span>
+<span class="sd">            valid in a ``Loop`` can be used here. If an action is a gettable</span>
+<span class="sd">            ``Parameter``, its output will be included in the DataSet.</span>
+<span class="sd">            Scalars returned by an action will be saved as length-1 arrays,</span>
+<span class="sd">            with a dummy setpoint for consistency with other DataSets.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dummy_parameter</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;single&#39;</span><span class="p">,</span>
+                                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Single Measurement&#39;</span><span class="p">,</span>
+                                <span class="n">set_cmd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">get_cmd</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">actions</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dummyLoop</span> <span class="o">=</span> <span class="n">Loop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dummy_parameter</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="o">*</span><span class="n">actions</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Measure.run_temp"><a class="viewcode-back" href="../../api/measure.html#qcodes.measure.Measure.run_temp">[docs]</a>    <span class="k">def</span> <span class="nf">run_temp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper to run this measurement as a temporary data set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Measure.get_data_set"><a class="viewcode-back" href="../../api/measure.html#qcodes.measure.Measure.get_data_set">[docs]</a>    <span class="k">def</span> <span class="nf">get_data_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dummyLoop</span><span class="o">.</span><span class="n">get_data_set</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Measure.run"><a class="viewcode-back" href="../../api/measure.html#qcodes.measure.Measure.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use_threads</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run the actions in this measurement and return their data as a DataSet</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            quiet (Optional[bool]): Set True to not print anything except</span>
+<span class="sd">                errors. Default False.</span>
+
+<span class="sd">            station (Optional[Station]): the ``Station`` this measurement</span>
+<span class="sd">                pertains to. Defaults to ``Station.default`` if one is defined.</span>
+<span class="sd">                Only used to supply metadata.</span>
+
+<span class="sd">            use_threads (Optional[bool]): whether to parallelize ``get``</span>
+<span class="sd">                operations using threads. Default False.</span>
+
+<span class="sd">            location (Optional[Union[str, bool]]): the location of the</span>
+<span class="sd">                DataSet, a string whose meaning depends on formatter and io,</span>
+<span class="sd">                or False to only keep in memory. May be a callable to provide</span>
+<span class="sd">                automatic locations. If omitted, will use the default</span>
+<span class="sd">                DataSet.location_provider</span>
+
+<span class="sd">            name (Optional[str]): if location is default or another provider</span>
+<span class="sd">                function, name is a string to add to location to make it more</span>
+<span class="sd">                readable/meaningful to users</span>
+
+<span class="sd">            formatter (Optional[Formatter]): knows how to read and write the</span>
+<span class="sd">                file format. Default can be set in DataSet.default_formatter</span>
+
+<span class="sd">            io (Optional[io_manager]): knows how to connect to the storage</span>
+<span class="sd">                (disk vs cloud etc)</span>
+
+<span class="sd">        location, name formatter and io are passed to ``data_set.new_data``</span>
+<span class="sd">        along with any other optional keyword arguments.</span>
+
+<span class="sd">        returns:</span>
+<span class="sd">            a DataSet object containing the results of the measurement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">data_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dummyLoop</span><span class="o">.</span><span class="n">get_data_set</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># set the DataSet to local for now so we don&#39;t save it, since</span>
+        <span class="c1"># we&#39;re going to massage it afterward</span>
+        <span class="n">original_location</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">location</span>
+        <span class="n">data_set</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># run the measurement as if it were a Loop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dummyLoop</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">use_threads</span><span class="o">=</span><span class="n">use_threads</span><span class="p">,</span>
+                            <span class="n">station</span><span class="o">=</span><span class="n">station</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># look for arrays that are unnecessarily nested, and un-nest them</span>
+        <span class="n">all_unnested</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">data_set</span><span class="o">.</span><span class="n">arrays</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">is_setpoint</span><span class="p">:</span>
+                    <span class="n">dummy_setpoint</span> <span class="o">=</span> <span class="n">array</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># we&#39;ve found a scalar - so keep the dummy setpoint</span>
+                    <span class="n">all_unnested</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># The original return was an array, so take off the extra dim.</span>
+                <span class="c1"># (This ensures the outer dim length was 1, otherwise this</span>
+                <span class="c1"># will raise a ValueError.)</span>
+                <span class="n">array</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+                <span class="c1"># TODO: DataArray.shape masks ndarray.shape, and a user *could*</span>
+                <span class="c1"># change it, thinking they were reshaping the underlying array,</span>
+                <span class="c1"># but this would a) not actually reach the ndarray right now,</span>
+                <span class="c1"># and b) if it *did* and the array was reshaped, this array</span>
+                <span class="c1"># would be out of sync with its setpoint arrays, so bad things</span>
+                <span class="c1"># would happen. So we probably want some safeguards in place</span>
+                <span class="c1"># against this</span>
+                <span class="n">array</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span>
+
+                <span class="n">array</span><span class="o">.</span><span class="n">set_arrays</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">set_arrays</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+                <span class="n">array</span><span class="o">.</span><span class="n">init_data</span><span class="p">()</span>
+
+        <span class="c1"># Do we still need the dummy setpoint array at all?</span>
+        <span class="k">if</span> <span class="n">all_unnested</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">data_set</span><span class="o">.</span><span class="n">arrays</span><span class="p">[</span><span class="n">dummy_setpoint</span><span class="o">.</span><span class="n">array_id</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data_set</span><span class="p">,</span> <span class="s1">&#39;action_id_map&#39;</span><span class="p">):</span>
+                <span class="k">del</span> <span class="n">data_set</span><span class="o">.</span><span class="n">action_id_map</span><span class="p">[</span><span class="n">dummy_setpoint</span><span class="o">.</span><span class="n">action_indices</span><span class="p">]</span>
+
+        <span class="c1"># now put back in the DataSet location and save it</span>
+        <span class="n">data_set</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">original_location</span>
+        <span class="n">data_set</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+
+        <span class="c1"># metadata: ActiveLoop already provides station snapshot, but also</span>
+        <span class="c1"># puts in a &#39;loop&#39; section that we need to replace with &#39;measurement&#39;</span>
+        <span class="c1"># but we use the info from &#39;loop&#39; to ensure consistency and avoid</span>
+        <span class="c1"># duplication.</span>
+        <span class="n">LOOP_SNAPSHOT_KEYS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ts_start&#39;</span><span class="p">,</span> <span class="s1">&#39;ts_end&#39;</span><span class="p">,</span> <span class="s1">&#39;use_threads&#39;</span><span class="p">]</span>
+        <span class="n">data_set</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">({</span><span class="s1">&#39;measurement&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">k</span><span class="p">:</span> <span class="n">data_set</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;loop&#39;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">LOOP_SNAPSHOT_KEYS</span>
+        <span class="p">}})</span>
+        <span class="k">del</span> <span class="n">data_set</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;loop&#39;</span><span class="p">]</span>
+
+        <span class="c1"># actions are included in self.snapshot() rather than in</span>
+        <span class="c1"># LOOP_SNAPSHOT_KEYS because they are useful if someone just</span>
+        <span class="c1"># wants a local snapshot of the Measure object</span>
+        <span class="n">data_set</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">({</span><span class="s1">&#39;measurement&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">()})</span>
+
+        <span class="n">data_set</span><span class="o">.</span><span class="n">save_metadata</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">data_set</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;acquired at %Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">data_set</span></div>
+
+<div class="viewcode-block" id="Measure.snapshot_base"><a class="viewcode-back" href="../../api/measure.html#qcodes.measure.Measure.snapshot_base">[docs]</a>    <span class="k">def</span> <span class="nf">snapshot_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                      <span class="n">params_to_skip_update</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;__class__&#39;</span><span class="p">:</span> <span class="n">full_class</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+            <span class="s1">&#39;actions&#39;</span><span class="p">:</span> <span class="n">_actions_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dummyLoop</span><span class="o">.</span><span class="n">actions</span><span class="p">,</span> <span class="n">update</span><span class="p">)</span>
+        <span class="p">}</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

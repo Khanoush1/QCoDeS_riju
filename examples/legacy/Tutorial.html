@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QCoDeS tutorial &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Community Guide" href="../../community/index.html" />
+    <link rel="prev" title="The Snapshot" href="The%20Snapshot.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Examples of using QCoDeS</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#basic-examples">Basic examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#dataset">DataSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#plotting">Plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#drivers">Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#writing-drivers">Writing Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#logging">Logging</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#legacy-examples">Legacy examples</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="Combined%20Parameters.html">Combined Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Comprehensive%20Plotting%20How-To.html">Comprehensive Plotting How-To</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Datasaving%20examples.html">Datasaving Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Measure%20without%20a%20Loop.html">Measure without a Loop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="The%20Location%20Formatter.html">The Location Formatter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="The%20Snapshot.html">The Snapshot</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">QCoDeS tutorial</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Table-of-Contents">Table of Contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Typical-QCodes-workflow">Typical QCodes workflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Basic-instrument-interaction">Basic instrument interaction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Measuring">Measuring</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Loading-data">Loading data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Example:-multiple-2D-measurements-with-live-plotting">Example: multiple 2D measurements with live plotting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Examples of using QCoDeS</a> &raquo;</li>
+      <li>QCoDeS tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/legacy/Tutorial.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="admonition note">
+  <p>This page was generated from
+    <a class="reference external"
+    href="https://github.com/qcodes/qcodes/blob/master/docs/examples/legacy/Tutorial.ipynb">docs/examples/legacy/Tutorial.ipynb</a>.
+    Interactive online version:
+    <a href="https://mybinder.org/v2/gh/qcodes/qcodes/master?filepath=docs/examples/legacy/Tutorial.ipynb"><img
+alt="Binder badge"
+    src="https://mybinder.org/badge_logo.svg"
+    style="vertical-align:text-bottom"></a>.
+  </p>
+  <script>
+    if (document.location.host) {
+      var p = document.currentScript.previousSibling.previousSibling;
+      var a = document.createElement('a');
+      a.innerHTML = 'View in <em>nbviewer</em>';
+      a.href = `https://nbviewer.jupyter.org/url${
+        (window.location.protocol == 'https:' ? 's/' : '/') +
+        window.location.host +
+        window.location.pathname.slice(0, -4) }ipynb`;
+      a.classList.add('reference');
+      a.classList.add('external');
+      p.appendChild(a);
+      p.appendChild(document.createTextNode('.'));
+    }
+  </script>
+</div><section id="QCoDeS-tutorial">
+<h1>QCoDeS tutorial<a class="headerlink" href="#QCoDeS-tutorial" title="Permalink to this headline"></a></h1>
+<p>Basic overview of QCoDeS</p>
+<section id="Table-of-Contents">
+<h2>Table of Contents<a class="headerlink" href="#Table-of-Contents" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="#workflow">Workflow</a></p></li>
+<li><p><a class="reference external" href="#inst_io">Basic instrument interaction</a></p></li>
+<li><p><a class="reference external" href="#measurement">Measuring</a></p>
+<ul>
+<li><p><a class="reference external" href="#loop_1D">The loop: 1D example</a></p></li>
+<li><p><a class="reference external" href="#loop_2D">The loop: 2D example</a></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="Typical-QCodes-workflow">
+<h2>Typical QCodes workflow<a class="headerlink" href="#Typical-QCodes-workflow" title="Permalink to this headline"></a></h2>
+<p>(back to <a class="reference external" href="#toc">ToC</a>)</p>
+<ol class="arabic simple">
+<li><p>Start up an interactive python session (e.g. using jupyter)</p></li>
+<li><p>import desired modules</p></li>
+<li><p>instantiate required instruments</p></li>
+<li><p>experiment!</p></li>
+</ol>
+<section id="Importing">
+<h3>Importing<a class="headerlink" href="#Importing" title="Permalink to this headline"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># usually, one imports QCoDeS and some instruments</span>
+<span class="kn">import</span> <span class="nn">qcodes</span> <span class="k">as</span> <span class="nn">qc</span>
+<span class="kn">from</span> <span class="nn">qcodes.plots.pyqtgraph</span> <span class="kn">import</span> <span class="n">QtPlot</span>
+<span class="kn">from</span> <span class="nn">qcodes.plots.qcmatplotlib</span> <span class="kn">import</span> <span class="n">MatPlot</span>
+<span class="c1"># In this tutorial, we import the dummy instrument</span>
+<span class="kn">from</span> <span class="nn">qcodes.tests.instrument_mocks</span> <span class="kn">import</span> <span class="n">DummyInstrument</span>
+<span class="kn">from</span> <span class="nn">qcodes.loops</span> <span class="kn">import</span> <span class="n">Loop</span>
+<span class="kn">from</span> <span class="nn">qcodes.data.data_set</span> <span class="kn">import</span> <span class="n">load_data</span>
+<span class="c1"># real instruments are imported in a similar way, e.g.</span>
+<span class="c1"># from qcodes.instrument_drivers.Keysight.KeysightAgilent_33XXX import WaveformGenerator_33XXX</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Instantiation-of-instruments">
+<h3>Instantiation of instruments<a class="headerlink" href="#Instantiation-of-instruments" title="Permalink to this headline"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># It is not enough to import the instruments, they must also be instantiated</span>
+<span class="c1"># Note that this can only be done once. If you try to re-instantiate an existing instrument, QCoDeS will</span>
+<span class="c1"># complain that &#39;Another instrument has the name&#39;.</span>
+
+
+<span class="c1"># In this turotial, we consider a simple situation: A single DAC outputting voltages to a Digital Multi Meter</span>
+
+<span class="n">dac</span> <span class="o">=</span> <span class="n">DummyInstrument</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;dac&quot;</span><span class="p">,</span> <span class="n">gates</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ch1&#39;</span><span class="p">,</span> <span class="s1">&#39;ch2&#39;</span><span class="p">])</span>  <span class="c1"># The DAC voltage source</span>
+<span class="n">dmm</span> <span class="o">=</span> <span class="n">DummyInstrument</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;dmm&quot;</span><span class="p">,</span> <span class="n">gates</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;voltage&#39;</span><span class="p">])</span>  <span class="c1"># The DMM voltage reader</span>
+
+<span class="c1"># the default dummy instrument returns always a constant value, in the following line we make it random</span>
+<span class="c1"># just for the looks 💅</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="n">dmm</span><span class="o">.</span><span class="n">voltage</span><span class="o">.</span><span class="n">get</span> <span class="o">=</span>  <span class="k">lambda</span><span class="p">:</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Finally, the instruments should be bound to a Station. Only instruments bound to the Station get recorded in the</span>
+<span class="c1"># measurement metadata, so your metadata is blind to any instrument not in the Station.</span>
+
+<span class="n">station</span> <span class="o">=</span> <span class="n">qc</span><span class="o">.</span><span class="n">Station</span><span class="p">(</span><span class="n">dac</span><span class="p">,</span> <span class="n">dmm</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># For the tutorial, we add a parameter that loudly prints what it is being set to</span>
+<span class="c1"># (It is used below)</span>
+
+<span class="n">chX</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">def</span> <span class="nf">myget</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">chX</span>
+
+<span class="k">def</span> <span class="nf">myset</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">chX</span>
+    <span class="n">chX</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Setting to </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+<span class="n">dac</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s1">&#39;verbose_channel&#39;</span><span class="p">,</span>
+                  <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Verbose Channel&#39;</span><span class="p">,</span>
+                  <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;V&#39;</span><span class="p">,</span>
+                  <span class="n">get_cmd</span><span class="o">=</span><span class="n">myget</span><span class="p">,</span>
+                  <span class="n">set_cmd</span><span class="o">=</span><span class="n">myset</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="The-location-provider-can-be-set-globally">
+<h3>The location provider can be set globally<a class="headerlink" href="#The-location-provider-can-be-set-globally" title="Permalink to this headline"></a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">loc_provider</span> <span class="o">=</span> <span class="n">qc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">FormatLocation</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;data/</span><span class="si">{date}</span><span class="s1">/#</span><span class="si">{counter}</span><span class="s1">_</span><span class="si">{name}</span><span class="s1">_</span><span class="si">{time}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">data_set</span><span class="o">.</span><span class="n">DataSet</span><span class="o">.</span><span class="n">location_provider</span><span class="o">=</span><span class="n">loc_provider</span>
+</pre></div>
+</div>
+</div>
+<p>We are now ready to play with the instruments!</p>
+</section>
+</section>
+<section id="Basic-instrument-interaction">
+<h2>Basic instrument interaction<a class="headerlink" href="#Basic-instrument-interaction" title="Permalink to this headline"></a></h2>
+<p>(back to <a class="reference external" href="#toc">ToC</a>)</p>
+<p>The interaction with instruments mainly consists of <code class="docutils literal notranslate"><span class="pre">setting</span></code> and <code class="docutils literal notranslate"><span class="pre">getting</span></code> the instruments’ <code class="docutils literal notranslate"><span class="pre">parameters</span></code>. A parameter can be anything from the frequency of a signal generator over the output impedance of an AWG to the traces from a lock-in amplifier. In this tutorial we –for didactical reasons– only consider scalar parameters.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># The voltages output by the dac can be set like so</span>
+<span class="n">dac</span><span class="o">.</span><span class="n">ch1</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="c1"># Now the output is 8 V. We can read this value back</span>
+<span class="n">dac</span><span class="o">.</span><span class="n">ch1</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+8
+</pre></div></div>
+</div>
+<p>Setting IMMEDIATELY changes a value. For voltages, that is sometimes undesired. The value can instead be ramped by stepping and waiting.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">dac</span><span class="o">.</span><span class="n">verbose_channel</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">dac</span><span class="o">.</span><span class="n">verbose_channel</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>  <span class="c1"># immediate voltage jump of 9 Volts (!)</span>
+
+<span class="c1"># first set a step size</span>
+<span class="n">dac</span><span class="o">.</span><span class="n">verbose_channel</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="c1"># and a wait time</span>
+<span class="n">dac</span><span class="o">.</span><span class="n">verbose_channel</span><span class="o">.</span><span class="n">inter_delay</span> <span class="o">=</span> <span class="mf">0.01</span> <span class="c1"># in seconds</span>
+
+<span class="c1"># now a &quot;staircase ramp&quot; is performed by setting</span>
+<span class="n">dac</span><span class="o">.</span><span class="n">verbose_channel</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># after such a ramp, it is a good idea to reset the step and delay</span>
+<span class="n">dac</span><span class="o">.</span><span class="n">verbose_channel</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="c1"># and a wait time</span>
+<span class="n">dac</span><span class="o">.</span><span class="n">verbose_channel</span><span class="o">.</span><span class="n">inter_delay</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Setting to 0
+Setting to 9
+Setting to 8.9
+Setting to 8.8
+Setting to 8.7
+Setting to 8.6
+Setting to 8.5
+Setting to 8.4
+Setting to 8.3
+Setting to 8.2
+Setting to 8.1
+Setting to 8.0
+Setting to 7.9
+Setting to 7.8
+Setting to 7.7
+Setting to 7.6
+Setting to 7.5
+Setting to 7.4
+Setting to 7.3
+Setting to 7.2
+Setting to 7.1
+Setting to 7.0
+Setting to 6.9
+Setting to 6.8
+Setting to 6.699999999999999
+Setting to 6.6
+Setting to 6.5
+Setting to 6.4
+Setting to 6.3
+Setting to 6.199999999999999
+Setting to 6.1
+Setting to 6.0
+Setting to 5.9
+Setting to 5.8
+Setting to 5.699999999999999
+Setting to 5.6
+Setting to 5.5
+Setting to 5.4
+Setting to 5.3
+Setting to 5.199999999999999
+Setting to 5.1
+Setting to 5
+</pre></div></div>
+</div>
+<p>NOTE: that is ramp is blocking and has a low resolution since each <code class="docutils literal notranslate"><span class="pre">set</span></code> on a real instrument has a latency on the order of ms. Some instrument drivers support native-resolution asynchronous ramping. Always refer to your instrument driver if you need high performance of an instrument.</p>
+</section>
+<section id="Measuring">
+<h2>Measuring<a class="headerlink" href="#Measuring" title="Permalink to this headline"></a></h2>
+<p>(back to <a class="reference external" href="#toc">ToC</a>)</p>
+<section id="1D-Loop-example">
+<h3>1D Loop example<a class="headerlink" href="#1D-Loop-example" title="Permalink to this headline"></a></h3>
+<section id="Defining-the-Loop-and-actions">
+<h4>Defining the <code class="docutils literal notranslate"><span class="pre">Loop</span></code> and actions<a class="headerlink" href="#Defining-the-Loop-and-actions" title="Permalink to this headline"></a></h4>
+<p>Before you run a measurement loop you do two things: 1. You describe what parameter(s) to vary and how. This is the creation of a <code class="docutils literal notranslate"><span class="pre">Loop</span></code> object: <code class="docutils literal notranslate"><span class="pre">loop</span> <span class="pre">=</span> <span class="pre">Loop(sweep_values,</span> <span class="pre">...)</span></code> 2. You describe what to do at each step in the loop. This is <code class="docutils literal notranslate"><span class="pre">loop.each(*actions)</span></code> - measurements (any object with a <code class="docutils literal notranslate"><span class="pre">.get</span></code> method will be interpreted as a measurement) - <code class="docutils literal notranslate"><span class="pre">Task</span></code>: some callable (which can have arguments with it) to be executed each time through the loop. Does not generate data. - <code class="docutils literal notranslate"><span class="pre">Wait</span></code>: a
+specialized <code class="docutils literal notranslate"><span class="pre">Task</span></code> just to wait a certain time. - <code class="docutils literal notranslate"><span class="pre">BreakIf</span></code>: some condition that, if it returns truthy, breaks (this level of) the loop</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># For instance, sweep a dac voltage and record with the dmm</span>
+
+<span class="n">loop</span> <span class="o">=</span> <span class="n">Loop</span><span class="p">(</span><span class="n">dac</span><span class="o">.</span><span class="n">ch1</span><span class="o">.</span><span class="n">sweep</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="n">delay</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">dmm</span><span class="o">.</span><span class="n">voltage</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">get_data_set</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;testsweep&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plot_1d</span> <span class="o">=</span> <span class="n">QtPlot</span><span class="p">()</span>  <span class="c1"># create a plot</span>
+<span class="n">plot_1d</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dmm_voltage</span><span class="p">)</span>  <span class="c1"># add a graph to the plot</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">with_bg_task</span><span class="p">(</span><span class="n">plot_1d</span><span class="o">.</span><span class="n">update</span><span class="p">,</span> <span class="n">plot_1d</span><span class="o">.</span><span class="n">save</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>  <span class="c1"># run the loop</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to &#39;/tmp/runtime-runner&#39;
+QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to &#39;/tmp/runtime-runner&#39;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Started at 2021-12-24 10:11:51
+DataSet:
+   location = &#39;data/2021-12-24/#012_testsweep_10-11-48&#39;
+   &lt;Type&gt;   | &lt;array_id&gt;  | &lt;array.name&gt; | &lt;array.shape&gt;
+   Setpoint | dac_ch1_set | ch1          | (201,)
+   Measured | dmm_voltage | voltage      | (201,)
+Finished at 2021-12-24 10:12:00
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># The plot may be recalled easily</span>
+<span class="n">plot_1d</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_legacy_Tutorial_18_0.png" src="../../_images/examples_legacy_Tutorial_18_0.png" />
+</div>
+</div>
+</section>
+<section id="Output-of-the-loop">
+<h4>Output of the loop<a class="headerlink" href="#Output-of-the-loop" title="Permalink to this headline"></a></h4>
+<ul class="simple">
+<li><p>A loop returns a dataset.</p></li>
+<li><p>The representation of the dataset shows what arrays it contains and where it is saved.</p></li>
+<li><p>The dataset initially starts out empty (filled with NAN’s) and get’s filled while the Loop get’s executed.</p></li>
+</ul>
+<p>Once the measurement is done, take a look at the file in finder/explorer (the dataset.location should give you the relative path). Note also the snapshot that captures the settings of all instruments at the start of the Loop. This metadata is also accesible from the dataset and captures a snapshot of each instrument listed in the station.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">dac</span><span class="o">.</span><span class="n">snapshot</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;functions&#39;: {},
+ &#39;submodules&#39;: {},
+ &#39;parameters&#39;: {&#39;IDN&#39;: {&#39;__class__&#39;: &#39;qcodes.instrument.parameter.Parameter&#39;,
+   &#39;full_name&#39;: &#39;dac_IDN&#39;,
+   &#39;value&#39;: {&#39;vendor&#39;: None, &#39;model&#39;: &#39;dac&#39;, &#39;serial&#39;: None, &#39;firmware&#39;: None},
+   &#39;raw_value&#39;: {&#39;vendor&#39;: None,
+    &#39;model&#39;: &#39;dac&#39;,
+    &#39;serial&#39;: None,
+    &#39;firmware&#39;: None},
+   &#39;ts&#39;: &#39;2021-12-24 10:11:47&#39;,
+   &#39;instrument&#39;: &#39;qcodes.tests.instrument_mocks.DummyInstrument&#39;,
+   &#39;instrument_name&#39;: &#39;dac&#39;,
+   &#39;label&#39;: &#39;IDN&#39;,
+   &#39;post_delay&#39;: 0,
+   &#39;inter_delay&#39;: 0,
+   &#39;name&#39;: &#39;IDN&#39;,
+   &#39;vals&#39;: &#39;&lt;Anything&gt;&#39;,
+   &#39;unit&#39;: &#39;&#39;},
+  &#39;ch1&#39;: {&#39;__class__&#39;: &#39;qcodes.instrument.parameter.Parameter&#39;,
+   &#39;full_name&#39;: &#39;dac_ch1&#39;,
+   &#39;value&#39;: 20.0,
+   &#39;raw_value&#39;: 20.0,
+   &#39;ts&#39;: &#39;2021-12-24 10:12:00&#39;,
+   &#39;instrument&#39;: &#39;qcodes.tests.instrument_mocks.DummyInstrument&#39;,
+   &#39;instrument_name&#39;: &#39;dac&#39;,
+   &#39;label&#39;: &#39;Gate ch1&#39;,
+   &#39;post_delay&#39;: 0,
+   &#39;inter_delay&#39;: 0,
+   &#39;name&#39;: &#39;ch1&#39;,
+   &#39;vals&#39;: &#39;&lt;Numbers -800&lt;=v&lt;=400&gt;&#39;,
+   &#39;unit&#39;: &#39;V&#39;},
+  &#39;ch2&#39;: {&#39;__class__&#39;: &#39;qcodes.instrument.parameter.Parameter&#39;,
+   &#39;full_name&#39;: &#39;dac_ch2&#39;,
+   &#39;value&#39;: 0,
+   &#39;raw_value&#39;: 0,
+   &#39;ts&#39;: &#39;2021-12-24 10:11:47&#39;,
+   &#39;instrument&#39;: &#39;qcodes.tests.instrument_mocks.DummyInstrument&#39;,
+   &#39;instrument_name&#39;: &#39;dac&#39;,
+   &#39;label&#39;: &#39;Gate ch2&#39;,
+   &#39;post_delay&#39;: 0,
+   &#39;inter_delay&#39;: 0,
+   &#39;name&#39;: &#39;ch2&#39;,
+   &#39;vals&#39;: &#39;&lt;Numbers -800&lt;=v&lt;=400&gt;&#39;,
+   &#39;unit&#39;: &#39;V&#39;},
+  &#39;verbose_channel&#39;: {&#39;__class__&#39;: &#39;qcodes.instrument.parameter.Parameter&#39;,
+   &#39;full_name&#39;: &#39;dac_verbose_channel&#39;,
+   &#39;value&#39;: 5,
+   &#39;raw_value&#39;: 5,
+   &#39;ts&#39;: &#39;2021-12-24 10:11:48&#39;,
+   &#39;instrument&#39;: &#39;qcodes.tests.instrument_mocks.DummyInstrument&#39;,
+   &#39;instrument_name&#39;: &#39;dac&#39;,
+   &#39;label&#39;: &#39;Verbose Channel&#39;,
+   &#39;post_delay&#39;: 0,
+   &#39;inter_delay&#39;: 0,
+   &#39;name&#39;: &#39;verbose_channel&#39;,
+   &#39;unit&#39;: &#39;V&#39;}},
+ &#39;__class__&#39;: &#39;qcodes.tests.instrument_mocks.DummyInstrument&#39;,
+ &#39;name&#39;: &#39;dac&#39;}
+</pre></div></div>
+</div>
+<p>There is also a more human-readable version of the essential information.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">dac</span><span class="o">.</span><span class="n">print_readable_snapshot</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+dac:
+        parameter      value
+--------------------------------------------------------------------------------
+IDN             :       {&#39;vendor&#39;: None, &#39;model&#39;: &#39;dac&#39;, &#39;serial&#39;: None, &#39;firmware&#39;...
+ch1             :       20 (V)
+ch2             :       0 (V)
+verbose_channel :       5 (V)
+</pre></div></div>
+</div>
+</section>
+</section>
+</section>
+<section id="Loading-data">
+<h2>Loading data<a class="headerlink" href="#Loading-data" title="Permalink to this headline"></a></h2>
+<p>The dataset knows its own location, which we may use to load data.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+
+<span></span><span class="n">location</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">location</span>
+<span class="n">loaded_data</span> <span class="o">=</span> <span class="n">load_data</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
+<span class="n">plot</span> <span class="o">=</span> <span class="n">MatPlot</span><span class="p">(</span><span class="n">loaded_data</span><span class="o">.</span><span class="n">dmm_voltage</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_legacy_Tutorial_26_0.png" src="../../_images/examples_legacy_Tutorial_26_0.png" />
+</div>
+</div>
+</section>
+<section id="Example:-multiple-2D-measurements-with-live-plotting">
+<h2>Example: multiple 2D measurements with live plotting<a class="headerlink" href="#Example:-multiple-2D-measurements-with-live-plotting" title="Permalink to this headline"></a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Loops can be nested, so that a new sweep runs for each point in the outer loop</span>
+
+<span class="n">loop</span> <span class="o">=</span> <span class="n">Loop</span><span class="p">(</span><span class="n">dac</span><span class="o">.</span><span class="n">ch1</span><span class="o">.</span><span class="n">sweep</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">loop</span><span class="p">(</span><span class="n">dac</span><span class="o">.</span><span class="n">ch2</span><span class="o">.</span><span class="n">sweep</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">(</span>
+    <span class="n">dmm</span><span class="o">.</span><span class="n">voltage</span>
+    <span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">get_data_set</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;2D_test&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plot</span> <span class="o">=</span> <span class="n">QtPlot</span><span class="p">()</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dmm_voltage</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">1200</span><span class="p">,</span> <span class="mi">500</span><span class="p">))</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">with_bg_task</span><span class="p">(</span><span class="n">plot</span><span class="o">.</span><span class="n">update</span><span class="p">,</span> <span class="n">plot</span><span class="o">.</span><span class="n">save</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Started at 2021-12-24 10:12:02
+DataSet:
+   location = &#39;data/2021-12-24/#013_2D_test_10-12-01&#39;
+   &lt;Type&gt;   | &lt;array_id&gt;  | &lt;array.name&gt; | &lt;array.shape&gt;
+   Setpoint | dac_ch1_set | ch1          | (6,)
+   Setpoint | dac_ch2_set | ch2          | (6, 6)
+   Measured | dmm_voltage | voltage      | (6, 6)
+Finished at 2021-12-24 10:12:07
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plot</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_legacy_Tutorial_30_0.png" src="../../_images/examples_legacy_Tutorial_30_0.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="The%20Snapshot.html" class="btn btn-neutral float-left" title="The Snapshot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../community/index.html" class="btn btn-neutral float-right" title="Community Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

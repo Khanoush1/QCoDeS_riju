@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.utils.helpers &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.utils.helpers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.utils.helpers</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numbers</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">asyncio</span> <span class="kn">import</span> <span class="n">iscoroutinefunction</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">abc</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">Hashable</span><span class="p">,</span>
+    <span class="n">Iterator</span><span class="p">,</span>
+    <span class="n">List</span><span class="p">,</span>
+    <span class="n">Mapping</span><span class="p">,</span>
+    <span class="n">MutableMapping</span><span class="p">,</span>
+    <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">Sequence</span><span class="p">,</span>
+    <span class="n">SupportsAbs</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+    <span class="n">Type</span><span class="p">,</span>
+    <span class="n">TypeVar</span><span class="p">,</span>
+    <span class="n">Union</span><span class="p">,</span>
+    <span class="n">cast</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="n">QMainWindow</span>
+
+<span class="n">QCODES_USER_PATH_ENV</span> <span class="o">=</span> <span class="s1">&#39;QCODES_USER_PATH&#39;</span>
+
+
+<span class="n">_tprint_times</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="NumpyJSONEncoder"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.NumpyJSONEncoder">[docs]</a><span class="k">class</span> <span class="nc">NumpyJSONEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This JSON encoder adds support for serializing types that the built-in</span>
+<span class="sd">    ``json`` module does not support out-of-the-box. See the docstring of the</span>
+<span class="sd">    ``default`` method for the description of all conversions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NumpyJSONEncoder.default"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.NumpyJSONEncoder.default">[docs]</a>    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of conversions that this encoder performs:</span>
+
+<span class="sd">        * ``numpy.generic`` (all integer, floating, and other types) gets</span>
+<span class="sd">          converted to its python equivalent using its ``item`` method (see</span>
+<span class="sd">          ``numpy`` docs for more information,</span>
+<span class="sd">          https://docs.scipy.org/doc/numpy/reference/arrays.scalars.html).</span>
+<span class="sd">        * ``numpy.ndarray`` gets converted to python list using its ``tolist``</span>
+<span class="sd">          method.</span>
+<span class="sd">        * Complex number (a number that conforms to ``numbers.Complex`` ABC) gets</span>
+<span class="sd">          converted to a dictionary with fields ``re`` and ``im`` containing floating</span>
+<span class="sd">          numbers for the real and imaginary parts respectively, and a field</span>
+<span class="sd">          ``__dtype__`` containing value ``complex``.</span>
+<span class="sd">        * Numbers with uncertainties  (numbers that conforms to ``uncertainties.UFloat``) get</span>
+<span class="sd">          converted to a dictionary with fields ``nominal_value`` and ``std_dev`` containing floating</span>
+<span class="sd">          numbers for the nominal and uncertainty parts respectively, and a field</span>
+<span class="sd">          ``__dtype__`` containing value ``UFloat``.</span>
+<span class="sd">        * Object with a ``_JSONEncoder`` method get converted the return value of</span>
+<span class="sd">          that method.</span>
+<span class="sd">        * Objects which support the pickle protocol get converted using the</span>
+<span class="sd">          data provided by that protocol.</span>
+<span class="sd">        * Other objects which cannot be serialized get converted to their</span>
+<span class="sd">          string representation (using the ``str`` function).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="c1"># this context manager can be removed when uncertainties</span>
+            <span class="c1"># no longer triggers deprecation warnings</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
+            <span class="kn">import</span> <span class="nn">uncertainties</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">generic</span><span class="p">)</span> \
+                <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complexfloating</span><span class="p">):</span>
+            <span class="c1"># for numpy scalars</span>
+            <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="c1"># for numpy arrays</span>
+            <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Complex</span><span class="p">)</span> <span class="ow">and</span>
+              <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s1">&#39;__dtype__&#39;</span><span class="p">:</span> <span class="s1">&#39;complex&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;re&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">real</span><span class="p">),</span>
+                <span class="s1">&#39;im&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">uncertainties</span><span class="o">.</span><span class="n">UFloat</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s1">&#39;__dtype__&#39;</span><span class="p">:</span> <span class="s1">&#39;UFloat&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;nominal_value&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">nominal_value</span><span class="p">),</span>
+                <span class="s1">&#39;std_dev&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">std_dev</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;_JSONEncoder&#39;</span><span class="p">):</span>
+            <span class="c1"># Use object&#39;s custom JSON encoder</span>
+            <span class="n">jsosencode</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;_JSONEncoder&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">jsosencode</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="c1"># json does not support dumping UserDict but</span>
+                <span class="c1"># we can dump the dict stored internally in the</span>
+                <span class="c1"># UserDict</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">UserDict</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">data</span>
+                <span class="c1"># See if the object supports the pickle protocol.</span>
+                <span class="c1"># If so, we should be able to use that to serialize.</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;__getnewargs__&#39;</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="p">{</span>
+                        <span class="s1">&#39;__class__&#39;</span><span class="p">:</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                        <span class="s1">&#39;__args__&#39;</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;__getnewargs__&quot;</span><span class="p">)()</span>
+                    <span class="p">}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># we cannot convert the object to JSON, just take a string</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">s</span></div></div>
+
+
+<div class="viewcode-block" id="tprint"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.tprint">[docs]</a><span class="k">def</span> <span class="nf">tprint</span><span class="p">(</span><span class="n">string</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Print progress of a loop every ``dt`` seconds.&quot;&quot;&quot;</span>
+    <span class="n">ptime</span> <span class="o">=</span> <span class="n">_tprint_times</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">ptime</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">dt</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+        <span class="n">_tprint_times</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="is_sequence"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.is_sequence">[docs]</a><span class="k">def</span> <span class="nf">is_sequence</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Test if an object is a sequence.</span>
+
+<span class="sd">    We do not consider strings or unordered collections like sets to be</span>
+<span class="sd">    sequences, but we do accept iterators (such as generators).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterator</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="is_sequence_of"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.is_sequence_of">[docs]</a><span class="k">def</span> <span class="nf">is_sequence_of</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+                   <span class="n">types</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="nb">object</span><span class="p">],</span>
+                                         <span class="n">Tuple</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="nb">object</span><span class="p">],</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="n">depth</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Test if object is a sequence of entirely certain class(es).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        obj: The object to test.</span>
+<span class="sd">        types: Allowed type(s). If omitted, we just test the depth/shape.</span>
+<span class="sd">        depth: Level of nesting, ie if ``depth=2`` we expect a sequence of</span>
+<span class="sd">               sequences. Default 1 unless ``shape`` is supplied.</span>
+<span class="sd">        shape: The shape of the sequence, ie its length in each dimension.</span>
+<span class="sd">               If ``depth`` is omitted, but ``shape`` included, we set</span>
+<span class="sd">               ``depth = len(shape)``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: ``True`` if every item in ``obj`` matches ``types``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_sequence</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
+        <span class="n">next_shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">depth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">depth</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">depth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">depth</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">depth</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;inconsistent depth and shape&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">next_shape</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">depth</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_sequence_of</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="n">depth</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                                  <span class="n">shape</span><span class="o">=</span><span class="n">next_shape</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">types</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">types</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="is_function"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.is_function">[docs]</a><span class="k">def</span> <span class="nf">is_function</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+                <span class="n">arg_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">coroutine</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check and require a function that can accept the specified number of</span>
+<span class="sd">    positional arguments, which either is or is not a coroutine</span>
+<span class="sd">    type casting &quot;functions&quot; are allowed, but only in the 1-argument form.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        f: Function to check.</span>
+<span class="sd">        arg_count: Number of argument f should accept.</span>
+<span class="sd">        coroutine: Is a coroutine.</span>
+
+<span class="sd">    Return:</span>
+<span class="sd">        bool: is function and accepts the specified number of arguments.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_count</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">arg_count</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;arg_count must be a non-negative integer&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">callable</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">bool</span><span class="p">(</span><span class="n">coroutine</span><span class="p">)</span> <span class="ow">is</span> <span class="n">iscoroutinefunction</span><span class="p">(</span><span class="n">f</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="c1"># for type casting functions, eg int, str, float</span>
+        <span class="c1"># only support the one-parameter form of these,</span>
+        <span class="c1"># otherwise the user should make an explicit function.</span>
+        <span class="k">return</span> <span class="n">arg_count</span> <span class="o">==</span> <span class="mi">1</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sig</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="c1"># some built-in functions/methods don&#39;t describe themselves to inspect</span>
+        <span class="c1"># we already know it&#39;s a callable and coroutine is correct.</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">arg_count</span>
+        <span class="n">sig</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="o">*</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="full_class"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.full_class">[docs]</a><span class="k">def</span> <span class="nf">full_class</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;The full importable path to an object&#39;s class.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span></div>
+
+
+<div class="viewcode-block" id="named_repr"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.named_repr">[docs]</a><span class="k">def</span> <span class="nf">named_repr</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Enhance the standard repr() with the object&#39;s name attribute.&quot;&quot;&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&lt;</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1"> at </span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">obj</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span>
+        <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+        <span class="nb">id</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">s</span></div>
+
+
+<span class="n">K</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Hashable</span><span class="p">)</span>
+<span class="n">L</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Hashable</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="deep_update"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.deep_update">[docs]</a><span class="k">def</span> <span class="nf">deep_update</span><span class="p">(</span>
+        <span class="n">dest</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="n">K</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">update</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">L</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">K</span><span class="p">,</span> <span class="n">L</span><span class="p">],</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Recursively update one JSON structure with another.</span>
+
+<span class="sd">    Only dives into nested dicts; lists get replaced completely.</span>
+<span class="sd">    If the original value is a dictionary and the new value is not, or vice versa,</span>
+<span class="sd">    we also replace the value completely.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dest_int</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">MutableMapping</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">K</span><span class="p">,</span> <span class="n">L</span><span class="p">],</span> <span class="n">Any</span><span class="p">],</span> <span class="n">dest</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v_update</span> <span class="ow">in</span> <span class="n">update</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">v_dest</span> <span class="o">=</span> <span class="n">dest_int</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v_update</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">Mapping</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v_dest</span><span class="p">,</span> <span class="n">abc</span><span class="o">.</span><span class="n">MutableMapping</span><span class="p">):</span>
+            <span class="n">deep_update</span><span class="p">(</span><span class="n">v_dest</span><span class="p">,</span> <span class="n">v_update</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dest_int</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">v_update</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dest_int</span></div>
+
+
+<span class="c1"># could use numpy.arange here, but</span>
+<span class="c1"># a) we don&#39;t want to require that as a dep so low level</span>
+<span class="c1"># b) I&#39;d like to be more flexible with the sign of step</span>
+<div class="viewcode-block" id="permissive_range"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.permissive_range">[docs]</a><span class="k">def</span> <span class="nf">permissive_range</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="n">SupportsAbs</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+                     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a range (as a list of values) with floating point steps.</span>
+<span class="sd">    Always starts at start and moves toward stop, regardless of the</span>
+<span class="sd">    sign of step.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        start: The starting value of the range.</span>
+<span class="sd">        stop: The end value of the range.</span>
+<span class="sd">        step: Spacing between the values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">signed_step</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">step</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="k">if</span> <span class="n">stop</span> <span class="o">&gt;</span> <span class="n">start</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># take off a tiny bit for rounding errors</span>
+    <span class="n">step_count</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="n">signed_step</span> <span class="o">-</span> <span class="mf">1e-10</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">start</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">signed_step</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">step_count</span><span class="p">)]</span></div>
+
+
+<span class="c1"># This is very much related to the permissive_range but more</span>
+<span class="c1"># strict on the input, start and endpoints are always included,</span>
+<span class="c1"># and a sweep is only created if the step matches an integer</span>
+<span class="c1"># number of points.</span>
+<span class="c1"># numpy is a dependency anyways.</span>
+<span class="c1"># Furthermore the sweep allows to take a number of points and generates</span>
+<span class="c1"># an array with endpoints included, which is more intuitive to use in a sweep.</span>
+<div class="viewcode-block" id="make_sweep"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.make_sweep">[docs]</a><span class="k">def</span> <span class="nf">make_sweep</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+               <span class="n">stop</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+               <span class="n">step</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+               <span class="n">num</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+               <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate numbers over a specified interval.</span>
+<span class="sd">    Requires ``start`` and ``stop`` and (``step`` or ``num``).</span>
+<span class="sd">    The sign of ``step`` is not relevant.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        start: The starting value of the sequence.</span>
+<span class="sd">        stop: The end value of the sequence.</span>
+<span class="sd">        step:  Spacing between values.</span>
+<span class="sd">        num: Number of values to generate.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.ndarray: numbers over a specified interval as a ``numpy.linspace``.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; make_sweep(0, 10, num=5)</span>
+<span class="sd">        [0.0, 2.5, 5.0, 7.5, 10.0]</span>
+<span class="sd">        &gt;&gt;&gt; make_sweep(5, 10, step=1)</span>
+<span class="sd">        [5.0, 6.0, 7.0, 8.0, 9.0, 10.0]</span>
+<span class="sd">        &gt;&gt;&gt; make_sweep(15, 10.5, step=1.5)</span>
+<span class="sd">        &gt;[15.0, 13.5, 12.0, 10.5]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">step</span> <span class="ow">and</span> <span class="n">num</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Don</span><span class="se">\&#39;</span><span class="s1">t use `step` and `num` at the same time.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">num</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;If you really want to go from `start` to &#39;</span>
+                         <span class="s1">&#39;`stop` in one step, specify `num=2`.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">steps</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">((</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span><span class="p">)</span>
+        <span class="n">tolerance</span> <span class="o">=</span> <span class="mf">1e-10</span>
+        <span class="n">steps_lo</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">steps</span> <span class="o">+</span> <span class="n">tolerance</span><span class="p">))</span>
+        <span class="n">steps_hi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">steps</span> <span class="o">-</span> <span class="n">tolerance</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">steps_lo</span> <span class="o">!=</span> <span class="n">steps_hi</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Could not find an integer number of points for &#39;</span>
+                <span class="s1">&#39;the the given `start`, `stop`, and `step` &#39;</span>
+                <span class="s1">&#39;values. </span><span class="se">\n</span><span class="s1">Number of points is </span><span class="si">{:d}</span><span class="s1"> or </span><span class="si">{:d}</span><span class="s1">.&#39;</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">steps_lo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">steps_hi</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">num_steps</span> <span class="o">=</span> <span class="n">steps_lo</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">num_steps</span> <span class="o">=</span> <span class="n">num</span>
+
+    <span class="n">output_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num_steps</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">output_list</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="wait_secs"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.wait_secs">[docs]</a><span class="k">def</span> <span class="nf">wait_secs</span><span class="p">(</span><span class="n">finish_clock</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the number of seconds until a given clock time.</span>
+<span class="sd">    The clock time should be the result of ``time.perf_counter()``.</span>
+<span class="sd">    Does NOT wait for this time.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">delay</span> <span class="o">=</span> <span class="n">finish_clock</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">delay</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;negative delay </span><span class="si">{</span><span class="n">delay</span><span class="si">:</span><span class="s1">.6f</span><span class="si">}</span><span class="s1"> sec&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">delay</span></div>
+
+
+<div class="viewcode-block" id="DelegateAttributes"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.DelegateAttributes">[docs]</a><span class="k">class</span> <span class="nc">DelegateAttributes</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mixin class to create attributes of this object by</span>
+<span class="sd">    delegating them to one or more dictionaries and/or objects.</span>
+
+<span class="sd">    Also fixes ``__dir__`` so the delegated attributes will show up</span>
+<span class="sd">    in ``dir()`` and ``autocomplete``.</span>
+
+<span class="sd">    Attribute resolution order:</span>
+<span class="sd">        1. Real attributes of this object.</span>
+<span class="sd">        2. Keys of each dictionary in ``delegate_attr_dicts`` (in order).</span>
+<span class="sd">        3. Attributes of each object in ``delegate_attr_objects`` (in order).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">delegate_attr_dicts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A list of names (strings) of dictionaries</span>
+<span class="sd">    which are (or will be) attributes of ``self``, whose keys should</span>
+<span class="sd">    be treated as attributes of ``self``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">delegate_attr_objects</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A list of names (strings) of objects</span>
+<span class="sd">    which are (or will be) attributes of ``self``, whose attributes</span>
+<span class="sd">    should be passed through to ``self``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">omit_delegate_attrs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A list of attribute names (strings)</span>
+<span class="sd">    to *not* delegate to any other dictionary or object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">omit_delegate_attrs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39; does not delegate attribute </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">delegate_attr_dicts</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="c1"># needed to prevent infinite loops!</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                    <span class="s2">&quot;dict &#39;</span><span class="si">{}</span><span class="s2">&#39; has not been created in object &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">delegate_attr_objects</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                    <span class="s2">&quot;object &#39;</span><span class="si">{}</span><span class="s2">&#39; has not been created in object &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+            <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39; object and its delegates have no attribute &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">delegate_attr_dicts</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">names</span> <span class="o">+=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                          <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">omit_delegate_attrs</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">delegate_attr_objects</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">names</span> <span class="o">+=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+                          <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">omit_delegate_attrs</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="strip_attrs"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.strip_attrs">[docs]</a><span class="k">def</span> <span class="nf">strip_attrs</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">whitelist</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">())</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Irreversibly remove all direct instance attributes of object, to help with</span>
+<span class="sd">    disposal, breaking circular references.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        obj: Object to be stripped.</span>
+<span class="sd">        whitelist: List of names that are not stripped from the object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">lst</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">whitelist</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="c1"># TODO (giulioungaretti) fix bare-except</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="c1"># TODO (giulioungaretti) fix bare-except</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="compare_dictionaries"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.compare_dictionaries">[docs]</a><span class="k">def</span> <span class="nf">compare_dictionaries</span><span class="p">(</span><span class="n">dict_1</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+                         <span class="n">dict_2</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+                         <span class="n">dict_1_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;d1&#39;</span><span class="p">,</span>
+                         <span class="n">dict_2_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;d2&#39;</span><span class="p">,</span>
+                         <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compare two dictionaries recursively to find non matching elements.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dict_1: First dictionary to compare.</span>
+<span class="sd">        dict_2: Second dictionary to compare.</span>
+<span class="sd">        dict_1_name: Optional name of the first dictionary used in the</span>
+<span class="sd">                     differences string.</span>
+<span class="sd">        dict_2_name: Optional name of the second dictionary used in the</span>
+<span class="sd">                     differences string.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple: Are the dicts equal and the difference rendered as</span>
+<span class="sd">               a string.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">key_err</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">value_err</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">old_path</span> <span class="o">=</span> <span class="n">path</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">dict_1</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">old_path</span> <span class="o">+</span> <span class="s2">&quot;[</span><span class="si">%s</span><span class="s2">]&quot;</span> <span class="o">%</span> <span class="n">k</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dict_2</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">key_err</span> <span class="o">+=</span> <span class="s2">&quot;Key </span><span class="si">{}{}</span><span class="s2"> not in </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">dict_1_name</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">dict_2_name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dict_1</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dict_2</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">err</span> <span class="o">+=</span> <span class="n">compare_dictionaries</span><span class="p">(</span><span class="n">dict_1</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">dict_2</span><span class="p">[</span><span class="n">k</span><span class="p">],</span>
+                                            <span class="n">dict_1_name</span><span class="p">,</span> <span class="n">dict_2_name</span><span class="p">,</span> <span class="n">path</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="p">(</span><span class="n">dict_1</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="n">dict_2</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+
+                <span class="c1"># if values are equal-length numpy arrays, the result of</span>
+                <span class="c1"># &quot;==&quot; is a bool array, so we need to &#39;all&#39; it.</span>
+                <span class="c1"># In any other case &quot;==&quot; returns a bool</span>
+                <span class="c1"># TODO(alexcjohnson): actually, if *one* is a numpy array</span>
+                <span class="c1"># and the other is another sequence with the same entries,</span>
+                <span class="c1"># this will compare them as equal. Do we want this, or should</span>
+                <span class="c1"># we require exact type match?</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="s1">&#39;all&#39;</span><span class="p">):</span>
+                    <span class="n">match</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">match</span><span class="p">:</span>
+                    <span class="n">value_err</span> <span class="o">+=</span> <span class="p">(</span>
+                        <span class="s1">&#39;Value of &quot;</span><span class="si">{}{}</span><span class="s1">&quot; (&quot;</span><span class="si">{}</span><span class="s1">&quot;, type&quot;</span><span class="si">{}</span><span class="s1">&quot;) not same as</span><span class="se">\n</span><span class="s1">&#39;</span>
+                        <span class="s1">&#39;  &quot;</span><span class="si">{}{}</span><span class="s1">&quot; (&quot;</span><span class="si">{}</span><span class="s1">&quot;, type&quot;</span><span class="si">{}</span><span class="s1">&quot;)</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">dict_1_name</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">dict_1</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">type</span><span class="p">(</span><span class="n">dict_1</span><span class="p">[</span><span class="n">k</span><span class="p">]),</span>
+                        <span class="n">dict_2_name</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">dict_2</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">type</span><span class="p">(</span><span class="n">dict_2</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span>
+
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">dict_2</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">old_path</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">]&quot;</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dict_1</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">key_err</span> <span class="o">+=</span> <span class="s2">&quot;Key </span><span class="si">{}{}</span><span class="s2"> not in </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">dict_2_name</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">dict_1_name</span><span class="p">)</span>
+
+    <span class="n">dict_differences</span> <span class="o">=</span> <span class="n">key_err</span> <span class="o">+</span> <span class="n">value_err</span> <span class="o">+</span> <span class="n">err</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dict_differences</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">dicts_equal</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dicts_equal</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">dicts_equal</span><span class="p">,</span> <span class="n">dict_differences</span></div>
+
+
+<div class="viewcode-block" id="warn_units"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.warn_units">[docs]</a><span class="k">def</span> <span class="nf">warn_units</span><span class="p">(</span><span class="n">class_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">instance</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;`units` is deprecated for the `&#39;</span> <span class="o">+</span> <span class="n">class_name</span> <span class="o">+</span>
+                    <span class="s1">&#39;` class, use `unit` instead. &#39;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="n">instance</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="foreground_qt_window"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.foreground_qt_window">[docs]</a><span class="k">def</span> <span class="nf">foreground_qt_window</span><span class="p">(</span><span class="n">window</span><span class="p">:</span> <span class="s2">&quot;QMainWindow&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Try as hard as possible to bring a qt window to the front. This</span>
+<span class="sd">    will use pywin32 if installed and running on windows as this</span>
+<span class="sd">    seems to be the only reliable way to foreground a window. The</span>
+<span class="sd">    build-in qt functions often doesn&#39;t work. Note that to use this</span>
+<span class="sd">    with pyqtgraphs remote process you should use the ref in that module</span>
+<span class="sd">    as in the example below.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        window: Handle to qt window to foreground.</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; Qtplot.qt_helpers.foreground_qt_window(plot.win)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">win32con</span>
+        <span class="kn">from</span> <span class="nn">win32gui</span> <span class="kn">import</span> <span class="n">SetWindowPos</span>
+
+        <span class="c1"># use the idea from</span>
+        <span class="c1"># https://stackoverflow.com/questions/12118939/how-to-make-a-pyqt4-window-jump-to-the-front</span>
+        <span class="n">SetWindowPos</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">winId</span><span class="p">(),</span>
+                     <span class="n">win32con</span><span class="o">.</span><span class="n">HWND_TOPMOST</span><span class="p">,</span> <span class="c1"># = always on top. only reliable way to bring it to the front on windows</span>
+                     <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+                     <span class="n">win32con</span><span class="o">.</span><span class="n">SWP_NOMOVE</span> <span class="o">|</span> <span class="n">win32con</span><span class="o">.</span><span class="n">SWP_NOSIZE</span> <span class="o">|</span> <span class="n">win32con</span><span class="o">.</span><span class="n">SWP_SHOWWINDOW</span><span class="p">)</span>
+        <span class="n">SetWindowPos</span><span class="p">(</span><span class="n">window</span><span class="o">.</span><span class="n">winId</span><span class="p">(),</span>
+                     <span class="n">win32con</span><span class="o">.</span><span class="n">HWND_NOTOPMOST</span><span class="p">,</span> <span class="c1"># disable the always on top, but leave window at its top position</span>
+                     <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+                     <span class="n">win32con</span><span class="o">.</span><span class="n">SWP_NOMOVE</span> <span class="o">|</span> <span class="n">win32con</span><span class="o">.</span><span class="n">SWP_NOSIZE</span> <span class="o">|</span> <span class="n">win32con</span><span class="o">.</span><span class="n">SWP_SHOWWINDOW</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">raise_</span><span class="p">()</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">activateWindow</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="add_to_spyder_UMR_excludelist"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.add_to_spyder_UMR_excludelist">[docs]</a><span class="k">def</span> <span class="nf">add_to_spyder_UMR_excludelist</span><span class="p">(</span><span class="n">modulename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Spyder tries to reload any user module. This does not work well for</span>
+<span class="sd">    qcodes because it overwrites Class variables. QCoDeS uses these to</span>
+<span class="sd">    store global attributes such as default station, monitor and list of</span>
+<span class="sd">    instruments. This &quot;feature&quot; can be disabled by the</span>
+<span class="sd">    gui. Unfortunately this cannot be disabled in a natural way</span>
+<span class="sd">    programmatically so in this hack we replace the global ``__umr__`` instance</span>
+<span class="sd">    with a new one containing the module we want to exclude. This will do</span>
+<span class="sd">    nothing if Spyder is not found.</span>
+<span class="sd">    TODO is there a better way to detect if we are in spyder?</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="s1">&#39;SPYDER&#39;</span> <span class="ow">in</span> <span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">):</span>
+
+        <span class="n">sitecustomize_found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">spyder.utils.site</span> <span class="kn">import</span> <span class="n">sitecustomize</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sitecustomize_found</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">sitecustomize_found</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">spyder_kernels.customize</span> <span class="kn">import</span> <span class="n">spydercustomize</span> <span class="k">as</span> <span class="n">sitecustomize</span>
+
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sitecustomize_found</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">sitecustomize_found</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">excludednamelist</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SPY_UMR_NAMELIST&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">modulename</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">excludednamelist</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;adding </span><span class="si">{</span><span class="n">modulename</span><span class="si">}</span><span class="s2"> to excluded modules&quot;</span><span class="p">)</span>
+            <span class="n">excludednamelist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">modulename</span><span class="p">)</span>
+            <span class="n">sitecustomize</span><span class="o">.</span><span class="n">__umr__</span> <span class="o">=</span> <span class="n">sitecustomize</span><span class="o">.</span><span class="n">UserModuleReloader</span><span class="p">(</span><span class="n">namelist</span><span class="o">=</span><span class="n">excludednamelist</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;SPY_UMR_NAMELIST&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">excludednamelist</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="attribute_set_to"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.attribute_set_to">[docs]</a><span class="nd">@contextmanager</span>
+<span class="k">def</span> <span class="nf">attribute_set_to</span><span class="p">(</span><span class="n">object_</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span>
+                     <span class="n">attribute_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                     <span class="n">new_value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This context manager allows to change a given attribute of a given object</span>
+<span class="sd">    to a new value, and the original value is reverted upon exit of the context</span>
+<span class="sd">    manager.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        object_: The object which attribute value is to be changed.</span>
+<span class="sd">        attribute_name: The name of the attribute that is to be changed.</span>
+<span class="sd">        new_value: The new value to which the attribute of the object is</span>
+<span class="sd">                   to be changed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">old_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">object_</span><span class="p">,</span> <span class="n">attribute_name</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">object_</span><span class="p">,</span> <span class="n">attribute_name</span><span class="p">,</span> <span class="n">new_value</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">object_</span><span class="p">,</span> <span class="n">attribute_name</span><span class="p">,</span> <span class="n">old_value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="partial_with_docstring"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.partial_with_docstring">[docs]</a><span class="k">def</span> <span class="nf">partial_with_docstring</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+                           <span class="n">docstring</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                           <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    We want to have a partial function which will allow us access the docstring</span>
+<span class="sd">    through the python built-in help function. This is particularly important</span>
+<span class="sd">    for client-facing driver methods, whose arguments might not be obvious.</span>
+
+<span class="sd">    Consider the follow example why this is needed:</span>
+
+<span class="sd">    &gt;&gt;&gt; from functools import partial</span>
+<span class="sd">    &gt;&gt;&gt; def f():</span>
+<span class="sd">    &gt;&gt;&gt; ... pass</span>
+<span class="sd">    &gt;&gt;&gt; g = partial(f)</span>
+<span class="sd">    &gt;&gt;&gt; g.__doc__ = &quot;bla&quot;</span>
+<span class="sd">    &gt;&gt;&gt; help(g) # this will print an unhelpful message</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        func: A function that its docstring will be accessed.</span>
+<span class="sd">        docstring: The docstring of the corresponding function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ex</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="o">**</span><span class="n">inner_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ex</span><span class="p">(</span><span class="o">**</span><span class="n">inner_kwargs</span><span class="p">)</span>
+
+    <span class="n">inner</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">docstring</span>
+
+    <span class="k">return</span> <span class="n">inner</span></div>
+
+
+<div class="viewcode-block" id="create_on_off_val_mapping"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.create_on_off_val_mapping">[docs]</a><span class="k">def</span> <span class="nf">create_on_off_val_mapping</span><span class="p">(</span><span class="n">on_val</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">off_val</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">False</span>
+                              <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a value mapping which maps inputs which reasonably mean &quot;on&quot;/&quot;off&quot;</span>
+<span class="sd">    to the specified ``on_val``/``off_val`` which are to be sent to the</span>
+<span class="sd">    instrument. This value mapping is such that, when inverted,</span>
+<span class="sd">    ``on_val``/``off_val`` are mapped to boolean ``True``/``False``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Here are the lists of inputs which &quot;reasonably&quot; mean the same as</span>
+    <span class="c1"># &quot;on&quot;/&quot;off&quot; (note that True/False values will be added below, and they</span>
+    <span class="c1"># will always be added)</span>
+    <span class="n">ons_</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;On&#39;</span><span class="p">,</span>  <span class="s1">&#39;ON&#39;</span><span class="p">,</span>  <span class="s1">&#39;on&#39;</span><span class="p">,</span>  <span class="s1">&#39;1&#39;</span><span class="p">)</span>
+    <span class="n">offs_</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Off&#39;</span><span class="p">,</span> <span class="s1">&#39;OFF&#39;</span><span class="p">,</span> <span class="s1">&#39;off&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
+
+    <span class="c1"># The True/False values are added at the end of on/off inputs,</span>
+    <span class="c1"># so that after inversion True/False will be the only remaining</span>
+    <span class="c1"># keys in the inverted value mapping dictionary.</span>
+    <span class="c1"># NOTE that using 1/0 integer values will also work implicitly</span>
+    <span class="c1"># due to `hash(True) == hash(1)`/`hash(False) == hash(0)`,</span>
+    <span class="c1"># hence there is no need for adding 1/0 values explicitly to</span>
+    <span class="c1"># the list of `ons` and `offs` values.</span>
+    <span class="n">ons</span> <span class="o">=</span> <span class="n">ons_</span> <span class="o">+</span> <span class="p">(</span><span class="kc">True</span><span class="p">,)</span>
+    <span class="n">offs</span> <span class="o">=</span> <span class="n">offs_</span> <span class="o">+</span> <span class="p">(</span><span class="kc">False</span><span class="p">,)</span>
+
+    <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">([(</span><span class="n">on</span><span class="p">,</span> <span class="n">on_val</span><span class="p">)</span> <span class="k">for</span> <span class="n">on</span> <span class="ow">in</span> <span class="n">ons</span><span class="p">]</span>
+                       <span class="o">+</span> <span class="p">[(</span><span class="n">off</span><span class="p">,</span> <span class="n">off_val</span><span class="p">)</span> <span class="k">for</span> <span class="n">off</span> <span class="ow">in</span> <span class="n">offs</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="abstractmethod"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.abstractmethod">[docs]</a><span class="k">def</span> <span class="nf">abstractmethod</span><span class="p">(</span><span class="n">funcobj</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A decorator indicating abstract methods.</span>
+
+<span class="sd">    This is heavily inspired by the decorator of the same name in</span>
+<span class="sd">    the ABC standard library. But we make our own version because</span>
+<span class="sd">    we actually want to allow the class with the abstract method to be</span>
+<span class="sd">    instantiated and we will use this property to detect if the</span>
+<span class="sd">    method is abstract and should be overwritten.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">funcobj</span><span class="o">.</span><span class="n">__qcodes_is_abstract_method__</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># type: ignore[attr-defined]</span>
+    <span class="k">return</span> <span class="n">funcobj</span></div>
+
+
+<span class="k">def</span> <span class="nf">_ruamel_importer</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">ruamel_yaml</span> <span class="kn">import</span> <span class="n">YAML</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">ruamel.yaml</span> <span class="kn">import</span> <span class="n">YAML</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;No ruamel module found. Please install &#39;</span>
+                              <span class="s1">&#39;either ruamel.yaml or ruamel_yaml.&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">YAML</span>
+
+
+<span class="c1"># YAML module to be imported. Resovles naming issues of YAML from pypi and</span>
+<span class="c1"># anaconda</span>
+<span class="n">YAML</span> <span class="o">=</span> <span class="n">_ruamel_importer</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="get_qcodes_path"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.get_qcodes_path">[docs]</a><span class="k">def</span> <span class="nf">get_qcodes_path</span><span class="p">(</span><span class="o">*</span><span class="n">subfolder</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return full file path of the QCoDeS module. Additional arguments will be</span>
+<span class="sd">    appended as subfolder.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">qcodes</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">qcodes</span><span class="o">.</span><span class="vm">__file__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="o">*</span><span class="n">subfolder</span><span class="p">)</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span></div>
+
+
+<div class="viewcode-block" id="get_qcodes_user_path"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.get_qcodes_user_path">[docs]</a><span class="k">def</span> <span class="nf">get_qcodes_user_path</span><span class="p">(</span><span class="o">*</span><span class="n">file_parts</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get ``~/.qcodes`` path or if defined the path defined in the</span>
+<span class="sd">    ``QCODES_USER_PATH`` environment variable.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        path to the user qcodes directory</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">QCODES_USER_PATH_ENV</span><span class="p">,</span>
+                          <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">(),</span> <span class="s1">&#39;.qcodes&#39;</span><span class="p">))</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="o">*</span><span class="n">file_parts</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="checked_getattr"><a class="viewcode-back" href="../../../api/utils/helpers.html#qcodes.utils.helpers.checked_getattr">[docs]</a><span class="k">def</span> <span class="nf">checked_getattr</span><span class="p">(</span>
+    <span class="n">instance</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">attribute</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">expected_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Like ``getattr`` but raises type error if not of expected type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">attr</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">expected_type</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">attr</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

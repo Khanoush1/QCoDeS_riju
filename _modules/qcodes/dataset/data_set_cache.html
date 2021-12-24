@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.dataset.data_set_cache &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.dataset.data_set_cache</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.dataset.data_set_cache</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">TypeVar</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">qcodes.dataset.descriptions.rundescriber</span> <span class="kn">import</span> <span class="n">RunDescriber</span>
+<span class="kn">from</span> <span class="nn">qcodes.dataset.sqlite.connection</span> <span class="kn">import</span> <span class="n">ConnectionPlus</span>
+<span class="kn">from</span> <span class="nn">qcodes.dataset.sqlite.queries</span> <span class="kn">import</span> <span class="n">completed</span><span class="p">,</span> <span class="n">load_new_data_for_rundescriber</span>
+<span class="kn">from</span> <span class="nn">qcodes.utils.deprecate</span> <span class="kn">import</span> <span class="n">deprecate</span>
+
+<span class="kn">from</span> <span class="nn">.exporters.export_to_pandas</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">load_to_concatenated_dataframe</span><span class="p">,</span>
+    <span class="n">load_to_dataframe_dict</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.exporters.export_to_xarray</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">load_to_xarray_dataarray_dict</span><span class="p">,</span>
+    <span class="n">load_to_xarray_dataset</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+    <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+
+    <span class="kn">from</span> <span class="nn">.data_set</span> <span class="kn">import</span> <span class="n">DataSet</span><span class="p">,</span> <span class="n">ParameterData</span>
+    <span class="kn">from</span> <span class="nn">.data_set_in_memory</span> <span class="kn">import</span> <span class="n">DataSetInMem</span>
+    <span class="kn">from</span> <span class="nn">.data_set_protocol</span> <span class="kn">import</span> <span class="n">DataSetProtocol</span>
+
+<span class="n">DatasetType</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">&quot;DataSetProtocol&quot;</span><span class="p">,</span> <span class="n">covariant</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DataSetCache"><a class="viewcode-back" href="../../../api/dataset/data_set.html#qcodes.dataset.data_set_cache.DataSetCache">[docs]</a><span class="k">class</span> <span class="nc">DataSetCache</span><span class="p">(</span><span class="n">Generic</span><span class="p">[</span><span class="n">DatasetType</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The DataSetCache contains a in memory representation of the</span>
+<span class="sd">    data in this dataset as well a a method to progressively read data</span>
+<span class="sd">    from the db as it is written and methods to append data as it is received</span>
+<span class="sd">    without writing it to disk. The cache can either be loaded from the db</span>
+<span class="sd">    or produced as an in memory cache. It is not possible to combine these</span>
+<span class="sd">    two ways of producing a dataset cache. The cache is available in the</span>
+<span class="sd">    same formats as :py:class:`.DataSet.get_parameter_data` and</span>
+<span class="sd">    :py:class:`.DataSet.to_pandas_dataframe_dict`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="n">DatasetType</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span> <span class="o">=</span> <span class="n">dataset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span> <span class="n">ParameterData</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1">#: number of rows read per parameter tree (by the name of the dependent parameter)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_status</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1">#: number of rows written per parameter tree (by the name of the dependent parameter)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_status</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loaded_from_completed_ds</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_live</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rundescriber</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RunDescriber</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">description</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">live</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If true this cache has been produced by appending data as measured.</span>
+<span class="sd">        If false the data has been read from disk.</span>
+<span class="sd">        If None, then the cache does not yet have any data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_live</span>
+
+<div class="viewcode-block" id="DataSetCache.data"><a class="viewcode-back" href="../../../api/dataset/data_set.html#qcodes.dataset.data_set_cache.DataSetCache.data">[docs]</a>    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ParameterData</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads data from the database on disk if needed and returns</span>
+<span class="sd">        the cached data. The cached data is in almost the same format as</span>
+<span class="sd">        :py:class:`.DataSet.get_parameter_data`. However if a shape is provided</span>
+<span class="sd">        as part of the dataset metadata and fewer datapoints than expected are</span>
+<span class="sd">        returned the missing values will be replaced by `NaN` or zeroes</span>
+<span class="sd">        depending on the datatype.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The cached dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">live</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_data_from_db</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span></div>
+
+<div class="viewcode-block" id="DataSetCache.load_data_from_db"><a class="viewcode-back" href="../../../api/dataset/data_set.html#qcodes.dataset.data_set_cache.DataSetCache.load_data_from_db">[docs]</a>    <span class="k">def</span> <span class="nf">load_data_from_db</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the data from an on-disk format in case the cache is not live</span>
+
+<span class="sd">        Should be implemented in a specific subclass that knows how to read data</span>
+<span class="sd">        from disk</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="DataSetCache.add_data"><a class="viewcode-back" href="../../../api/dataset/data_set.html#qcodes.dataset.data_set_cache.DataSetCache.add_data">[docs]</a>    <span class="k">def</span> <span class="nf">add_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">live</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot append live data to a dataset that has &quot;</span>
+                <span class="s2">&quot;been fully or partially loaded from a database.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">expanded_data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">single_param_dict</span> <span class="ow">in</span> <span class="n">new_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">expanded_data</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">_expand_single_param_dict</span><span class="p">(</span>
+                <span class="n">single_param_dict</span>
+            <span class="p">)</span>
+
+        <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_status</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="n">append_shaped_parameter_data_to_existing_arrays</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rundescriber</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_status</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+            <span class="n">new_data</span><span class="o">=</span><span class="n">expanded_data</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">status</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">status</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_status</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_live</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="DataSetCache.to_pandas_dataframe_dict"><a class="viewcode-back" href="../../../api/dataset/data_set.html#qcodes.dataset.data_set_cache.DataSetCache.to_pandas_dataframe_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_pandas_dataframe_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the cached dataset to Pandas dataframes. The returned dataframes</span>
+<span class="sd">        are in the same format :py:class:`.DataSet.to_pandas_dataframe_dict`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A dict from parameter name to Pandas Dataframes. Each dataframe</span>
+<span class="sd">            represents one parameter tree.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">load_to_dataframe_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataSetCache.to_pandas_dataframe"><a class="viewcode-back" href="../../../api/dataset/data_set.html#qcodes.dataset.data_set_cache.DataSetCache.to_pandas_dataframe">[docs]</a>    <span class="k">def</span> <span class="nf">to_pandas_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the cached dataset to Pandas dataframes. The returned dataframes</span>
+<span class="sd">        are in the same format :py:class:`.DataSet.to_pandas_dataframe_dict`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A dict from parameter name to Pandas Dataframes. Each dataframe</span>
+<span class="sd">            represents one parameter tree.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">load_to_concatenated_dataframe</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataSetCache.to_pandas"><a class="viewcode-back" href="../../../api/dataset/data_set.html#qcodes.dataset.data_set_cache.DataSetCache.to_pandas">[docs]</a>    <span class="nd">@deprecate</span><span class="p">(</span><span class="n">alternative</span><span class="o">=</span><span class="s2">&quot;to_pandas_dataframe or to_pandas_dataframe_dict&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">to_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the values stored in the :class:`.dataset.data_set.DataSet` as a</span>
+<span class="sd">        concatenated :py:class:`pandas.DataFrame` s</span>
+
+<span class="sd">        The DataFrame contains a column for the data and is indexed by a</span>
+<span class="sd">        :py:class:`pandas.MultiIndex` formed from all the setpoints</span>
+<span class="sd">        of the parameter.</span>
+
+<span class="sd">        Note that if the dataset contains data for multiple parameters that do</span>
+<span class="sd">        not share the same setpoints it is recommended to use</span>
+<span class="sd">        :py:class:`.to_pandas_dataframe_dict`</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :py:class:`pandas.DataFrame` s with the requested parameter as</span>
+<span class="sd">            a column and a indexed by a :py:class:`pandas.MultiIndex` formed</span>
+<span class="sd">            by the dependencies.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_pandas_dataframe_dict</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DataSetCache.to_xarray_dataarray_dict"><a class="viewcode-back" href="../../../api/dataset/data_set.html#qcodes.dataset.data_set_cache.DataSetCache.to_xarray_dataarray_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_xarray_dataarray_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the values stored in the :class:`.dataset.data_set.DataSet` as a dict of</span>
+<span class="sd">        :py:class:`xr.DataArray` s</span>
+<span class="sd">        Each element in the dict is indexed by the names of the dependent parameters.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary from requested parameter names to :py:class:`xr.DataArray` s</span>
+<span class="sd">            with the requested parameter(s) as a column(s) and coordinates</span>
+<span class="sd">            formed by the dependencies.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">load_to_xarray_dataarray_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataSetCache.to_xarray_dataset"><a class="viewcode-back" href="../../../api/dataset/data_set.html#qcodes.dataset.data_set_cache.DataSetCache.to_xarray_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">to_xarray_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the values stored in the :class:`.dataset.data_set.DataSet` as a</span>
+<span class="sd">        :py:class:`xr.Dataset` object.</span>
+
+<span class="sd">        Note that if the dataset contains data for multiple parameters that do</span>
+<span class="sd">        not share the same setpoints it is recommended to use</span>
+<span class="sd">        :py:class:`.to_xarray_dataarray_dict`</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :py:class:`xr.Dataset` with the requested parameter(s) data as</span>
+<span class="sd">            :py:class:`xr.DataArray` s and coordinates formed by the dependencies.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">load_to_xarray_dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="load_new_data_from_db_and_append"><a class="viewcode-back" href="../../../api/dataset/data_set.html#qcodes.dataset.data_set_cache.load_new_data_from_db_and_append">[docs]</a><span class="k">def</span> <span class="nf">load_new_data_from_db_and_append</span><span class="p">(</span>
+    <span class="n">conn</span><span class="p">:</span> <span class="n">ConnectionPlus</span><span class="p">,</span>
+    <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">rundescriber</span><span class="p">:</span> <span class="n">RunDescriber</span><span class="p">,</span>
+    <span class="n">write_status</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="n">read_status</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+    <span class="n">existing_data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Append any new data in the db to an already existing datadict and return the merged</span>
+<span class="sd">    data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        conn: The connection to the sqlite database</span>
+<span class="sd">        table_name: The name of the table the data is stored in</span>
+<span class="sd">        rundescriber: The rundescriber that describes the run</span>
+<span class="sd">        write_status: Mapping from dependent parameter name to number of rows</span>
+<span class="sd">          written to the cache previously.</span>
+<span class="sd">        read_status: Mapping from dependent parameter name to number of rows</span>
+<span class="sd">          read from the db previously.</span>
+<span class="sd">        existing_data: Mapping from dependent parameter name to mapping</span>
+<span class="sd">          from parameter name to numpy arrays that the data should be</span>
+<span class="sd">          inserted into.</span>
+<span class="sd">          appended to.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Updated write and read status, and the updated ``data``</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">new_data</span><span class="p">,</span> <span class="n">updated_read_status</span> <span class="o">=</span> <span class="n">load_new_data_for_rundescriber</span><span class="p">(</span>
+        <span class="n">conn</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">rundescriber</span><span class="p">,</span> <span class="n">read_status</span>
+    <span class="p">)</span>
+
+    <span class="p">(</span><span class="n">updated_write_status</span><span class="p">,</span>
+     <span class="n">merged_data</span><span class="p">)</span> <span class="o">=</span> <span class="n">append_shaped_parameter_data_to_existing_arrays</span><span class="p">(</span>
+        <span class="n">rundescriber</span><span class="p">,</span>
+        <span class="n">write_status</span><span class="p">,</span>
+        <span class="n">existing_data</span><span class="p">,</span>
+        <span class="n">new_data</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">updated_write_status</span><span class="p">,</span> <span class="n">updated_read_status</span><span class="p">,</span> <span class="n">merged_data</span></div>
+
+
+<div class="viewcode-block" id="append_shaped_parameter_data_to_existing_arrays"><a class="viewcode-back" href="../../../api/dataset/data_set.html#qcodes.dataset.data_set_cache.append_shaped_parameter_data_to_existing_arrays">[docs]</a><span class="k">def</span> <span class="nf">append_shaped_parameter_data_to_existing_arrays</span><span class="p">(</span>
+    <span class="n">rundescriber</span><span class="p">:</span> <span class="n">RunDescriber</span><span class="p">,</span>
+    <span class="n">write_status</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="n">existing_data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]],</span>
+    <span class="n">new_data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Append datadict to an already existing datadict and return the merged</span>
+<span class="sd">    data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        rundescriber: The rundescriber that describes the run</span>
+<span class="sd">        write_status: Mapping from dependent parameter name to number of rows</span>
+<span class="sd">          written to the cache previously.</span>
+<span class="sd">        new_data: Mapping from dependent parameter name to mapping</span>
+<span class="sd">          from parameter name to numpy arrays that the data should be</span>
+<span class="sd">          appended to.</span>
+<span class="sd">        existing_data: Mapping from dependent parameter name to mapping</span>
+<span class="sd">          from parameter name to numpy arrays of new data.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Updated write and read status, and the updated ``data``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ps</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ps</span> <span class="ow">in</span>
+                       <span class="n">rundescriber</span><span class="o">.</span><span class="n">interdeps</span><span class="o">.</span><span class="n">non_dependencies</span><span class="p">)</span>
+    <span class="n">merged_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">updated_write_status</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">write_status</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">meas_parameter</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+
+        <span class="n">existing_data_1_tree</span> <span class="o">=</span> <span class="n">existing_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">meas_parameter</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="n">new_data_1_tree</span> <span class="o">=</span> <span class="n">new_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">meas_parameter</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="n">shapes</span> <span class="o">=</span> <span class="n">rundescriber</span><span class="o">.</span><span class="n">shapes</span>
+        <span class="k">if</span> <span class="n">shapes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">shapes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">meas_parameter</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="p">(</span><span class="n">merged_data</span><span class="p">[</span><span class="n">meas_parameter</span><span class="p">],</span>
+         <span class="n">updated_write_status</span><span class="p">[</span><span class="n">meas_parameter</span><span class="p">])</span> <span class="o">=</span> <span class="n">_merge_data</span><span class="p">(</span>
+            <span class="n">existing_data_1_tree</span><span class="p">,</span>
+            <span class="n">new_data_1_tree</span><span class="p">,</span>
+            <span class="n">shape</span><span class="p">,</span>
+            <span class="n">single_tree_write_status</span><span class="o">=</span><span class="n">write_status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">meas_parameter</span><span class="p">),</span>
+            <span class="n">meas_parameter</span><span class="o">=</span><span class="n">meas_parameter</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">updated_write_status</span><span class="p">,</span> <span class="n">merged_data</span></div>
+
+
+<span class="k">def</span> <span class="nf">_merge_data</span><span class="p">(</span><span class="n">existing_data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+                <span class="n">new_data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+                <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
+                <span class="n">single_tree_write_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                <span class="n">meas_parameter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+
+    <span class="n">subtree_merged_data</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">subtree_parameters</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">existing_data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">new_data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">new_write_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="n">single_param_merged_data</span><span class="p">,</span> <span class="n">new_write_status</span> <span class="o">=</span> <span class="n">_merge_data_single_param</span><span class="p">(</span>
+        <span class="n">existing_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">meas_parameter</span><span class="p">),</span>
+        <span class="n">new_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">meas_parameter</span><span class="p">),</span>
+        <span class="n">shape</span><span class="p">,</span>
+        <span class="n">single_tree_write_status</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">single_param_merged_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">subtree_merged_data</span><span class="p">[</span><span class="n">meas_parameter</span><span class="p">]</span> <span class="o">=</span> <span class="n">single_param_merged_data</span>
+
+    <span class="k">for</span> <span class="n">subtree_param</span> <span class="ow">in</span> <span class="n">subtree_parameters</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">subtree_param</span> <span class="o">!=</span> <span class="n">meas_parameter</span><span class="p">:</span>
+
+            <span class="n">single_param_merged_data</span><span class="p">,</span> <span class="n">new_write_status</span> <span class="o">=</span> <span class="n">_merge_data_single_param</span><span class="p">(</span>
+                <span class="n">existing_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">subtree_param</span><span class="p">),</span>
+                <span class="n">new_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">subtree_param</span><span class="p">),</span>
+                <span class="n">shape</span><span class="p">,</span>
+                <span class="n">single_tree_write_status</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">single_param_merged_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">subtree_merged_data</span><span class="p">[</span><span class="n">subtree_param</span><span class="p">]</span> <span class="o">=</span> <span class="n">single_param_merged_data</span>
+
+    <span class="k">return</span> <span class="n">subtree_merged_data</span><span class="p">,</span> <span class="n">new_write_status</span>
+
+
+<span class="k">def</span> <span class="nf">_merge_data_single_param</span><span class="p">(</span>
+        <span class="n">existing_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">new_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]],</span>
+        <span class="n">single_tree_write_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+    <span class="n">merged_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">existing_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">existing_values</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="mi">0</span>
+    <span class="p">)</span> <span class="ow">and</span> <span class="n">new_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">merged_data</span><span class="p">,</span> <span class="n">new_write_status</span><span class="p">)</span> <span class="o">=</span> <span class="n">_insert_into_data_dict</span><span class="p">(</span>
+            <span class="n">existing_values</span><span class="p">,</span> <span class="n">new_values</span><span class="p">,</span> <span class="n">single_tree_write_status</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">new_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">merged_data</span><span class="p">,</span>
+         <span class="n">new_write_status</span><span class="p">)</span> <span class="o">=</span> <span class="n">_create_new_data_dict</span><span class="p">(</span>
+            <span class="n">new_values</span><span class="p">,</span>
+            <span class="n">shape</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">existing_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">merged_data</span> <span class="o">=</span> <span class="n">existing_values</span>
+        <span class="n">new_write_status</span> <span class="o">=</span> <span class="n">single_tree_write_status</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">merged_data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">new_write_status</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">merged_data</span><span class="p">,</span> <span class="n">new_write_status</span>
+
+
+<span class="k">def</span> <span class="nf">_create_new_data_dict</span><span class="p">(</span><span class="n">new_values</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                          <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span>
+                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">new_values</span><span class="p">,</span> <span class="n">new_values</span><span class="o">.</span><span class="n">size</span>
+    <span class="k">elif</span> <span class="n">new_values</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">n_values</span> <span class="o">=</span> <span class="n">new_values</span><span class="o">.</span><span class="n">size</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">new_values</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">new_values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="k">elif</span> <span class="n">new_values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+        <span class="n">data</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="n">n_values</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">n_values</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">new_values</span><span class="p">,</span> <span class="n">new_values</span><span class="o">.</span><span class="n">size</span>
+
+
+<span class="k">def</span> <span class="nf">_insert_into_data_dict</span><span class="p">(</span>
+        <span class="n">existing_values</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">new_values</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">write_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">shape</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+    <span class="k">if</span> <span class="n">new_values</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">existing_values</span><span class="p">,</span> <span class="n">write_status</span>
+
+    <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">write_status</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">existing_values</span><span class="p">,</span> <span class="n">new_values</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="c1"># we cannot append into a ragged array so make that manually</span>
+            <span class="n">n_existing</span> <span class="o">=</span> <span class="n">existing_values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">n_new</span> <span class="o">=</span> <span class="n">new_values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">n_rows</span> <span class="o">=</span> <span class="n">n_existing</span> <span class="o">+</span> <span class="n">n_new</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">((</span><span class="n">n_rows</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_existing</span><span class="p">):</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">existing_values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_existing</span><span class="p">,</span> <span class="n">n_existing</span><span class="o">+</span><span class="n">n_new</span><span class="p">)):</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">new_values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">existing_values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">):</span>
+            <span class="c1"># string type arrays may be too small for the new data</span>
+            <span class="c1"># read so rescale if needed.</span>
+            <span class="k">if</span> <span class="n">new_values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span> <span class="o">&gt;</span> <span class="n">existing_values</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span><span class="p">:</span>
+                <span class="n">existing_values</span> <span class="o">=</span> <span class="n">existing_values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">new_values</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">n_values</span> <span class="o">=</span> <span class="n">new_values</span><span class="o">.</span><span class="n">size</span>
+        <span class="n">new_write_status</span> <span class="o">=</span> <span class="n">write_status</span><span class="o">+</span><span class="n">n_values</span>
+        <span class="k">if</span> <span class="n">new_write_status</span> <span class="o">&gt;</span> <span class="n">existing_values</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incorrect shape of dataset: Dataset is expected to &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;contain </span><span class="si">{</span><span class="n">existing_values</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> points but trying to &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;add an amount of data that makes it contain </span><span class="si">{</span><span class="n">new_write_status</span><span class="si">}</span><span class="s2"> points. Cache will &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;be flattened into a 1D array&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">existing_values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span>
+                              <span class="n">new_values</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                    <span class="n">new_write_status</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">existing_values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">write_status</span><span class="p">:</span><span class="n">new_write_status</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_values</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">existing_values</span><span class="p">,</span> <span class="n">new_write_status</span>
+
+
+<span class="k">def</span> <span class="nf">_expand_single_param_dict</span><span class="p">(</span>
+        <span class="n">single_param_dict</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="n">sizes</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">array</span><span class="o">.</span><span class="n">size</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">single_param_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="n">maxsize</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">sizes</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="n">max_names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">size</span> <span class="ow">in</span> <span class="n">sizes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">size</span> <span class="o">==</span> <span class="n">maxsize</span><span class="p">)</span>
+
+    <span class="n">expanded_param_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">single_param_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">max_names</span><span class="p">:</span>
+            <span class="n">expanded_param_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">array</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="n">expanded_param_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span>
+                <span class="n">single_param_dict</span><span class="p">[</span><span class="n">max_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                <span class="n">array</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">array</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">expanded_param_dict</span>
+
+
+<div class="viewcode-block" id="DataSetCacheInMem"><a class="viewcode-back" href="../../../api/dataset/data_set.html#qcodes.dataset.data_set_cache.DataSetCacheInMem">[docs]</a><span class="k">class</span> <span class="nc">DataSetCacheInMem</span><span class="p">(</span><span class="n">DataSetCache</span><span class="p">[</span><span class="s2">&quot;DataSetInMem&quot;</span><span class="p">]):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="DataSetCacheWithDBBackend"><a class="viewcode-back" href="../../../api/dataset/data_set.html#qcodes.dataset.data_set_cache.DataSetCacheWithDBBackend">[docs]</a><span class="k">class</span> <span class="nc">DataSetCacheWithDBBackend</span><span class="p">(</span><span class="n">DataSetCache</span><span class="p">[</span><span class="s2">&quot;DataSet&quot;</span><span class="p">]):</span>
+<div class="viewcode-block" id="DataSetCacheWithDBBackend.load_data_from_db"><a class="viewcode-back" href="../../../api/dataset/data_set.html#qcodes.dataset.data_set_cache.DataSetCacheWithDBBackend.load_data_from_db">[docs]</a>    <span class="k">def</span> <span class="nf">load_data_from_db</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loads data from the dataset into the cache.</span>
+<span class="sd">        If new data has been added to the dataset since the last time</span>
+<span class="sd">        this method was called, calling this method again would load</span>
+<span class="sd">        that new portion of the data and append to the already loaded data.</span>
+<span class="sd">        If the dataset is marked completed and data has already been loaded</span>
+<span class="sd">        no load will be performed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">live</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot load data into this cache from the &quot;</span>
+                <span class="s2">&quot;database because this dataset is being built &quot;</span>
+                <span class="s2">&quot;in-memory.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loaded_from_completed_ds</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">completed</span> <span class="o">=</span> <span class="n">completed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">conn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">run_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">completed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loaded_from_completed_ds</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_status</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_status</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="n">load_new_data_from_db_and_append</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">conn</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">table_name</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rundescriber</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_status</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_status</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">data_not_read</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="n">status</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">status</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">status</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_status</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data_not_read</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_live</span> <span class="o">=</span> <span class="kc">False</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

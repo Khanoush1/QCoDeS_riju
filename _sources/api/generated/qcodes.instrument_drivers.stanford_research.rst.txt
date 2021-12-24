@@ -1,0 +1,69 @@
+qcodes.instrument\_drivers.stanford\_research package
+=====================================================
+
+Submodules
+----------
+
+qcodes.instrument\_drivers.stanford\_research.SG384 module
+----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.stanford_research.SG384
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.stanford\_research.SR560 module
+----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.stanford_research.SR560
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.stanford\_research.SR830 module
+----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.stanford_research.SR830
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.stanford\_research.SR860 module
+----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.stanford_research.SR860
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.stanford\_research.SR865 module
+----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.stanford_research.SR865
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.stanford\_research.SR865A module
+-----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.stanford_research.SR865A
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.stanford\_research.SR86x module
+----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.stanford_research.SR86x
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: qcodes.instrument_drivers.stanford_research
+   :members:
+   :undoc-members:
+   :show-inheritance:

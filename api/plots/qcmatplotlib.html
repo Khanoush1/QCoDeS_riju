@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.plots.qcmatplotlib &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="qcodes.instrument_drivers package" href="../generated/qcodes.instrument_drivers.html" />
+    <link rel="prev" title="qcodes.plots.pyqtgraph" href="pyqtgraph.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">QCoDes API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#qcodes-api">QCoDeS API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#legacy-api">Legacy API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../loops.html">qcodes.loops</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../actions.html">qcodes.actions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../measure.html">qcodes.measure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../data/index.html">qcodes.data</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">qcodes.plots</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="base.html">qcodes.plots.base</a></li>
+<li class="toctree-l4"><a class="reference internal" href="colors.html">qcodes.plots.colors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyqtgraph.html">qcodes.plots.pyqtgraph</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">qcodes.plots.qcmatplotlib</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">QCoDes API documentation</a> &raquo;</li>
+          <li><a href="index.html">qcodes.plots</a> &raquo;</li>
+      <li>qcodes.plots.qcmatplotlib</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/plots/qcmatplotlib.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="module-qcodes.plots.qcmatplotlib">
+<span id="qcodes-plots-qcmatplotlib"></span><h1>qcodes.plots.qcmatplotlib<a class="headerlink" href="#module-qcodes.plots.qcmatplotlib" title="Permalink to this headline"></a></h1>
+<p>Live plotting in Jupyter notebooks
+using the nbagg backend and matplotlib</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qcodes.plots.qcmatplotlib.</span></span><span class="sig-name descname"><span class="pre">MatPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subplots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/plots/qcmatplotlib.html#MatPlot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#qcodes.plots.base.BasePlot" title="qcodes.plots.base.BasePlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">qcodes.plots.base.BasePlot</span></code></a></p>
+<p>Plot x/y lines or x/y/z heatmap data. The first trace may be included
+in the constructor, other traces can be added with MatPlot.add()</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> – Sequence of data to plot. Each element will have its own subplot.
+An element can be a single array, or a sequence of arrays. In the
+latter case, all arrays will be plotted in the same subplot.</p></li>
+<li><p><strong>figsize</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)"><em>float</em></a><em>]</em>) – (width, height) tuple in inches to pass
+to plt.figure. If not provided, figsize is determined from
+subplots shape</p></li>
+<li><p><strong>interval</strong> – period in seconds between update checks</p></li>
+<li><p><strong>subplots</strong> – either a sequence (args) or mapping (kwargs) to pass to
+plt.subplots. default is a single simple subplot (1, 1)
+you can use this to pass kwargs to the plt.figure constructor</p></li>
+<li><p><strong>num</strong> – integer or None
+specifies the index of the matplotlib figure window to use. If None
+then open a new window</p></li>
+<li><p><strong>**kwargs</strong> – passed along to MatPlot.add() to add the first data trace</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.max_subplot_columns">
+<span class="sig-name descname"><span class="pre">max_subplot_columns</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.max_subplot_columns" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/plots/qcmatplotlib.html#MatPlot.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.__getitem__" title="Permalink to this definition"></a></dt>
+<dd><p>Subplots can be accessed via indices.
+:param key: subplot idx</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Subplot with idx key</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subplots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/plots/qcmatplotlib.html#MatPlot.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.clear" title="Permalink to this definition"></a></dt>
+<dd><p>Clears the plot window and removes all subplots and traces
+so that the window can be reused.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.add_to_plot">
+<span class="sig-name descname"><span class="pre">add_to_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/plots/qcmatplotlib.html#MatPlot.add_to_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.add_to_plot" title="Permalink to this definition"></a></dt>
+<dd><p>adds one trace to this MatPlot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>use_offset</strong> – Whether or not ticks can have an offset</p></li>
+<li><p><strong>**kwargs</strong> – with the exceptions given in the notes below
+(mostly the data!), these are passed directly to
+the matplotlib plotting routine.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Plot handle for trace</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The following special cases apply for kwargs that are
+not passed directly to the plotting routine.</p>
+<ul class="simple">
+<li><p><cite>subplot</cite>: the 1-based axes number to append to (default 1)</p></li>
+<li><p>if kwargs include <cite>z</cite>, we will draw a heatmap (ax.pcolormesh)
+<cite>x</cite>, <cite>y</cite>, and <cite>z</cite> are passed as positional args to pcolormesh</p></li>
+<li><p>without <cite>z</cite> we draw a scatter/lines plot (ax.plot)
+<cite>x</cite>, <cite>y</cite>, and <cite>fmt</cite> (if present) are passed as positional
+args</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.default_figsize">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_figsize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subplots</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/plots/qcmatplotlib.html#MatPlot.default_figsize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.default_figsize" title="Permalink to this definition"></a></dt>
+<dd><p>Provides default figsize for given subplots.
+:param subplots: shape (nrows, ncols) of subplots
+:type subplots: Tuple[Int, Int]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>(width, height) of default figsize</dt><dd><p>for given subplot shape</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Tuple[<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)">float</a>, <a class="reference external" href="https://docs.python.org/3.7/library/functions.html#float" title="(in Python v3.7)">float</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.update_plot">
+<span class="sig-name descname"><span class="pre">update_plot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/plots/qcmatplotlib.html#MatPlot.update_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.update_plot" title="Permalink to this definition"></a></dt>
+<dd><p>update the plot. The DataSets themselves have already been updated
+in update, here we just push the changes to the plot.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/plots/qcmatplotlib.html#MatPlot.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.save" title="Permalink to this definition"></a></dt>
+<dd><p>Save current plot to filename, by default
+to the location corresponding to the default
+title.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>]</em>) – Location of the file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.tight_layout">
+<span class="sig-name descname"><span class="pre">tight_layout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/plots/qcmatplotlib.html#MatPlot.tight_layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.tight_layout" title="Permalink to this definition"></a></dt>
+<dd><p>Perform a tight layout on the figure. A bit of additional spacing at
+the top is also added for the title.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.rescale_axis">
+<span class="sig-name descname"><span class="pre">rescale_axis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/plots/qcmatplotlib.html#MatPlot.rescale_axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.rescale_axis" title="Permalink to this definition"></a></dt>
+<dd><p>Rescale axis and units for axis that are in standard units
+i.e. V, s J … to m μ, m
+This scales units defined in BasePlot.standardunits only
+to avoid prefixes on combined or non standard units</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updater</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.add" title="Permalink to this definition"></a></dt>
+<dd><p>Add one trace to this plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – optional way to provide x/y/z data without keywords
+If the last one is 1D, may be <cite>y</cite> or <cite>x</cite>, <cite>y</cite>
+If the last one is 2D, may be <cite>z</cite> or <cite>x</cite>, <cite>y</cite>, <cite>z</cite></p></li>
+<li><p><strong>updater</strong> – a callable (with no args) that updates the data in this trace
+if omitted, we will look for DataSets referenced in this data, and
+call their sync methods.</p></li>
+<li><p><strong>kwargs</strong> – after inserting info found in args and possibly in set_arrays
+into <cite>x</cite>, <cite>y</cite>, and optionally <cite>z</cite>, these are passed along to
+self.add_to_plot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Plot handle for trace</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>To use custom labels and units pass for example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nb">set</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">amplitude</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;set&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="n">xunit</span><span class="o">=</span><span class="s2">&quot;V&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="n">ylabel</span><span class="o">=</span> <span class="s2">&quot;Amplitude&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="n">yunit</span> <span class="o">=</span><span class="s2">&quot;V&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Array shapes for 2D plots:</dt><dd><p>x:(1D-length m), y:(1D-length n), z: (2D- n*m array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.add_updater">
+<span class="sig-name descname"><span class="pre">add_updater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">updater</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.add_updater" title="Permalink to this definition"></a></dt>
+<dd><p>Add an updater to the plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>updater</strong> (<a class="reference internal" href="../utils/validators.html#qcodes.utils.validators.Callable" title="qcodes.utils.validators.Callable"><em>Callable</em></a>) – callable (with no args) that updates the data in this trace
+if omitted, we will look for DataSets referenced in this data, and
+call their sync methods.</p></li>
+<li><p><strong>plot_config</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – this is a dictionary that gets populated inside
+add() via expand_trace().
+The reason this is here is to fetch from the data_set the sync method
+to use it as an updater.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.expand_trace">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">expand_trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.expand_trace" title="Permalink to this definition"></a></dt>
+<dd><p>Complete the x, y (and possibly z) data definition for a trace.</p>
+<p>Also modifies kwargs in place so that all the data needed to fully
+specify the trace is present (ie either x and y or x and y and z)</p>
+<p>Both <code class="docutils literal notranslate"><span class="pre">__init__</span></code> (for the first trace) and the <code class="docutils literal notranslate"><span class="pre">add</span></code> method support
+multiple ways to specify the data in the trace:</p>
+<dl class="simple">
+<dt>As <code class="docutils literal notranslate"><span class="pre">*args</span></code>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">add(y)</span></code> or <code class="docutils literal notranslate"><span class="pre">add(z)</span></code> specify just the main 1D or 2D data, with
+the setpoint axis or axes implied.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">add(x,</span> <span class="pre">y)</span></code> or <code class="docutils literal notranslate"><span class="pre">add(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> specify all axes of the data.</p></li>
+</ul>
+</dd>
+<dt>And as <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">add(x=x,</span> <span class="pre">y=y,</span> <span class="pre">z=z)</span></code> you specify exactly the data you want on
+each axis. Any but the last (y or z) can be omitted, which allows
+for all of the same forms as with <code class="docutils literal notranslate"><span class="pre">*args</span></code>, plus x and z or y and
+z, with just one axis implied from the setpoints of the z data.</p></li>
+</ul>
+</dd>
+</dl>
+<p>This method takes any of those forms and converts them into a complete
+set of kwargs, containing all of the explicit or implied data to be used
+in plotting this trace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> (<em>Tuple</em><em>[</em><a class="reference internal" href="../data/data_array.html#qcodes.data.data_array.DataArray" title="qcodes.data.data_array.DataArray"><em>DataArray</em></a><em>]</em>) – positional args, as passed to either
+<code class="docutils literal notranslate"><span class="pre">__init__</span></code> or <code class="docutils literal notranslate"><span class="pre">add</span></code></p></li>
+<li><p><strong>kwargs</strong> (<a class="reference internal" href="../utils/validators.html#qcodes.utils.validators.Dict" title="qcodes.utils.validators.Dict"><em>Dict</em></a><em>(</em><a class="reference internal" href="../data/data_array.html#qcodes.data.data_array.DataArray" title="qcodes.data.data_array.DataArray"><em>DataArray</em></a><em>]</em>) – keyword args, as passed to either
+<code class="docutils literal notranslate"><span class="pre">__init__</span></code> or <code class="docutils literal notranslate"><span class="pre">add</span></code>. kwargs may contain non-data items in
+keys other than x, y, and z.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#ValueError" title="(in Python v3.7)"><strong>ValueError</strong></a> – if the shape of the data does not match that of args</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.7/library/exceptions.html#ValueError" title="(in Python v3.7)"><strong>ValueError</strong></a> – if the data is provided twice</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.get_default_title">
+<span class="sig-name descname"><span class="pre">get_default_title</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.get_default_title" title="Permalink to this definition"></a></dt>
+<dd><p>Get the default title, which for a plot is just a list of DataSet locations.
+A custom title can be set when adding any trace (via either __init__ or add.
+these kwargs all eventually end up in self.traces[i][‘config’]) and it looks
+like we will take the first title we find from any trace… otherwise, if no
+trace specifies a title, then we combine whatever dataset locations we find.</p>
+<p>Note: (alexj): yeah, that’s awkward, isn’t it, and it looks like a weird
+implementation, feel free to change it 👼</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the title of the figure</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.get_label">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.get_label" title="Permalink to this definition"></a></dt>
+<dd><p>Look for a label in data_array falling back on name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data_array</strong> (<a class="reference internal" href="../data/data_array.html#qcodes.data.data_array.DataArray" title="qcodes.data.data_array.DataArray"><em>DataArray</em></a>) – data array to get label from</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>label or name of the data_array</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.halt">
+<span class="sig-name descname"><span class="pre">halt</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.halt" title="Permalink to this definition"></a></dt>
+<dd><p>Stop automatic updates to this plot, by canceling its update widget</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.latest_plot">
+<span class="sig-name descname"><span class="pre">latest_plot</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.latest_plot" title="Permalink to this definition"></a></dt>
+<dd><p>Auto-updating plot connected to a Jupyter notebook</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interval</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – period in seconds between update checks
+default 1</p></li>
+<li><p><strong>data_keys</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – sequence of keys in trace config can contain data
+that we should look for updates in.
+default ‘xyz’ (treated as a sequence) but add more if
+for example marker size or color can contain data</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.replace">
+<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updater</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.replace" title="Permalink to this definition"></a></dt>
+<dd><p>Clear all content and add new trace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – optional way to provide x/y/z data without keywords
+If the last one is 1D, may be <cite>y</cite> or <cite>x</cite>, <cite>y</cite>
+If the last one is 2D, may be <cite>z</cite> or <cite>x</cite>, <cite>y</cite>, <cite>z</cite></p></li>
+<li><p><strong>updater</strong> – a callable (with no args) that updates the data in this trace
+if omitted, we will look for DataSets referenced in this data, and
+call their sync methods.</p></li>
+<li><p><strong>**kwargs</strong> – passed on to self.add()</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.plots.qcmatplotlib.MatPlot.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#qcodes.plots.qcmatplotlib.MatPlot.update" title="Permalink to this definition"></a></dt>
+<dd><p>Update the data in this plot, using the updaters given with
+MatPlot.add() or in the included DataSets, then include this in
+the plot.</p>
+<p>This is a wrapper routine that the update widget calls,
+inside this we call self.update() which should be subclassed</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pyqtgraph.html" class="btn btn-neutral float-left" title="qcodes.plots.pyqtgraph" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../generated/qcodes.instrument_drivers.html" class="btn btn-neutral float-right" title="qcodes.instrument_drivers package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

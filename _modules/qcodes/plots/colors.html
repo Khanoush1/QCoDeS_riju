@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.plots.colors &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.plots.colors</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.plots.colors</h1><div class="highlight"><pre>
+<span></span><span class="c1"># default colors and colorscales, taken from plotly</span>
+<span class="n">color_cycle</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;#1f77b4&#39;</span><span class="p">,</span>  <span class="c1"># muted blue</span>
+    <span class="s1">&#39;#ff7f0e&#39;</span><span class="p">,</span>  <span class="c1"># safety orange</span>
+    <span class="s1">&#39;#2ca02c&#39;</span><span class="p">,</span>  <span class="c1"># cooked asparagus green</span>
+    <span class="s1">&#39;#d62728&#39;</span><span class="p">,</span>  <span class="c1"># brick red</span>
+    <span class="s1">&#39;#9467bd&#39;</span><span class="p">,</span>  <span class="c1"># muted purple</span>
+    <span class="s1">&#39;#8c564b&#39;</span><span class="p">,</span>  <span class="c1"># chestnut brown</span>
+    <span class="s1">&#39;#e377c2&#39;</span><span class="p">,</span>  <span class="c1"># raspberry yogurt pink</span>
+    <span class="s1">&#39;#7f7f7f&#39;</span><span class="p">,</span>  <span class="c1"># middle gray</span>
+    <span class="s1">&#39;#bcbd22&#39;</span><span class="p">,</span>  <span class="c1"># curry yellow-green</span>
+    <span class="s1">&#39;#17becf&#39;</span>   <span class="c1"># blue-teal</span>
+<span class="p">]</span>
+
+
+<span class="n">colorscales_raw</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Greys&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rgb(0,0,0)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rgb(255,255,255)&#39;</span><span class="p">]],</span>
+
+    <span class="s1">&#39;YlGnBu&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rgb(8, 29, 88)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.125</span><span class="p">,</span> <span class="s1">&#39;rgb(37, 52, 148)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="s1">&#39;rgb(34, 94, 168)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.375</span><span class="p">,</span> <span class="s1">&#39;rgb(29, 145, 192)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;rgb(65, 182, 196)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.625</span><span class="p">,</span> <span class="s1">&#39;rgb(127, 205, 187)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.75</span><span class="p">,</span> <span class="s1">&#39;rgb(199, 233, 180)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.875</span><span class="p">,</span> <span class="s1">&#39;rgb(237, 248, 217)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rgb(255, 255, 217)&#39;</span><span class="p">]],</span>
+
+    <span class="s1">&#39;Greens&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rgb(0, 68, 27)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.125</span><span class="p">,</span> <span class="s1">&#39;rgb(0, 109, 44)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="s1">&#39;rgb(35, 139, 69)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.375</span><span class="p">,</span> <span class="s1">&#39;rgb(65, 171, 93)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;rgb(116, 196, 118)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.625</span><span class="p">,</span> <span class="s1">&#39;rgb(161, 217, 155)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.75</span><span class="p">,</span> <span class="s1">&#39;rgb(199, 233, 192)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.875</span><span class="p">,</span> <span class="s1">&#39;rgb(229, 245, 224)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rgb(247, 252, 245)&#39;</span><span class="p">]],</span>
+
+    <span class="s1">&#39;YlOrRd&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rgb(128, 0, 38)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.125</span><span class="p">,</span> <span class="s1">&#39;rgb(189, 0, 38)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="s1">&#39;rgb(227, 26, 28)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.375</span><span class="p">,</span> <span class="s1">&#39;rgb(252, 78, 42)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;rgb(253, 141, 60)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.625</span><span class="p">,</span> <span class="s1">&#39;rgb(254, 178, 76)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.75</span><span class="p">,</span> <span class="s1">&#39;rgb(254, 217, 118)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.875</span><span class="p">,</span> <span class="s1">&#39;rgb(255, 237, 160)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rgb(255, 255, 204)&#39;</span><span class="p">]],</span>
+
+    <span class="s1">&#39;bluered&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rgb(0,0,255)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rgb(255,0,0)&#39;</span><span class="p">]],</span>
+
+    <span class="c1"># modified RdBu based on</span>
+    <span class="c1"># www.sandia.gov/~kmorel/documents/ColorMaps/ColorMapsExpanded.pdf</span>
+    <span class="s1">&#39;RdBu&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rgb(5, 10, 172)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.35</span><span class="p">,</span> <span class="s1">&#39;rgb(106, 137, 247)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;rgb(190,190,190)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;rgb(220, 170, 132)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="s1">&#39;rgb(230, 145, 90)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rgb(178, 10, 28)&#39;</span><span class="p">]],</span>
+    <span class="c1"># Scale for non-negative numeric values</span>
+    <span class="s1">&#39;Reds&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rgb(220, 220, 220)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="s1">&#39;rgb(245, 195, 157)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="s1">&#39;rgb(245, 160, 105)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rgb(178, 10, 28)&#39;</span><span class="p">]],</span>
+    <span class="c1"># Scale for non-positive numeric values</span>
+    <span class="s1">&#39;Blues&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rgb(5, 10, 172)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.35</span><span class="p">,</span> <span class="s1">&#39;rgb(40, 60, 190)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;rgb(70, 100, 245)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;rgb(90, 120, 245)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="s1">&#39;rgb(106, 137, 247)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rgb(220, 220, 220)&#39;</span><span class="p">]],</span>
+
+    <span class="s1">&#39;picnic&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rgb(0,0,255)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;rgb(51,153,255)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="s1">&#39;rgb(102,204,255)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="s1">&#39;rgb(153,204,255)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="s1">&#39;rgb(204,204,255)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;rgb(255,255,255)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;rgb(255,204,255)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="s1">&#39;rgb(255,153,255)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;rgb(255,102,204)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="s1">&#39;rgb(255,102,102)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rgb(255,0,0)&#39;</span><span class="p">]],</span>
+
+    <span class="s1">&#39;rainbow&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rgb(150,0,90)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.125</span><span class="p">,</span> <span class="s1">&#39;rgb(0, 0, 200)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="s1">&#39;rgb(0, 25, 255)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.375</span><span class="p">,</span> <span class="s1">&#39;rgb(0, 152, 255)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;rgb(44, 255, 150)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.625</span><span class="p">,</span> <span class="s1">&#39;rgb(151, 255, 0)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.75</span><span class="p">,</span> <span class="s1">&#39;rgb(255, 234, 0)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.875</span><span class="p">,</span> <span class="s1">&#39;rgb(255, 111, 0)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rgb(255, 0, 0)&#39;</span><span class="p">]],</span>
+
+    <span class="s1">&#39;portland&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rgb(12,51,131)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="s1">&#39;rgb(10,136,186)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;rgb(242,211,56)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.75</span><span class="p">,</span> <span class="s1">&#39;rgb(242,143,56)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rgb(217,30,30)&#39;</span><span class="p">]],</span>
+
+    <span class="s1">&#39;jet&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rgb(0,0,131)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.125</span><span class="p">,</span> <span class="s1">&#39;rgb(0,60,170)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.375</span><span class="p">,</span> <span class="s1">&#39;rgb(5,255,255)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.625</span><span class="p">,</span> <span class="s1">&#39;rgb(255,255,0)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.875</span><span class="p">,</span> <span class="s1">&#39;rgb(250,0,0)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rgb(128,0,0)&#39;</span><span class="p">]],</span>
+
+    <span class="s1">&#39;hot&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rgb(0,0,0)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="s1">&#39;rgb(230,0,0)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;rgb(255,210,0)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rgb(255,255,255)&#39;</span><span class="p">]],</span>
+
+    <span class="s1">&#39;blackbody&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rgb(0,0,0)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="s1">&#39;rgb(230,0,0)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="s1">&#39;rgb(230,210,0)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="s1">&#39;rgb(255,255,255)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rgb(160,200,255)&#39;</span><span class="p">]],</span>
+
+    <span class="s1">&#39;earth&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rgb(0,0,130)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;rgb(0,180,180)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="s1">&#39;rgb(40,210,40)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="s1">&#39;rgb(230,230,50)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;rgb(120,70,20)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rgb(255,255,255)&#39;</span><span class="p">]],</span>
+
+    <span class="s1">&#39;electric&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;rgb(0,0,0)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.15</span><span class="p">,</span> <span class="s1">&#39;rgb(30,0,100)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="s1">&#39;rgb(120,0,100)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="s1">&#39;rgb(160,90,0)&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;rgb(230,200,0)&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rgb(255,250,220)&#39;</span><span class="p">]],</span>
+
+    <span class="s1">&#39;viridis&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;#440154&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.06274509803921569</span><span class="p">,</span> <span class="s1">&#39;#48186a&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.12549019607843137</span><span class="p">,</span> <span class="s1">&#39;#472d7b&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.18823529411764706</span><span class="p">,</span> <span class="s1">&#39;#424086&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.25098039215686274</span><span class="p">,</span> <span class="s1">&#39;#3b528b&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.3137254901960784</span><span class="p">,</span> <span class="s1">&#39;#33638d&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.3764705882352941</span><span class="p">,</span> <span class="s1">&#39;#2c728e&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.4392156862745098</span><span class="p">,</span> <span class="s1">&#39;#26828e&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.5019607843137255</span><span class="p">,</span> <span class="s1">&#39;#21918c&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5647058823529412</span><span class="p">,</span> <span class="s1">&#39;#1fa088&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.6274509803921569</span><span class="p">,</span> <span class="s1">&#39;#28ae80&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.6901960784313725</span><span class="p">,</span> <span class="s1">&#39;#3fbc73&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.7529411764705882</span><span class="p">,</span> <span class="s1">&#39;#5ec962&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.8156862745098039</span><span class="p">,</span> <span class="s1">&#39;#84d44b&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mf">0.8784313725490196</span><span class="p">,</span> <span class="s1">&#39;#addc30&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.9411764705882353</span><span class="p">,</span> <span class="s1">&#39;#d8e219&#39;</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;#fde725&#39;</span><span class="p">]]</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="make_rgba"><a class="viewcode-back" href="../../../api/plots/colors.html#qcodes.plots.colors.make_rgba">[docs]</a><span class="k">def</span> <span class="nf">make_rgba</span><span class="p">(</span><span class="n">colorscale</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[(</span><span class="n">v</span><span class="p">,</span> <span class="n">one_rgba</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">colorscale</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="one_rgba"><a class="viewcode-back" href="../../../api/plots/colors.html#qcodes.plots.colors.one_rgba">[docs]</a><span class="k">def</span> <span class="nf">one_rgba</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    convert a single color value to (r, g, b, a)</span>
+<span class="sd">    input can be an rgb string &#39;rgb(r,g,b)&#39;, &#39;#rrggbb&#39;</span>
+<span class="sd">    if we decide we want more we can make more, but for now this is just</span>
+<span class="sd">    to convert plotly colorscales to pyqtgraph tuples</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="mi">16</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span> <span class="mi">16</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">7</span><span class="p">],</span> <span class="mi">16</span><span class="p">),</span> <span class="mi">255</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">c</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;rgb(&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))</span> <span class="o">+</span> <span class="p">(</span><span class="mi">255</span><span class="p">,)</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;one_rgba only supports rgb(r,g,b) and #rrggbb colors&#39;</span><span class="p">)</span></div>
+
+
+<span class="n">colorscales</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">scale_name</span><span class="p">,</span> <span class="n">scale</span> <span class="ow">in</span> <span class="n">colorscales_raw</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">colorscales</span><span class="p">[</span><span class="n">scale_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_rgba</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

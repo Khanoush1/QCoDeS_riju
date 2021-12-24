@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.instrument_drivers.Lakeshore.Model_336 &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link href="../../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.instrument_drivers.Lakeshore.Model_336</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.instrument_drivers.Lakeshore.Model_336</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">from</span> <span class="nn">qcodes.instrument.group_parameter</span> <span class="kn">import</span> <span class="n">GroupParameter</span><span class="p">,</span> <span class="n">Group</span>
+<span class="kn">from</span> <span class="nn">.lakeshore_base</span> <span class="kn">import</span> <span class="n">LakeshoreBase</span><span class="p">,</span> <span class="n">BaseOutput</span><span class="p">,</span> <span class="n">BaseSensorChannel</span>
+<span class="kn">import</span> <span class="nn">qcodes.utils.validators</span> <span class="k">as</span> <span class="nn">vals</span>
+
+
+<span class="c1"># There are 4 sensors channels (a.k.a. measurement inputs) in Model 336.</span>
+<span class="c1"># Unlike other Lakeshore models, Model 336 refers to the channels using</span>
+<span class="c1"># letters, and not numbers</span>
+<span class="n">_channel_name_to_command_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span>
+                                                <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>
+                                                <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span>
+                                                <span class="s1">&#39;D&#39;</span><span class="p">:</span> <span class="s1">&#39;D&#39;</span><span class="p">}</span>
+
+<span class="c1"># OUTMODE command of this model refers to the outputs via integer numbers,</span>
+<span class="c1"># while everywhere else within this model letters are used. This map is</span>
+<span class="c1"># created in order to preserve uniformity of referencing to sensor channels</span>
+<span class="c1"># within this driver.</span>
+<span class="n">_channel_name_to_outmode_command_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> \
+    <span class="p">{</span><span class="n">ch_name</span><span class="p">:</span> <span class="n">num_for_cmd</span> <span class="o">+</span> <span class="mi">1</span>
+     <span class="k">for</span> <span class="n">num_for_cmd</span><span class="p">,</span> <span class="n">ch_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">_channel_name_to_command_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())}</span>
+
+
+<div class="viewcode-block" id="Output_336_CurrentSource"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.Lakeshore.html#qcodes.instrument_drivers.Lakeshore.Model_336.Output_336_CurrentSource">[docs]</a><span class="k">class</span> <span class="nc">Output_336_CurrentSource</span><span class="p">(</span><span class="n">BaseOutput</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for control outputs 1 and 2 of model 336 that are variable DC current</span>
+<span class="sd">    sources referenced to chassis ground</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">MODES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;off&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;closed_loop&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;zone&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s1">&#39;open_loop&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+
+    <span class="n">RANGES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;off&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;low&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;medium&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s1">&#39;high&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+
+    <span class="n">_input_channel_parameter_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;val_mapping&#39;</span><span class="p">:</span> <span class="n">_channel_name_to_outmode_command_map</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">:</span> <span class="s2">&quot;Model_336&quot;</span><span class="p">,</span>
+            <span class="n">output_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">output_index</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">output_name</span><span class="p">,</span> <span class="n">output_index</span><span class="p">,</span> <span class="n">has_pid</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">P</span><span class="o">.</span><span class="n">vals</span> <span class="o">=</span> <span class="n">vals</span><span class="o">.</span><span class="n">Numbers</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">I</span><span class="o">.</span><span class="n">vals</span> <span class="o">=</span> <span class="n">vals</span><span class="o">.</span><span class="n">Numbers</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="o">.</span><span class="n">vals</span> <span class="o">=</span> <span class="n">vals</span><span class="o">.</span><span class="n">Numbers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Output_336_VoltageSource"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.Lakeshore.html#qcodes.instrument_drivers.Lakeshore.Model_336.Output_336_VoltageSource">[docs]</a><span class="k">class</span> <span class="nc">Output_336_VoltageSource</span><span class="p">(</span><span class="n">BaseOutput</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for control outputs 3 and 4 of model 336 that are variable DC voltage</span>
+<span class="sd">    sources</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">MODES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;off&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;closed_loop&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;zone&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s1">&#39;open_loop&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s1">&#39;monitor_out&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="s1">&#39;warm_up&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}</span>
+
+    <span class="n">RANGES</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;off&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;low&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;medium&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s1">&#39;high&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">:</span> <span class="s2">&quot;Model_336&quot;</span><span class="p">,</span>
+            <span class="n">output_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">output_index</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">output_name</span><span class="p">,</span> <span class="n">output_index</span><span class="p">,</span> <span class="n">has_pid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Model_336_Channel"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.Lakeshore.html#qcodes.instrument_drivers.Lakeshore.Model_336.Model_336_Channel">[docs]</a><span class="k">class</span> <span class="nc">Model_336_Channel</span><span class="p">(</span><span class="n">BaseSensorChannel</span><span class="p">):</span>
+    <span class="n">SENSOR_STATUSES</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;OK&#39;</span><span class="p">,</span>
+                       <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;Invalid Reading&#39;</span><span class="p">,</span>
+                       <span class="mi">16</span><span class="p">:</span> <span class="s1">&#39;Temp Underrange&#39;</span><span class="p">,</span>
+                       <span class="mi">32</span><span class="p">:</span> <span class="s1">&#39;Temp Overrange&#39;</span><span class="p">,</span>
+                       <span class="mi">64</span><span class="p">:</span> <span class="s1">&#39;Sensor Units Zero&#39;</span><span class="p">,</span>
+                       <span class="mi">128</span><span class="p">:</span> <span class="s1">&#39;Sensor Units Overrange&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">:</span> <span class="s2">&quot;Model_336&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
+
+        <span class="c1"># Parameters related to Input Type Parameter Command (INTYPE)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s1">&#39;sensor_type&#39;</span><span class="p">,</span>
+                           <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Input sensor type&#39;</span><span class="p">,</span>
+                           <span class="n">docstring</span><span class="o">=</span><span class="s1">&#39;Specifies input sensor type&#39;</span><span class="p">,</span>
+                           <span class="n">val_mapping</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;disabled&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                                        <span class="s1">&#39;diode&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                        <span class="s1">&#39;platinum_rtd&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                                        <span class="s1">&#39;ntc_rtd&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
+                           <span class="n">parameter_class</span><span class="o">=</span><span class="n">GroupParameter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s1">&#39;auto_range_enabled&#39;</span><span class="p">,</span>
+                           <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Autoranging&#39;</span><span class="p">,</span>
+                           <span class="n">docstring</span><span class="o">=</span><span class="s1">&#39;Specifies if autoranging is enabled. &#39;</span>
+                                     <span class="s1">&#39;Does not apply for diode sensor type&#39;</span><span class="p">,</span>
+                           <span class="n">val_mapping</span><span class="o">=</span><span class="p">{</span><span class="kc">False</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+                           <span class="n">parameter_class</span><span class="o">=</span><span class="n">GroupParameter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s1">&#39;range&#39;</span><span class="p">,</span>
+                           <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Range&#39;</span><span class="p">,</span>
+                           <span class="n">docstring</span><span class="o">=</span><span class="s1">&#39;Specifies input range when autorange is &#39;</span>
+                                     <span class="s1">&#39;not enabled. If autorange is on, the &#39;</span>
+                                     <span class="s1">&#39;returned value corresponds to the &#39;</span>
+                                     <span class="s1">&#39;currently auto-selected range. The list &#39;</span>
+                                     <span class="s1">&#39;of available ranges depends on the &#39;</span>
+                                     <span class="s1">&#39;chosen sensor type: diode 0-1, platinum &#39;</span>
+                                     <span class="s1">&#39;RTD 0-6, NTC RTD 0-8. Refer to the page &#39;</span>
+                                     <span class="s1">&#39;136 of the manual for the lookup table&#39;</span><span class="p">,</span>
+                           <span class="n">vals</span><span class="o">=</span><span class="n">vals</span><span class="o">.</span><span class="n">Numbers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
+                           <span class="n">parameter_class</span><span class="o">=</span><span class="n">GroupParameter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s1">&#39;compensation_enabled&#39;</span><span class="p">,</span>
+                           <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Compensation enabled&#39;</span><span class="p">,</span>
+                           <span class="n">docstring</span><span class="o">=</span><span class="s1">&#39;Specifies input compensation. Reversal &#39;</span>
+                                     <span class="s1">&#39;for thermal EMF compensation if input &#39;</span>
+                                     <span class="s1">&#39;is resistive, room compensation if &#39;</span>
+                                     <span class="s1">&#39;input is thermocouple. Always 0 if input &#39;</span>
+                                     <span class="s1">&#39;is a diode&#39;</span><span class="p">,</span>
+                           <span class="n">val_mapping</span><span class="o">=</span><span class="p">{</span><span class="kc">False</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+                           <span class="n">parameter_class</span><span class="o">=</span><span class="n">GroupParameter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span>
+                           <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Preferred units&#39;</span><span class="p">,</span>
+                           <span class="n">docstring</span><span class="o">=</span><span class="s1">&#39;Specifies the preferred units parameter &#39;</span>
+                                     <span class="s1">&#39;for sensor readings and for the control &#39;</span>
+                                     <span class="s1">&#39;setpoint (kelvin, celsius, or sensor)&#39;</span><span class="p">,</span>
+                           <span class="n">val_mapping</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;kelvin&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;celsius&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;sensor&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span>
+                           <span class="n">parameter_class</span><span class="o">=</span><span class="n">GroupParameter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_group</span> <span class="o">=</span> <span class="n">Group</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">sensor_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_range_enabled</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compensation_enabled</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">],</span>
+                                  <span class="n">set_cmd</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;INTYPE </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_channel</span><span class="si">}</span><span class="s1">, &#39;</span>
+                                          <span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">sensor_type</span><span class="se">}}</span><span class="s1">, &#39;</span>
+                                          <span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">auto_range_enabled</span><span class="se">}}</span><span class="s1">, </span><span class="se">{{</span><span class="s1">range</span><span class="se">}}</span><span class="s1">, &#39;</span>
+                                          <span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">compensation_enabled</span><span class="se">}}</span><span class="s1">, &#39;</span>
+                                          <span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">units</span><span class="se">}}</span><span class="s1">&#39;</span><span class="p">,</span>
+                                  <span class="n">get_cmd</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;INTYPE? </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_channel</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Model_336"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.Lakeshore.html#qcodes.instrument_drivers.Lakeshore.Model_336.Model_336">[docs]</a><span class="k">class</span> <span class="nc">Model_336</span><span class="p">(</span><span class="n">LakeshoreBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Lakeshore Model 336 Temperature Controller Driver</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">channel_name_command</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">_channel_name_to_command_map</span>
+
+    <span class="n">CHANNEL_CLASS</span> <span class="o">=</span> <span class="n">Model_336_Channel</span>
+
+    <span class="n">input_channel_parameter_values_to_channel_name_on_instrument</span> <span class="o">=</span> \
+        <span class="n">_channel_name_to_command_map</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_1</span> <span class="o">=</span> <span class="n">Output_336_CurrentSource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;output_1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_2</span> <span class="o">=</span> <span class="n">Output_336_CurrentSource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;output_2&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_3</span> <span class="o">=</span> <span class="n">Output_336_VoltageSource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;output_3&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_4</span> <span class="o">=</span> <span class="n">Output_336_VoltageSource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;output_4&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

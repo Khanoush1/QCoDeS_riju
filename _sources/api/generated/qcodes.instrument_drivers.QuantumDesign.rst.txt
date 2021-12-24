@@ -1,0 +1,18 @@
+qcodes.instrument\_drivers.QuantumDesign package
+================================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 10
+
+   qcodes.instrument_drivers.QuantumDesign.DynaCoolPPMS
+
+Module contents
+---------------
+
+.. automodule:: qcodes.instrument_drivers.QuantumDesign
+   :members:
+   :undoc-members:
+   :show-inheritance:

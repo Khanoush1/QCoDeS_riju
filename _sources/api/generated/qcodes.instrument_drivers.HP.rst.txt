@@ -1,0 +1,37 @@
+qcodes.instrument\_drivers.HP package
+=====================================
+
+Submodules
+----------
+
+qcodes.instrument\_drivers.HP.HP8133A module
+--------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.HP.HP8133A
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.HP.HP8753D module
+--------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.HP.HP8753D
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.HP.HP\_83650A module
+-----------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.HP.HP_83650A
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: qcodes.instrument_drivers.HP
+   :members:
+   :undoc-members:
+   :show-inheritance:

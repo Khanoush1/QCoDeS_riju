@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.instrument_drivers.AlazarTech.constants &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link href="../../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.instrument_drivers.AlazarTech.constants</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.instrument_drivers.AlazarTech.constants</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module defines constants that are used in Alazar ATS API.</span>
+
+<span class="sd">Since the original names of the constants are mostly preserved, it is</span>
+<span class="sd">convenient to find the uesful constants here based on the Alazar SDK manual.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NewType</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span><span class="p">,</span> <span class="n">IntFlag</span>
+
+
+<span class="n">ReturnCode</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s1">&#39;ReturnCode&#39;</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+
+<span class="n">API_SUCCESS</span> <span class="o">=</span> <span class="n">ReturnCode</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span>
+<span class="n">API_DMA_IN_PROGRESS</span> <span class="o">=</span> <span class="n">ReturnCode</span><span class="p">(</span><span class="mi">518</span><span class="p">)</span>
+
+<span class="n">max_buffer_size</span> <span class="o">=</span> <span class="mi">64</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>
+<span class="c1"># The maximum size of a single buffer</span>
+<span class="c1"># in bytes. see docs of AlazarBeforeAsyncRead</span>
+<span class="c1"># http://www.alazartech.com/Support/Download%20Files/ATS-SDK-Guide-7.2.3.pdf#section*.110</span>
+
+<span class="n">ERROR_CODES</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">ReturnCode</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">ReturnCode</span><span class="p">(</span><span class="n">code</span><span class="p">):</span> <span class="n">msg</span> <span class="k">for</span> <span class="n">code</span><span class="p">,</span> <span class="n">msg</span> <span class="ow">in</span> <span class="p">{</span>
+    <span class="mi">513</span><span class="p">:</span> <span class="s1">&#39;ApiFailed&#39;</span><span class="p">,</span>
+    <span class="mi">514</span><span class="p">:</span> <span class="s1">&#39;ApiAccessDenied&#39;</span><span class="p">,</span>
+    <span class="mi">515</span><span class="p">:</span> <span class="s1">&#39;ApiDmaChannelUnavailable&#39;</span><span class="p">,</span>
+    <span class="mi">516</span><span class="p">:</span> <span class="s1">&#39;ApiDmaChannelInvalid&#39;</span><span class="p">,</span>
+    <span class="mi">517</span><span class="p">:</span> <span class="s1">&#39;ApiDmaChannelTypeError&#39;</span><span class="p">,</span>
+    <span class="mi">518</span><span class="p">:</span> <span class="s1">&#39;ApiDmaInProgress&#39;</span><span class="p">,</span>
+    <span class="mi">519</span><span class="p">:</span> <span class="s1">&#39;ApiDmaDone&#39;</span><span class="p">,</span>
+    <span class="mi">520</span><span class="p">:</span> <span class="s1">&#39;ApiDmaPaused&#39;</span><span class="p">,</span>
+    <span class="mi">521</span><span class="p">:</span> <span class="s1">&#39;ApiDmaNotPaused&#39;</span><span class="p">,</span>
+    <span class="mi">522</span><span class="p">:</span> <span class="s1">&#39;ApiDmaCommandInvalid&#39;</span><span class="p">,</span>
+    <span class="mi">523</span><span class="p">:</span> <span class="s1">&#39;ApiDmaManReady&#39;</span><span class="p">,</span>
+    <span class="mi">524</span><span class="p">:</span> <span class="s1">&#39;ApiDmaManNotReady&#39;</span><span class="p">,</span>
+    <span class="mi">525</span><span class="p">:</span> <span class="s1">&#39;ApiDmaInvalidChannelPriority&#39;</span><span class="p">,</span>
+    <span class="mi">526</span><span class="p">:</span> <span class="s1">&#39;ApiDmaManCorrupted&#39;</span><span class="p">,</span>
+    <span class="mi">527</span><span class="p">:</span> <span class="s1">&#39;ApiDmaInvalidElementIndex&#39;</span><span class="p">,</span>
+    <span class="mi">528</span><span class="p">:</span> <span class="s1">&#39;ApiDmaNoMoreElements&#39;</span><span class="p">,</span>
+    <span class="mi">529</span><span class="p">:</span> <span class="s1">&#39;ApiDmaSglInvalid&#39;</span><span class="p">,</span>
+    <span class="mi">530</span><span class="p">:</span> <span class="s1">&#39;ApiDmaSglQueueFull&#39;</span><span class="p">,</span>
+    <span class="mi">531</span><span class="p">:</span> <span class="s1">&#39;ApiNullParam&#39;</span><span class="p">,</span>
+    <span class="mi">532</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidBusIndex&#39;</span><span class="p">,</span>
+    <span class="mi">533</span><span class="p">:</span> <span class="s1">&#39;ApiUnsupportedFunction&#39;</span><span class="p">,</span>
+    <span class="mi">534</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidPciSpace&#39;</span><span class="p">,</span>
+    <span class="mi">535</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidIopSpace&#39;</span><span class="p">,</span>
+    <span class="mi">536</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidSize&#39;</span><span class="p">,</span>
+    <span class="mi">537</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidAddress&#39;</span><span class="p">,</span>
+    <span class="mi">538</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidAccessType&#39;</span><span class="p">,</span>
+    <span class="mi">539</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidIndex&#39;</span><span class="p">,</span>
+    <span class="mi">540</span><span class="p">:</span> <span class="s1">&#39;ApiMuNotReady&#39;</span><span class="p">,</span>
+    <span class="mi">541</span><span class="p">:</span> <span class="s1">&#39;ApiMuFifoEmpty&#39;</span><span class="p">,</span>
+    <span class="mi">542</span><span class="p">:</span> <span class="s1">&#39;ApiMuFifoFull&#39;</span><span class="p">,</span>
+    <span class="mi">543</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidRegister&#39;</span><span class="p">,</span>
+    <span class="mi">544</span><span class="p">:</span> <span class="s1">&#39;ApiDoorbellClearFailed&#39;</span><span class="p">,</span>
+    <span class="mi">545</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidUserPin&#39;</span><span class="p">,</span>
+    <span class="mi">546</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidUserState&#39;</span><span class="p">,</span>
+    <span class="mi">547</span><span class="p">:</span> <span class="s1">&#39;ApiEepromNotPresent&#39;</span><span class="p">,</span>
+    <span class="mi">548</span><span class="p">:</span> <span class="s1">&#39;ApiEepromTypeNotSupported&#39;</span><span class="p">,</span>
+    <span class="mi">549</span><span class="p">:</span> <span class="s1">&#39;ApiEepromBlank&#39;</span><span class="p">,</span>
+    <span class="mi">550</span><span class="p">:</span> <span class="s1">&#39;ApiConfigAccessFailed&#39;</span><span class="p">,</span>
+    <span class="mi">551</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidDeviceInfo&#39;</span><span class="p">,</span>
+    <span class="mi">552</span><span class="p">:</span> <span class="s1">&#39;ApiNoActiveDriver&#39;</span><span class="p">,</span>
+    <span class="mi">553</span><span class="p">:</span> <span class="s1">&#39;ApiInsufficientResources&#39;</span><span class="p">,</span>
+    <span class="mi">554</span><span class="p">:</span> <span class="s1">&#39;ApiObjectAlreadyAllocated&#39;</span><span class="p">,</span>
+    <span class="mi">555</span><span class="p">:</span> <span class="s1">&#39;ApiAlreadyInitialized&#39;</span><span class="p">,</span>
+    <span class="mi">556</span><span class="p">:</span> <span class="s1">&#39;ApiNotInitialized&#39;</span><span class="p">,</span>
+    <span class="mi">557</span><span class="p">:</span> <span class="s1">&#39;ApiBadConfigRegEndianMode&#39;</span><span class="p">,</span>
+    <span class="mi">558</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidPowerState&#39;</span><span class="p">,</span>
+    <span class="mi">559</span><span class="p">:</span> <span class="s1">&#39;ApiPowerDown&#39;</span><span class="p">,</span>
+    <span class="mi">560</span><span class="p">:</span> <span class="s1">&#39;ApiFlybyNotSupported&#39;</span><span class="p">,</span>
+    <span class="mi">561</span><span class="p">:</span> <span class="s1">&#39;ApiNotSupportThisChannel&#39;</span><span class="p">,</span>
+    <span class="mi">562</span><span class="p">:</span> <span class="s1">&#39;ApiNoAction&#39;</span><span class="p">,</span>
+    <span class="mi">563</span><span class="p">:</span> <span class="s1">&#39;ApiHSNotSupported&#39;</span><span class="p">,</span>
+    <span class="mi">564</span><span class="p">:</span> <span class="s1">&#39;ApiVPDNotSupported&#39;</span><span class="p">,</span>
+    <span class="mi">565</span><span class="p">:</span> <span class="s1">&#39;ApiVpdNotEnabled&#39;</span><span class="p">,</span>
+    <span class="mi">566</span><span class="p">:</span> <span class="s1">&#39;ApiNoMoreCap&#39;</span><span class="p">,</span>
+    <span class="mi">567</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidOffset&#39;</span><span class="p">,</span>
+    <span class="mi">568</span><span class="p">:</span> <span class="s1">&#39;ApiBadPinDirection&#39;</span><span class="p">,</span>
+    <span class="mi">569</span><span class="p">:</span> <span class="s1">&#39;ApiPciTimeout&#39;</span><span class="p">,</span>
+    <span class="mi">570</span><span class="p">:</span> <span class="s1">&#39;ApiDmaChannelClosed&#39;</span><span class="p">,</span>
+    <span class="mi">571</span><span class="p">:</span> <span class="s1">&#39;ApiDmaChannelError&#39;</span><span class="p">,</span>
+    <span class="mi">572</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidHandle&#39;</span><span class="p">,</span>
+    <span class="mi">573</span><span class="p">:</span> <span class="s1">&#39;ApiBufferNotReady&#39;</span><span class="p">,</span>
+    <span class="mi">574</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidData&#39;</span><span class="p">,</span>
+    <span class="mi">575</span><span class="p">:</span> <span class="s1">&#39;ApiDoNothing&#39;</span><span class="p">,</span>
+    <span class="mi">576</span><span class="p">:</span> <span class="s1">&#39;ApiDmaSglBuildFailed&#39;</span><span class="p">,</span>
+    <span class="mi">577</span><span class="p">:</span> <span class="s1">&#39;ApiPMNotSupported&#39;</span><span class="p">,</span>
+    <span class="mi">578</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidDriverVersion&#39;</span><span class="p">,</span>
+    <span class="mi">579</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ApiWaitTimeout: operation did not finish during &#39;</span>
+          <span class="s1">&#39;timeout interval. Check your trigger.&#39;</span><span class="p">),</span>
+    <span class="mi">580</span><span class="p">:</span> <span class="s1">&#39;ApiWaitCanceled&#39;</span><span class="p">,</span>
+    <span class="mi">581</span><span class="p">:</span> <span class="s1">&#39;ApiBufferTooSmall&#39;</span><span class="p">,</span>
+    <span class="mi">582</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ApiBufferOverflow: rate of acquiring data &gt; rate of &#39;</span>
+          <span class="s1">&#39;transferring data to local memory. Try reducing sample rate, &#39;</span>
+          <span class="s1">&#39;reducing number of enabled channels, increasing size of each &#39;</span>
+          <span class="s1">&#39;DMA buffer or increase number of DMA buffers.&#39;</span><span class="p">),</span>
+    <span class="mi">583</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidBuffer&#39;</span><span class="p">,</span>
+    <span class="mi">584</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidRecordsPerBuffer&#39;</span><span class="p">,</span>
+    <span class="mi">585</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ApiDmaPending: Async I/O operation was successfully started, &#39;</span>
+          <span class="s1">&#39;it will be completed when sufficient trigger events are &#39;</span>
+          <span class="s1">&#39;supplied to fill the buffer.&#39;</span><span class="p">),</span>
+    <span class="mi">586</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ApiLockAndProbePagesFailed:Driver or operating system was &#39;</span>
+          <span class="s1">&#39;unable to prepare the specified buffer for DMA transfer. &#39;</span>
+          <span class="s1">&#39;Try reducing buffer size or total number of buffers.&#39;</span><span class="p">),</span>
+    <span class="mi">587</span><span class="p">:</span> <span class="s1">&#39;ApiWaitAbandoned&#39;</span><span class="p">,</span>
+    <span class="mi">588</span><span class="p">:</span> <span class="s1">&#39;ApiWaitFailed&#39;</span><span class="p">,</span>
+    <span class="mi">589</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ApiTransferComplete: This buffer is last in the current &#39;</span>
+          <span class="s1">&#39;acquisition.&#39;</span><span class="p">),</span>
+    <span class="mi">590</span><span class="p">:</span> <span class="s1">&#39;ApiPllNotLocked: hardware error, contact AlazarTech&#39;</span><span class="p">,</span>
+    <span class="mi">591</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ApiNotSupportedInDualChannelMode:Requested number of samples &#39;</span>
+          <span class="s1">&#39;per channel is too large to fit in on-board memory. Try &#39;</span>
+          <span class="s1">&#39;reducing number of samples per channel, or switch to &#39;</span>
+          <span class="s1">&#39;single channel mode.&#39;</span><span class="p">),</span>
+    <span class="mi">592</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ApiNotSupportedInQuadChannelMode: The requested number of &#39;</span>
+          <span class="s1">&#39;samples per channel is too large to fit in onboard memory. &#39;</span>
+          <span class="s1">&#39;Try reducing the num&#39;</span><span class="p">),</span>
+    <span class="mi">593</span><span class="p">:</span> <span class="s1">&#39;ApiFileIoError: A file read or write error occurred.&#39;</span><span class="p">,</span>
+    <span class="mi">594</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ApiInvalidClockFrequency: The requested ADC clock frequency is &#39;</span>
+          <span class="s1">&#39;not supported.&#39;</span><span class="p">),</span>
+    <span class="mi">595</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidSkipTable&#39;</span><span class="p">,</span>
+    <span class="mi">596</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidDspModule&#39;</span><span class="p">,</span>
+    <span class="mi">597</span><span class="p">:</span> <span class="s1">&#39;ApiDESOnlySupportedInSingleChannelMode&#39;</span><span class="p">,</span>
+    <span class="mi">598</span><span class="p">:</span> <span class="s1">&#39;ApiInconsistentChannel&#39;</span><span class="p">,</span>
+    <span class="mi">599</span><span class="p">:</span> <span class="s1">&#39;ApiDspFiniteRecordsPerAcquisition&#39;</span><span class="p">,</span>
+    <span class="mi">600</span><span class="p">:</span> <span class="s1">&#39;ApiNotEnoughNptFooters&#39;</span><span class="p">,</span>
+    <span class="mi">601</span><span class="p">:</span> <span class="s1">&#39;ApiInvalidNptFooter&#39;</span><span class="p">,</span>
+    <span class="mi">602</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ApiOCTIgnoreBadClockNotSupported: OCT ignore bad clock is not &#39;</span>
+          <span class="s1">&#39;supported.&#39;</span><span class="p">),</span>
+    <span class="mi">603</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ApiError: The requested number of records in a single-port &#39;</span>
+          <span class="s1">&#39;acquisition exceeds the maximum supported by the digitizer. &#39;</span>
+          <span class="s1">&#39;Use dual-ported AutoDMA to acquire more records per acquisition.&#39;</span><span class="p">),</span>
+    <span class="mi">604</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ApiError: The requested number of records in a single-port &#39;</span>
+          <span class="s1">&#39;acquisition exceeds the maximum supported by the digitizer.&#39;</span><span class="p">),</span>
+    <span class="mi">605</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ApiOCTNoTriggerDetected: No trigger is detected for OCT ignore &#39;</span>
+          <span class="s1">&#39;bad clock feature.&#39;</span><span class="p">),</span>
+    <span class="mi">606</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ApiOCTTriggerTooFast: Trigger detected is too fast for OCT ignore &#39;</span>
+          <span class="s1">&#39;bad clock feature.&#39;</span><span class="p">),</span>
+    <span class="mi">607</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ApiNetworkError: There was an issue related to network. Make sure &#39;</span>
+          <span class="s1">&#39;that the network connection and settings are correct.&#39;</span><span class="p">),</span>
+    <span class="mi">608</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;ApiFftSizeTooLarge: The on-FPGA FFT cannot support FFT that &#39;</span>
+          <span class="s1">&#39;large. Try reducing the FFT size.&#39;</span><span class="p">),</span>
+<span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+
+<span class="n">BOARD_NAMES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;ATS_NONE&#39;</span><span class="p">,</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;ATS850&#39;</span><span class="p">,</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;ATS310&#39;</span><span class="p">,</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;ATS330&#39;</span><span class="p">,</span>
+    <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;ATS855&#39;</span><span class="p">,</span>
+    <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;ATS315&#39;</span><span class="p">,</span>
+    <span class="mi">6</span><span class="p">:</span> <span class="s1">&#39;ATS335&#39;</span><span class="p">,</span>
+    <span class="mi">7</span><span class="p">:</span> <span class="s1">&#39;ATS460&#39;</span><span class="p">,</span>
+    <span class="mi">8</span><span class="p">:</span> <span class="s1">&#39;ATS860&#39;</span><span class="p">,</span>
+    <span class="mi">9</span><span class="p">:</span> <span class="s1">&#39;ATS660&#39;</span><span class="p">,</span>
+    <span class="mi">10</span><span class="p">:</span> <span class="s1">&#39;ATS665&#39;</span><span class="p">,</span>
+    <span class="mi">11</span><span class="p">:</span> <span class="s1">&#39;ATS9462&#39;</span><span class="p">,</span>
+    <span class="mi">12</span><span class="p">:</span> <span class="s1">&#39;ATS9434&#39;</span><span class="p">,</span>
+    <span class="mi">13</span><span class="p">:</span> <span class="s1">&#39;ATS9870&#39;</span><span class="p">,</span>
+    <span class="mi">14</span><span class="p">:</span> <span class="s1">&#39;ATS9350&#39;</span><span class="p">,</span>
+    <span class="mi">15</span><span class="p">:</span> <span class="s1">&#39;ATS9325&#39;</span><span class="p">,</span>
+    <span class="mi">16</span><span class="p">:</span> <span class="s1">&#39;ATS9440&#39;</span><span class="p">,</span>
+    <span class="mi">17</span><span class="p">:</span> <span class="s1">&#39;ATS9410&#39;</span><span class="p">,</span>
+    <span class="mi">18</span><span class="p">:</span> <span class="s1">&#39;ATS9351&#39;</span><span class="p">,</span>
+    <span class="mi">19</span><span class="p">:</span> <span class="s1">&#39;ATS9310&#39;</span><span class="p">,</span>
+    <span class="mi">20</span><span class="p">:</span> <span class="s1">&#39;ATS9461&#39;</span><span class="p">,</span>
+    <span class="mi">21</span><span class="p">:</span> <span class="s1">&#39;ATS9850&#39;</span><span class="p">,</span>
+    <span class="mi">22</span><span class="p">:</span> <span class="s1">&#39;ATS9625&#39;</span><span class="p">,</span>
+    <span class="mi">23</span><span class="p">:</span> <span class="s1">&#39;ATG6500&#39;</span><span class="p">,</span>
+    <span class="mi">24</span><span class="p">:</span> <span class="s1">&#39;ATS9626&#39;</span><span class="p">,</span>
+    <span class="mi">25</span><span class="p">:</span> <span class="s1">&#39;ATS9360&#39;</span><span class="p">,</span>
+    <span class="mi">26</span><span class="p">:</span> <span class="s1">&#39;AXI9870&#39;</span><span class="p">,</span>
+    <span class="mi">27</span><span class="p">:</span> <span class="s1">&#39;ATS9370&#39;</span><span class="p">,</span>
+    <span class="mi">28</span><span class="p">:</span> <span class="s1">&#39;ATU7825&#39;</span><span class="p">,</span>
+    <span class="mi">29</span><span class="p">:</span> <span class="s1">&#39;ATS9373&#39;</span><span class="p">,</span>
+    <span class="mi">30</span><span class="p">:</span> <span class="s1">&#39;ATS9416&#39;</span><span class="p">,</span>
+    <span class="mi">31</span><span class="p">:</span> <span class="s1">&#39;ATS9637&#39;</span><span class="p">,</span>
+    <span class="mi">32</span><span class="p">:</span> <span class="s1">&#39;ATS9120&#39;</span><span class="p">,</span>
+    <span class="mi">33</span><span class="p">:</span> <span class="s1">&#39;ATS9371&#39;</span><span class="p">,</span>
+    <span class="mi">34</span><span class="p">:</span> <span class="s1">&#39;ATS9130&#39;</span><span class="p">,</span>
+    <span class="mi">35</span><span class="p">:</span> <span class="s1">&#39;ATS9352&#39;</span><span class="p">,</span>
+    <span class="mi">36</span><span class="p">:</span> <span class="s1">&#39;ATS9453&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="c1"># See table 4 Input Channel Configurations</span>
+<span class="c1"># on page 241 of the Alazar SDK manual</span>
+<span class="n">_NUMBER_OF_CHANNELS_TO_BYTE_REPR</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">1</span><span class="p">:</span>  <span class="nb">tuple</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">)),</span>
+    <span class="mi">2</span><span class="p">:</span>  <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span>
+    <span class="mi">4</span><span class="p">:</span>  <span class="p">(</span><span class="mi">15</span><span class="p">,),</span>
+    <span class="mi">8</span><span class="p">:</span>  <span class="p">(</span><span class="mi">255</span><span class="p">,),</span>
+    <span class="mi">16</span><span class="p">:</span> <span class="p">(</span><span class="mi">65535</span><span class="p">,)</span>
+    <span class="p">}</span>
+
+<span class="c1"># See table 4 Input Channel Configurations</span>
+<span class="c1"># on page 241 of the Alazar SDK manual</span>
+<span class="n">NUMBER_OF_CHANNELS_FROM_BYTE_REPR</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">byte_repr</span><span class="p">:</span> <span class="n">n_ch</span>
+        <span class="k">for</span> <span class="n">n_ch</span><span class="p">,</span> <span class="n">byte_reprs</span> <span class="ow">in</span> <span class="n">_NUMBER_OF_CHANNELS_TO_BYTE_REPR</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">byte_repr</span> <span class="ow">in</span> <span class="n">byte_reprs</span>
+    <span class="p">}</span>
+
+
+<span class="n">REGISTER_ACCESS_PASSWORD</span> <span class="o">=</span> <span class="mh">0x32145876</span>
+
+
+<div class="viewcode-block" id="ClockSource"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.ClockSource">[docs]</a><span class="k">class</span> <span class="nc">ClockSource</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">INTERNAL_CLOCK</span> <span class="o">=</span> <span class="mh">0x00000001</span>
+    <span class="n">FAST_EXTERNAL_CLOCK</span> <span class="o">=</span> <span class="mh">0x00000002</span>
+    <span class="n">EXTERNAL_CLOCK</span> <span class="o">=</span> <span class="n">FAST_EXTERNAL_CLOCK</span>
+    <span class="n">MEDIUM_EXTERNAL_CLOCK</span> <span class="o">=</span> <span class="mh">0x00000003</span>
+    <span class="n">SLOW_EXTERNAL_CLOCK</span> <span class="o">=</span> <span class="mh">0x00000004</span>
+    <span class="n">EXTERNAL_CLOCK_AC</span> <span class="o">=</span> <span class="mh">0x00000005</span>
+    <span class="n">EXTERNAL_CLOCK_DC</span> <span class="o">=</span> <span class="mh">0x00000006</span>
+    <span class="n">EXTERNAL_CLOCK_10MHz_REF</span> <span class="o">=</span> <span class="mh">0x00000007</span>
+    <span class="n">INTERNAL_CLOCK_10MHz_REF</span> <span class="o">=</span> <span class="mh">0x00000008</span>
+    <span class="n">EXTERNAL_CLOCK_10MHz_PXI</span> <span class="o">=</span> <span class="mh">0x0000000A</span>
+    <span class="n">INTERNAL_CLOCK_DIV_4</span> <span class="o">=</span> <span class="mh">0x0000000F</span>
+    <span class="n">INTERNAL_CLOCK_DIV_5</span> <span class="o">=</span> <span class="mh">0x00000010</span>
+    <span class="n">MASTER_CLOCK</span> <span class="o">=</span> <span class="mh">0x00000011</span>
+    <span class="n">INTERNAL_CLOCK_SET_VCO</span> <span class="o">=</span> <span class="mh">0x00000012</span></div>
+
+
+<div class="viewcode-block" id="ClockEdge"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.ClockEdge">[docs]</a><span class="k">class</span> <span class="nc">ClockEdge</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">CLOCK_EDGE_RISING</span> <span class="o">=</span> <span class="mh">0x00000000</span>
+    <span class="n">CLOCK_EDGE_FALLING</span> <span class="o">=</span> <span class="mh">0x00000001</span></div>
+
+
+<div class="viewcode-block" id="SampleRate"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.SampleRate">[docs]</a><span class="k">class</span> <span class="nc">SampleRate</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">SAMPLE_RATE_USER_DEF</span> <span class="o">=</span> <span class="mh">0x00000040</span>
+    <span class="n">SAMPLE_RATE_1KSPS</span> <span class="o">=</span> <span class="mh">0X00000001</span>
+    <span class="n">SAMPLE_RATE_2KSPS</span> <span class="o">=</span> <span class="mh">0X00000002</span>
+    <span class="n">SAMPLE_RATE_5KSPS</span> <span class="o">=</span> <span class="mh">0X00000004</span>
+    <span class="n">SAMPLE_RATE_10KSPS</span> <span class="o">=</span> <span class="mh">0X00000008</span>
+    <span class="n">SAMPLE_RATE_20KSPS</span> <span class="o">=</span> <span class="mh">0X0000000A</span>
+    <span class="n">SAMPLE_RATE_50KSPS</span> <span class="o">=</span> <span class="mh">0X0000000C</span>
+    <span class="n">SAMPLE_RATE_100KSPS</span> <span class="o">=</span> <span class="mh">0X0000000E</span>
+    <span class="n">SAMPLE_RATE_200KSPS</span> <span class="o">=</span> <span class="mh">0X00000010</span>
+    <span class="n">SAMPLE_RATE_500KSPS</span> <span class="o">=</span> <span class="mh">0X00000012</span>
+    <span class="n">SAMPLE_RATE_1MSPS</span> <span class="o">=</span> <span class="mh">0X00000014</span>
+    <span class="n">SAMPLE_RATE_2MSPS</span> <span class="o">=</span> <span class="mh">0X00000018</span>
+    <span class="n">SAMPLE_RATE_5MSPS</span> <span class="o">=</span> <span class="mh">0X0000001A</span>
+    <span class="n">SAMPLE_RATE_10MSPS</span> <span class="o">=</span> <span class="mh">0X0000001C</span>
+    <span class="n">SAMPLE_RATE_20MSPS</span> <span class="o">=</span> <span class="mh">0X0000001E</span>
+    <span class="n">SAMPLE_RATE_25MSPS</span> <span class="o">=</span> <span class="mh">0X00000021</span>
+    <span class="n">SAMPLE_RATE_50MSPS</span> <span class="o">=</span> <span class="mh">0X00000022</span>
+    <span class="n">SAMPLE_RATE_100MSPS</span> <span class="o">=</span> <span class="mh">0X00000024</span>
+    <span class="n">SAMPLE_RATE_125MSPS</span> <span class="o">=</span> <span class="mh">0x00000025</span>
+    <span class="n">SAMPLE_RATE_160MSPS</span> <span class="o">=</span> <span class="mh">0x00000026</span>
+    <span class="n">SAMPLE_RATE_180MSPS</span> <span class="o">=</span> <span class="mh">0x00000027</span>
+    <span class="n">SAMPLE_RATE_200MSPS</span> <span class="o">=</span> <span class="mh">0X00000028</span>
+    <span class="n">SAMPLE_RATE_250MSPS</span> <span class="o">=</span> <span class="mh">0X0000002B</span>
+    <span class="n">SAMPLE_RATE_400MSPS</span> <span class="o">=</span> <span class="mh">0X0000002D</span>
+    <span class="n">SAMPLE_RATE_500MSPS</span> <span class="o">=</span> <span class="mh">0X00000030</span>
+    <span class="n">SAMPLE_RATE_800MSPS</span> <span class="o">=</span> <span class="mh">0X00000032</span>
+    <span class="n">SAMPLE_RATE_1000MSPS</span> <span class="o">=</span> <span class="mh">0x00000035</span>
+    <span class="n">SAMPLE_RATE_1GSPS</span> <span class="o">=</span> <span class="n">SAMPLE_RATE_1000MSPS</span>
+    <span class="n">SAMPLE_RATE_1200MSPS</span> <span class="o">=</span> <span class="mh">0x00000037</span>
+    <span class="n">SAMPLE_RATE_1500MSPS</span> <span class="o">=</span> <span class="mh">0x0000003A</span>
+    <span class="n">SAMPLE_RATE_1600MSPS</span> <span class="o">=</span> <span class="mh">0x0000003B</span>
+    <span class="n">SAMPLE_RATE_1800MSPS</span> <span class="o">=</span> <span class="mh">0x0000003D</span>
+    <span class="n">SAMPLE_RATE_2000MSPS</span> <span class="o">=</span> <span class="mh">0x0000003F</span>
+    <span class="n">SAMPLE_RATE_2GSPS</span> <span class="o">=</span> <span class="n">SAMPLE_RATE_2000MSPS</span>
+    <span class="n">SAMPLE_RATE_2400MSPS</span> <span class="o">=</span> <span class="mh">0x0000006A</span>
+    <span class="n">SAMPLE_RATE_3000MSPS</span> <span class="o">=</span> <span class="mh">0x00000075</span>
+    <span class="n">SAMPLE_RATE_3GSPS</span> <span class="o">=</span> <span class="n">SAMPLE_RATE_3000MSPS</span>
+    <span class="n">SAMPLE_RATE_3600MSPS</span> <span class="o">=</span> <span class="mh">0x0000007B</span>
+    <span class="n">SAMPLE_RATE_4000MSPS</span> <span class="o">=</span> <span class="mh">0x00000080</span>
+    <span class="n">SAMPLE_RATE_4GSPS</span> <span class="o">=</span> <span class="n">SAMPLE_RATE_4000MSPS</span></div>
+
+
+<div class="viewcode-block" id="Coupling"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.Coupling">[docs]</a><span class="k">class</span> <span class="nc">Coupling</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">AC_COUPLING</span> <span class="o">=</span> <span class="mh">0x00000001</span>
+    <span class="n">DC_COUPLING</span> <span class="o">=</span> <span class="mh">0x00000002</span></div>
+
+
+<div class="viewcode-block" id="InputRange"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.InputRange">[docs]</a><span class="k">class</span> <span class="nc">InputRange</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">INPUT_RANGE_PM_20_MV</span> <span class="o">=</span> <span class="mh">0x00000001</span>
+    <span class="n">INPUT_RANGE_PM_40_MV</span> <span class="o">=</span> <span class="mh">0x00000002</span>
+    <span class="n">INPUT_RANGE_PM_50_MV</span> <span class="o">=</span> <span class="mh">0x00000003</span>
+    <span class="n">INPUT_RANGE_PM_80_MV</span> <span class="o">=</span> <span class="mh">0x00000004</span>
+    <span class="n">INPUT_RANGE_PM_100_MV</span> <span class="o">=</span> <span class="mh">0x00000005</span>
+    <span class="n">INPUT_RANGE_PM_200_MV</span> <span class="o">=</span> <span class="mh">0x00000006</span>
+    <span class="n">INPUT_RANGE_PM_400_MV</span> <span class="o">=</span> <span class="mh">0x00000007</span>
+    <span class="n">INPUT_RANGE_PM_500_MV</span> <span class="o">=</span> <span class="mh">0x00000008</span>
+    <span class="n">INPUT_RANGE_PM_800_MV</span> <span class="o">=</span> <span class="mh">0x00000009</span>
+    <span class="n">INPUT_RANGE_PM_1_V</span> <span class="o">=</span> <span class="mh">0x0000000A</span>
+    <span class="n">INPUT_RANGE_PM_2_V</span> <span class="o">=</span> <span class="mh">0x0000000B</span>
+    <span class="n">INPUT_RANGE_PM_4_V</span> <span class="o">=</span> <span class="mh">0x0000000C</span>
+    <span class="n">INPUT_RANGE_PM_5_V</span> <span class="o">=</span> <span class="mh">0x0000000D</span>
+    <span class="n">INPUT_RANGE_PM_8_V</span> <span class="o">=</span> <span class="mh">0x0000000E</span>
+    <span class="n">INPUT_RANGE_PM_10_V</span> <span class="o">=</span> <span class="mh">0x0000000F</span>
+    <span class="n">INPUT_RANGE_PM_20_V</span> <span class="o">=</span> <span class="mh">0x00000010</span>
+    <span class="n">INPUT_RANGE_PM_40_V</span> <span class="o">=</span> <span class="mh">0x00000011</span>
+    <span class="n">INPUT_RANGE_PM_16_V</span> <span class="o">=</span> <span class="mh">0x00000012</span>
+    <span class="n">INPUT_RANGE_HIFI</span> <span class="o">=</span> <span class="mh">0x00000020</span>
+    <span class="n">INPUT_RANGE_PM_1_V_25</span> <span class="o">=</span> <span class="mh">0x00000021</span>
+    <span class="n">INPUT_RANGE_PM_2_V_5</span> <span class="o">=</span> <span class="mh">0x00000025</span>
+    <span class="n">INPUT_RANGE_PM_125_MV</span> <span class="o">=</span> <span class="mh">0x00000028</span>
+    <span class="n">INPUT_RANGE_PM_250_MV</span> <span class="o">=</span> <span class="mh">0x00000030</span></div>
+
+
+<div class="viewcode-block" id="Impedance"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.Impedance">[docs]</a><span class="k">class</span> <span class="nc">Impedance</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">IMPEDANCE_1M_OHM</span> <span class="o">=</span> <span class="mh">0x00000001</span>
+    <span class="n">IMPEDANCE_50_OHM</span> <span class="o">=</span> <span class="mh">0x00000002</span>
+    <span class="n">IMPEDANCE_75_OHM</span> <span class="o">=</span> <span class="mh">0x00000004</span>
+    <span class="n">IMPEDANCE_300_OHM</span> <span class="o">=</span> <span class="mh">0x00000008</span></div>
+
+
+<div class="viewcode-block" id="BandwidthLimit"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.BandwidthLimit">[docs]</a><span class="k">class</span> <span class="nc">BandwidthLimit</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">DISABLE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ENABLE</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="TriggerEngine"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.TriggerEngine">[docs]</a><span class="k">class</span> <span class="nc">TriggerEngine</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">TRIG_ENGINE_J</span> <span class="o">=</span> <span class="mh">0x00000000</span>
+    <span class="n">TRIG_ENGINE_K</span> <span class="o">=</span> <span class="mh">0x00000001</span></div>
+
+
+<div class="viewcode-block" id="TriggerEngineOperation"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.TriggerEngineOperation">[docs]</a><span class="k">class</span> <span class="nc">TriggerEngineOperation</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">TRIG_ENGINE_OP_J</span> <span class="o">=</span> <span class="mh">0x00000000</span>
+    <span class="n">TRIG_ENGINE_OP_K</span> <span class="o">=</span> <span class="mh">0x00000001</span>
+    <span class="n">TRIG_ENGINE_OP_J_OR_K</span> <span class="o">=</span> <span class="mh">0x00000002</span>
+    <span class="n">TRIG_ENGINE_OP_J_AND_K</span> <span class="o">=</span> <span class="mh">0x00000003</span>
+    <span class="n">TRIG_ENGINE_OP_J_XOR_K</span> <span class="o">=</span> <span class="mh">0x00000004</span>
+    <span class="n">TRIG_ENGINE_OP_J_AND_NOT_K</span> <span class="o">=</span> <span class="mh">0x00000005</span>
+    <span class="n">TRIG_ENGINE_OP_NOT_J_AND_K</span> <span class="o">=</span> <span class="mh">0x00000006</span></div>
+
+
+<div class="viewcode-block" id="TriggerEngineSource"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.TriggerEngineSource">[docs]</a><span class="k">class</span> <span class="nc">TriggerEngineSource</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">TRIG_CHAN_A</span> <span class="o">=</span> <span class="mh">0x00000000</span>
+    <span class="n">TRIG_CHAN_B</span> <span class="o">=</span> <span class="mh">0x00000001</span>
+    <span class="n">TRIG_EXTERNAL</span> <span class="o">=</span> <span class="mh">0x00000002</span>
+    <span class="n">TRIG_DISABLE</span> <span class="o">=</span> <span class="mh">0x00000003</span>
+    <span class="n">TRIG_CHAN_C</span> <span class="o">=</span> <span class="mh">0x00000004</span>
+    <span class="n">TRIG_CHAN_D</span> <span class="o">=</span> <span class="mh">0x00000005</span>
+    <span class="n">TRIG_CHAN_E</span> <span class="o">=</span> <span class="mh">0x00000006</span>
+    <span class="n">TRIG_CHAN_F</span> <span class="o">=</span> <span class="mh">0x00000007</span>
+    <span class="n">TRIG_CHAN_G</span> <span class="o">=</span> <span class="mh">0x00000008</span>
+    <span class="n">TRIG_CHAN_H</span> <span class="o">=</span> <span class="mh">0x00000009</span>
+    <span class="n">TRIG_CHAN_I</span> <span class="o">=</span> <span class="mh">0x0000000A</span>
+    <span class="n">TRIG_CHAN_J</span> <span class="o">=</span> <span class="mh">0x0000000B</span>
+    <span class="n">TRIG_CHAN_K</span> <span class="o">=</span> <span class="mh">0x0000000C</span>
+    <span class="n">TRIG_CHAN_L</span> <span class="o">=</span> <span class="mh">0x0000000D</span>
+    <span class="n">TRIG_CHAN_M</span> <span class="o">=</span> <span class="mh">0x0000000E</span>
+    <span class="n">TRIG_CHAN_N</span> <span class="o">=</span> <span class="mh">0x0000000F</span>
+    <span class="n">TRIG_CHAN_O</span> <span class="o">=</span> <span class="mh">0x00000010</span>
+    <span class="n">TRIG_CHAN_P</span> <span class="o">=</span> <span class="mh">0x00000011</span>
+    <span class="n">TRIG_PXI_STAR</span> <span class="o">=</span> <span class="mh">0x00000100</span></div>
+
+
+<div class="viewcode-block" id="TriggerSlope"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.TriggerSlope">[docs]</a><span class="k">class</span> <span class="nc">TriggerSlope</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Used in more than one place, for example, for ``AUX_IN_TRIGGER_ENABLE``</span>
+<span class="sd">    Auxiallary IO mode</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TRIGGER_SLOPE_POSITIVE</span> <span class="o">=</span> <span class="mh">0x00000001</span>
+    <span class="n">TRIGGER_SLOPE_NEGATIVE</span> <span class="o">=</span> <span class="mh">0x00000002</span></div>
+
+
+<div class="viewcode-block" id="ExternalTriggerCoupling"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.ExternalTriggerCoupling">[docs]</a><span class="k">class</span> <span class="nc">ExternalTriggerCoupling</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">AC</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">DC</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="ExternalTriggerRange"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.ExternalTriggerRange">[docs]</a><span class="k">class</span> <span class="nc">ExternalTriggerRange</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">ETR_DIV5</span> <span class="o">=</span> <span class="mh">0x00000000</span>
+    <span class="n">ETR_X1</span> <span class="o">=</span> <span class="mh">0x00000001</span>
+    <span class="n">ETR_5V</span> <span class="o">=</span> <span class="mh">0x00000000</span>
+    <span class="n">ETR_1V</span> <span class="o">=</span> <span class="mh">0x00000001</span>
+    <span class="n">ETR_TTL</span> <span class="o">=</span> <span class="mh">0x00000002</span>
+    <span class="n">ETR_2V5</span> <span class="o">=</span> <span class="mh">0x00000003</span></div>
+
+
+<span class="c1"># This is how it&#39;s called in AlazarCmd.h</span>
+<span class="n">ExternalTriggerAttenuatorRelay</span> <span class="o">=</span> <span class="n">ExternalTriggerRange</span>
+
+
+<div class="viewcode-block" id="AuxilaryIO"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.AuxilaryIO">[docs]</a><span class="k">class</span> <span class="nc">AuxilaryIO</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="c1"># Output</span>
+    <span class="n">AUX_OUT_TRIGGER</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">AUX_OUT_PACER</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">AUX_OUT_BUSY</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">AUX_OUT_CLOCK</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">AUX_OUT_RESERVED</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">AUX_OUT_CAPTURE_ALMOST_DONE</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">AUX_OUT_AUXILIARY</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">AUX_OUT_SERIAL_DATA</span> <span class="o">=</span> <span class="mi">14</span>
+    <span class="n">AUX_OUT_TRIGGER_ENABLE</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="c1"># Input</span>
+    <span class="n">AUX_IN_TRIGGER_ENABLE</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">AUX_IN_DIGITAL_TRIGGER</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">AUX_IN_GATE</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">AUX_IN_CAPTURE_ON_DEMAND</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">AUX_IN_RESET_TIMESTAMP</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">AUX_IN_SLOW_EXTERNAL_CLOCK</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">AUX_IN_AUXILIARY</span> <span class="o">=</span> <span class="mi">13</span>
+    <span class="n">AUX_IN_SERIAL_DATA</span> <span class="o">=</span> <span class="mi">15</span></div>
+
+
+<div class="viewcode-block" id="AutoDMAFlag"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.AutoDMAFlag">[docs]</a><span class="k">class</span> <span class="nc">AutoDMAFlag</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
+    <span class="c1"># Automatic DMA acquisition modes</span>
+    <span class="n">ADMA_TRADITIONAL_MODE</span> <span class="o">=</span> <span class="mh">0x00000000</span>
+    <span class="n">ADMA_CONTINUOUS_MODE</span> <span class="o">=</span> <span class="mh">0x00000100</span>
+    <span class="n">ADMA_NPT</span> <span class="o">=</span> <span class="mh">0x00000200</span>
+    <span class="n">ADMA_TRIGGERED_STREAMING</span> <span class="o">=</span> <span class="mh">0x00000400</span>
+    <span class="c1"># Automatic DMA acquisition options</span>
+    <span class="n">ADMA_EXTERNAL_STARTCAPTURE</span> <span class="o">=</span> <span class="mh">0x00000001</span>
+    <span class="n">ADMA_ENABLE_RECORD_HEADERS</span> <span class="o">=</span> <span class="mh">0x00000008</span>
+    <span class="n">ADMA_FIFO_ONLY_STREAMING</span> <span class="o">=</span> <span class="mh">0x00000800</span>
+    <span class="n">ADMA_ALLOC_BUFFERS</span> <span class="o">=</span> <span class="mh">0x00000020</span>
+    <span class="n">ADMA_INTERLEAVE_SAMPLES</span> <span class="o">=</span> <span class="mh">0x00001000</span>
+    <span class="n">ADMA_GET_PROCESSED_DATA</span> <span class="o">=</span> <span class="mh">0x00002000</span>
+    <span class="n">ADMA_DSP</span> <span class="o">=</span> <span class="mh">0x00004000</span>
+    <span class="c1"># Other</span>
+    <span class="n">ADMA_SINGLE_DMA_CHANNEL</span> <span class="o">=</span> <span class="mh">0x00000010</span>
+    <span class="n">ADMA_ENABLE_RECORD_FOOTERS</span> <span class="o">=</span> <span class="mh">0x00010000</span></div>
+
+
+<div class="viewcode-block" id="Channel"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.Channel">[docs]</a><span class="k">class</span> <span class="nc">Channel</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Flags for selecting channel configuration&quot;&quot;&quot;</span>
+    <span class="n">ALL</span> <span class="o">=</span> <span class="mh">0x00000000</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="mh">0x00000001</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="mh">0x00000002</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="mh">0x00000004</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="mh">0x00000008</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="mh">0x00000010</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="mh">0x00000020</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="mh">0x00000040</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="mh">0x00000080</span>
+    <span class="n">I</span> <span class="o">=</span> <span class="mh">0x00000100</span>
+    <span class="n">J</span> <span class="o">=</span> <span class="mh">0x00000200</span>
+    <span class="n">K</span> <span class="o">=</span> <span class="mh">0x00000400</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="mh">0x00000800</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="mh">0x00001000</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="mh">0x00002000</span>
+    <span class="n">O</span> <span class="o">=</span> <span class="mh">0x00004000</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="mh">0x00008000</span></div>
+
+
+<div class="viewcode-block" id="Capability"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.Capability">[docs]</a><span class="k">class</span> <span class="nc">Capability</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Capability identifiers for :meth:`.AlazarATSAPI.query_capability`&quot;&quot;&quot;</span>
+    <span class="n">GET_SERIAL_NUMBER</span> <span class="o">=</span> <span class="mh">0x10000024</span>
+    <span class="c1"># Date of the board&#39;s latest calibration data as a decimal number with</span>
+    <span class="c1"># the format DDMMYY where DD is 1-31, MM is 1-12,</span>
+    <span class="c1"># and YY is 00-99 from 2000</span>
+    <span class="n">GET_LATEST_CAL_DATE</span> <span class="o">=</span> <span class="mh">0x10000026</span>
+    <span class="c1"># Month of the board&#39;s latest calibration date as</span>
+    <span class="c1"># a decimal number with the format MM where M is 1-12</span>
+    <span class="n">GET_LATEST_CAL_DATE_MONTH</span> <span class="o">=</span> <span class="mh">0x1000002D</span>
+    <span class="c1"># Day of month of the board&#39;s latest calibration date</span>
+    <span class="c1"># as a decimal number with the format DD where DD is 1-31</span>
+    <span class="n">GET_LATEST_CAL_DATE_DAY</span> <span class="o">=</span> <span class="mh">0x1000002E</span>
+    <span class="c1"># Year of the board&#39;s latest calibration date</span>
+    <span class="c1"># as a decimal number with the format YY where YY is 00-99 from 2000</span>
+    <span class="n">GET_LATEST_CAL_DATE_YEAR</span> <span class="o">=</span> <span class="mh">0x1000002F</span>
+    <span class="c1"># On-board memory size in maximum samples per channel in single channel</span>
+    <span class="c1"># mode; see AlazarGetChannelInfo for more information</span>
+    <span class="n">MEMORY_SIZE</span> <span class="o">=</span> <span class="mh">0x1000002A</span>
+    <span class="c1"># Board&#39;s FPGA signature</span>
+    <span class="n">ASOPC_TYPE</span> <span class="o">=</span> <span class="mh">0x1000002C</span>
+    <span class="c1"># The PCIe link speed negotiated between a PCIe digitizer board and</span>
+    <span class="c1"># the host PCIe bus in 2.5G bits per second units. The PCIe bus uses</span>
+    <span class="c1"># 10b/8b encoding, so divide the link speed by 10 to find the link speed</span>
+    <span class="c1"># in bytes per second. For example, a link speed of 2.5 Gb/s gives</span>
+    <span class="c1"># 250 MB/s per lane. PCIe Gen 2 digitizers such as ATS9360 should receive</span>
+    <span class="c1"># 5.0 Gb/s links. PCIe Gen 3 digitizers such as ATS9373 should receive</span>
+    <span class="c1"># 8.0 Gb/s links.</span>
+    <span class="n">GET_PCIE_LINK_SPEED</span> <span class="o">=</span> <span class="mh">0x10000030</span>
+    <span class="c1"># The PCIe link width in lanes negociated between a PCIe digitizer board</span>
+    <span class="c1"># and the host PCIe bus. An ATS9462 should negociate 4 lanes, while the</span>
+    <span class="c1"># ATS9325, ATS9350, ATS9351, ATS9360, ATS9373, ATS9440, ATS9850 and</span>
+    <span class="c1"># ATS9870 should negociate 8 lanes. If a board obtains fewer lanes, then</span>
+    <span class="c1"># the board may be installed in a PCIe slot that does not support</span>
+    <span class="c1"># the expected number of lanes. The ideal PCIe bandwidth is the link speed</span>
+    <span class="c1"># in bytes per second per lane, multiplied by the link width in lanes.</span>
+    <span class="c1"># For example, and ATS9870 that negociates 8 lanes at 250 MB/s per lane</span>
+    <span class="c1"># has an ideal bandwidth of 2 GB/s.</span>
+    <span class="n">GET_PCIE_LINK_WIDTH</span> <span class="o">=</span> <span class="mh">0x10000031</span>
+    <span class="c1"># Board type identifier; see AlazarGetBoardKind for more information</span>
+    <span class="n">BOARD_TYPE</span> <span class="o">=</span> <span class="mh">0x1000002B</span>
+    <span class="c1"># Get the maximum number of pre-trigger samples</span>
+    <span class="n">GET_MAX_PRETRIGGER_SAMPLES</span> <span class="o">=</span> <span class="mh">0x10000046</span>
+    <span class="c1"># The model of user-programable FPGA device (see also `CPFDevice`)</span>
+    <span class="n">GET_CPF_DEVICE</span> <span class="o">=</span> <span class="mh">0x10000071</span></div>
+
+
+<span class="n">CPF_DEVICE_EP3SL50</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">CPF_DEVICE_EP3SE260</span> <span class="o">=</span> <span class="mi">2</span>
+
+
+<div class="viewcode-block" id="CPFDevice"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.CPFDevice">[docs]</a><span class="k">class</span> <span class="nc">CPFDevice</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">EP3SL50</span> <span class="o">=</span> <span class="n">CPF_DEVICE_EP3SL50</span>
+    <span class="n">EP3SE260</span> <span class="o">=</span> <span class="n">CPF_DEVICE_EP3SE260</span></div>
+
+
+<span class="n">CRA_MODE_DISABLE</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">CRA_MODE_ENABLE_FPGA_AVE</span> <span class="o">=</span> <span class="mi">1</span>
+
+
+<div class="viewcode-block" id="RecordAverageMode"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.RecordAverageMode">[docs]</a><span class="k">class</span> <span class="nc">RecordAverageMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Values for ``mode`` argument of ``AlazarConfigureRecordAverage`` function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DISABLE</span> <span class="o">=</span> <span class="n">CRA_MODE_DISABLE</span>
+    <span class="n">ENABLE_FPGA_AVE</span> <span class="o">=</span> <span class="n">CRA_MODE_ENABLE_FPGA_AVE</span></div>
+
+
+<span class="n">CRA_OPTION_UNSIGNED</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">CRA_OPTION_SIGNED</span> <span class="o">=</span> <span class="mi">1</span>
+
+
+<div class="viewcode-block" id="RecordAverageOption"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.RecordAverageOption">[docs]</a><span class="k">class</span> <span class="nc">RecordAverageOption</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Values for ``options`` argument of ``AlazarConfigureRecordAverage``</span>
+<span class="sd">    function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">UNSIGNED</span> <span class="o">=</span> <span class="n">CRA_OPTION_UNSIGNED</span>  <span class="c1">#: Find sum of unsigned ADC samples codes</span>
+    <span class="n">SIGNED</span> <span class="o">=</span> <span class="n">CRA_OPTION_SIGNED</span>  <span class="c1">#: Find sum of signed ADC sample</span></div>
+
+
+<span class="n">LED_OFF</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">LED_ON</span> <span class="o">=</span> <span class="mi">1</span>
+
+
+<div class="viewcode-block" id="AlazarParameter"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.AlazarParameter">[docs]</a><span class="k">class</span> <span class="nc">AlazarParameter</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters suitable to be used with `` AlazarSetParameter`` and/or</span>
+<span class="sd">    ``AlazarGetParameter``</span>
+<span class="sd">    Defined by ``ALAZAR_PARAMETERS`` in ``AlazarCmd.h``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DATA_WIDTH</span> <span class="o">=</span> <span class="mh">0x10000009</span>
+    <span class="c1"># The number of bits per sample</span>
+    <span class="n">SETGET_ASYNC_BUFFSIZE_BYTES</span> <span class="o">=</span> <span class="mh">0x10000039</span>
+    <span class="c1"># The size of API-allocated DMA buffers in bytes</span>
+    <span class="n">SETGET_ASYNC_BUFFCOUNT</span> <span class="o">=</span> <span class="mh">0x10000040</span>
+    <span class="c1"># The number of API-allocated DMA buffers</span>
+    <span class="n">GET_ASYNC_BUFFERS_PENDING</span> <span class="o">=</span> <span class="mh">0x10000050</span>
+    <span class="c1"># DMA buffers currently posted to the board</span>
+    <span class="n">GET_ASYNC_BUFFERS_PENDING_FULL</span> <span class="o">=</span> <span class="mh">0x10000051</span>
+    <span class="c1"># DMA buffers waiting to be processed by the application</span>
+    <span class="n">GET_ASYNC_BUFFERS_PENDING_EMPTY</span> <span class="o">=</span> <span class="mh">0x10000052</span>
+    <span class="c1"># DMA buffers waiting to be filled by the board</span>
+    <span class="n">SET_DATA_FORMAT</span> <span class="o">=</span> <span class="mh">0x10000041</span>
+    <span class="c1"># 0 if the data format is unsigned, and 1 otherwise</span>
+    <span class="n">GET_DATA_FORMAT</span> <span class="o">=</span> <span class="mh">0x10000042</span>
+    <span class="c1"># 0 if the data format is unsigned, and 1 otherwise</span>
+    <span class="n">GET_SAMPLES_PER_TIMESTAMP_CLOCK</span> <span class="o">=</span> <span class="mh">0x10000044</span>
+    <span class="c1"># Number of samples per timestamp clock</span>
+    <span class="n">GET_RECORDS_CAPTURED</span> <span class="o">=</span> <span class="mh">0x10000045</span>
+    <span class="c1"># Records captured since the start of the acquisition (single-port)</span>
+    <span class="c1"># or buffer (dual-port)</span>
+    <span class="n">ECC_MODE</span> <span class="o">=</span> <span class="mh">0x10000048</span>
+    <span class="c1"># ECC mode. Member of ECCMode enum</span>
+    <span class="n">GET_AUX_INPUT_LEVEL</span> <span class="o">=</span> <span class="mh">0x10000049</span>
+    <span class="c1"># Read the TTL level of the AUX connector.</span>
+    <span class="c1"># Member of  AUXInputLevel enum</span>
+    <span class="n">GET_CHANNELS_PER_BOARD</span> <span class="o">=</span> <span class="mh">0x10000070</span>
+    <span class="c1"># Number of analog channels supported by this digitizer</span>
+    <span class="n">GET_FPGA_TEMPERATURE</span> <span class="o">=</span> <span class="mh">0x10000080</span>
+    <span class="c1"># Current FPGA temperature in degrees Celcius. Only supported by</span>
+    <span class="c1"># PCIe digitizers.</span>
+    <span class="n">PACK_MODE</span> <span class="o">=</span> <span class="mh">0x10000072</span>
+    <span class="c1"># Get/Set the pack mode as a member of PackMode enum</span>
+    <span class="n">SET_SINGLE_CHANNEL_MODE</span> <span class="o">=</span> <span class="mh">0x10000043</span>
+    <span class="c1"># Reserve all the on-board memory to the channel passed as</span>
+    <span class="c1"># argument. Single-port only.</span>
+    <span class="n">API_FLAGS</span> <span class="o">=</span> <span class="mh">0x10000090</span></div>
+    <span class="c1"># State of the API logging as a member of</span>
+    <span class="c1"># API_TRACE_STATES enum</span>
+
+
+<div class="viewcode-block" id="ECCMode"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.ECCMode">[docs]</a><span class="k">class</span> <span class="nc">ECCMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Values for ECC_MODE of ``Parameter``</span>
+<span class="sd">    Defined by ``ALAZAR_ECC_MODES`` in ``AlazarCmd.h``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ECC_DISABLE</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Disable</span>
+    <span class="n">ECC_ENABLE</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Enable</span></div>
+
+
+<div class="viewcode-block" id="PackMode"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.PackMode">[docs]</a><span class="k">class</span> <span class="nc">PackMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Values for PACK_MODE of ``Parameter``</span>
+<span class="sd">    Defined by ``ALAZAR_PACK_MODES`` in ``AlazarCmd.h``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">PACK_DEFAULT</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Default pack mode of the board</span>
+    <span class="n">PACK_8_BITS_PER_SAMPLE</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># 8 bits per sample</span>
+    <span class="n">PACK_12_BITS_PER_SAMPLE</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># 12 bits per sample</span></div>
+
+
+<div class="viewcode-block" id="AUXInputLevel"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.AUXInputLevel">[docs]</a><span class="k">class</span> <span class="nc">AUXInputLevel</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Values for GET_AUX_INPUT_LEVEL of ``Parameter``</span>
+<span class="sd">    Defined by ``ALAZAR_AUX_INPUT_LEVELS`` in ``AlazarCmd.h``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">AUX_INPUT_LOW</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Low level</span>
+    <span class="n">AUX_INPUT_HIGH</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># High level</span></div>
+
+
+<div class="viewcode-block" id="APITraceStates"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.constants.APITraceStates">[docs]</a><span class="k">class</span> <span class="nc">APITraceStates</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Values for API_FLAGS of ``Parameter``</span>
+<span class="sd">    Defined by ``ALAZAR_API_TRACE_STATES`` in ``AlazarCmd.h``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">API_ENABLE_TRACE</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Trace enabled</span>
+    <span class="n">API_DISABLE_TRACE</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Trace disabled</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

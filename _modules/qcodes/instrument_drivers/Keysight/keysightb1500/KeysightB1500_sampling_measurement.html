@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1500_sampling_measurement &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link href="../../../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1500_sampling_measurement</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1500_sampling_measurement</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">qcodes.instrument.parameter</span> <span class="kn">import</span> <span class="n">ParameterWithSetpoints</span>
+<span class="kn">from</span> <span class="nn">.message_builder</span> <span class="kn">import</span> <span class="n">MessageBuilder</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">constants</span>
+<span class="kn">from</span> <span class="nn">.KeysightB1500_module</span> <span class="kn">import</span> <span class="n">fmt_response_base_parser</span><span class="p">,</span> <span class="n">_FMTResponse</span><span class="p">,</span> \
+    <span class="n">MeasurementNotTaken</span><span class="p">,</span> <span class="n">convert_dummy_val_to_nan</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1517A</span> \
+        <span class="kn">import</span> <span class="nn">B1517A</span>
+    <span class="kn">from</span> <span class="nn">qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1500_base</span> \
+        <span class="kn">import</span> <span class="nn">KeysightB1500</span>
+
+
+<div class="viewcode-block" id="SamplingMeasurement"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1500_sampling_measurement.SamplingMeasurement">[docs]</a><span class="k">class</span> <span class="nc">SamplingMeasurement</span><span class="p">(</span><span class="n">ParameterWithSetpoints</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Performs sampling measurement using semiconductor</span>
+<span class="sd">    parameter analyzer B1500A.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_timeout_response_factor</span> <span class="o">=</span> <span class="mf">10.00</span>
+    <span class="c1"># This factor is a bit higher than the ratio between</span>
+    <span class="c1"># the measured measurement-time and the calculated measurement</span>
+    <span class="c1"># (from the user input). Check :get_raw: method to find its usage.</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="p">:</span> <span class="s2">&quot;B1517A&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_instrument</span><span class="p">:</span> <span class="s2">&quot;KeysightB1500&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">_FMTResponse</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SamplingMeasurement.get_raw"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1500_sampling_measurement.SamplingMeasurement.get_raw">[docs]</a>    <span class="k">def</span> <span class="nf">get_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This performs sampling  measurements. However since the measurement</span>
+<span class="sd">        time can vary from few seconds to hundreds of minutes we first set</span>
+<span class="sd">        the visa time out.</span>
+<span class="sd">        The visa time-out should be longer than the time it takes to finish</span>
+<span class="sd">        the sampling measurement. The reason is that while measurement is</span>
+<span class="sd">        running the data keeps on appending in the buffer of SPA. Only when</span>
+<span class="sd">        the measurement is finished the data is returned to the VISA handle.</span>
+<span class="sd">        Hence during this time the VISA is idle and waiting for the response.</span>
+<span class="sd">        If the timeout is lower than the total run time of the measurement,</span>
+<span class="sd">        VISA will give error.</span>
+<span class="sd">        We set the Visa timeout to be the `measurement_time` times the</span>
+<span class="sd">        `_timeout_response_factor`. Strictly speaking the timeout should be</span>
+<span class="sd">        just longer than the measurement time.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">measurement_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">_total_measurement_time</span><span class="p">()</span>
+        <span class="n">time_out</span> <span class="o">=</span> <span class="n">measurement_time</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout_response_factor</span>
+        <span class="n">default_timeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_instrument</span><span class="o">.</span><span class="n">timeout</span><span class="p">()</span>
+
+        <span class="c1"># if time out to be set is lower than the default value</span>
+        <span class="c1"># then keep default</span>
+        <span class="k">if</span> <span class="n">time_out</span> <span class="o">&lt;</span> <span class="n">default_timeout</span><span class="p">:</span>
+            <span class="n">time_out</span> <span class="o">=</span> <span class="n">default_timeout</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_instrument</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">MessageBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">fmt</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_instrument</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">set_to</span><span class="p">(</span><span class="n">time_out</span><span class="p">):</span>
+            <span class="n">raw_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root_instrument</span><span class="o">.</span><span class="n">ask</span><span class="p">(</span>
+                <span class="n">MessageBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">xe</span><span class="p">()</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">fmt_response_base_parser</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
+        <span class="n">convert_dummy_val_to_nan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SamplingMeasurement.compliance"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1500_sampling_measurement.SamplingMeasurement.compliance">[docs]</a>    <span class="k">def</span> <span class="nf">compliance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        check for the status other than &quot;N&quot; (normal) and output the</span>
+<span class="sd">        number of data values which were not measured under &quot;N&quot; (normal)</span>
+<span class="sd">        status.</span>
+
+<span class="sd">        For the list of all the status values and their meaning refer to</span>
+<span class="sd">        :class:`.constants.MeasurementStatus`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MeasurementNotTaken</span><span class="p">(</span><span class="s1">&#39;First run sampling_measurement&#39;</span>
+                                      <span class="s1">&#39; method to generate the data&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">total_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
+            <span class="n">normal_count</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">MeasurementStatus</span><span class="o">.</span><span class="n">N</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">exception_count</span> <span class="o">=</span> <span class="n">total_count</span> <span class="o">-</span> <span class="n">normal_count</span>
+            <span class="k">if</span> <span class="n">total_count</span> <span class="o">==</span> <span class="n">normal_count</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;All measurements are normal&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
+                           <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span><span class="p">]</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">exception_count</span><span class="p">)</span><span class="si">}</span><span class="s1"> measurements were &#39;</span>
+                              <span class="sa">f</span><span class="s1">&#39;out of compliance at </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">compliance_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">constants</span><span class="o">.</span><span class="n">MeasurementError</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+                               <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">status</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">compliance_list</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

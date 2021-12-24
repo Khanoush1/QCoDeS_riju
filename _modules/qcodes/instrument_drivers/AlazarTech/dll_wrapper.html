@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.instrument_drivers.AlazarTech.dll_wrapper &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link href="../../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.instrument_drivers.AlazarTech.dll_wrapper</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.instrument_drivers.AlazarTech.dll_wrapper</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module provides infrastructure for wrapping DLL libraries, loaded using</span>
+<span class="sd">:mod:`ctypes`. With this infrastructure, one just needs to subclass</span>
+<span class="sd">:class:`.WrappedDll` and define class methods for the functions of interest</span>
+<span class="sd">from the DLL library with mostly python types in mind, and conveniently</span>
+<span class="sd">specify their signatures in terms of :mod:`ctypes` types.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">ctypes</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">NewType</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span>
+<span class="kn">import</span> <span class="nn">concurrent</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">weakref</span> <span class="kn">import</span> <span class="n">WeakValueDictionary</span>
+
+<span class="kn">from</span> <span class="nn">qcodes.instrument.parameter</span> <span class="kn">import</span> <span class="n">_BaseParameter</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">TraceParameter</span>
+<span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="n">API_SUCCESS</span><span class="p">,</span> <span class="n">API_DMA_IN_PROGRESS</span><span class="p">,</span> <span class="n">ERROR_CODES</span><span class="p">,</span> \
+    <span class="n">ReturnCode</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Define aliases for ctypes that match Alazar&#39;s notation.</span>
+<span class="n">RETURN_CODE</span> <span class="o">=</span> <span class="n">NewType</span><span class="p">(</span><span class="s1">&#39;RETURN_CODE&#39;</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_uint</span><span class="p">)</span>
+
+
+<span class="c1"># FUNCTIONS #</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_api_call_task</span><span class="p">(</span>
+        <span class="n">lock</span><span class="p">:</span> <span class="n">Lock</span><span class="p">,</span>
+        <span class="n">c_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">],</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">lock</span><span class="p">:</span>
+        <span class="n">retval</span> <span class="o">=</span> <span class="n">c_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">callback</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">retval</span>
+
+
+<span class="k">def</span> <span class="nf">_normalize_params</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+    <span class="n">args_out</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">_BaseParameter</span><span class="p">):</span>
+            <span class="n">args_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">raw_value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">args_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">args_out</span>
+
+
+<span class="k">def</span> <span class="nf">_mark_params_as_updated</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">TraceParameter</span><span class="p">):</span>
+            <span class="n">arg</span><span class="o">.</span><span class="n">_set_updated</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">_check_error_code</span><span class="p">(</span>
+        <span class="n">return_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">arguments</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">return_code</span> <span class="o">!=</span> <span class="n">API_SUCCESS</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">return_code</span> <span class="o">!=</span> <span class="n">API_DMA_IN_PROGRESS</span><span class="p">):</span>
+        <span class="n">argrepr</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">arguments</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">argrepr</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
+            <span class="n">argrepr</span> <span class="o">=</span> <span class="n">argrepr</span><span class="p">[:</span><span class="mi">96</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;...]&#39;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Alazar API returned code </span><span class="si">{</span><span class="n">return_code</span><span class="si">}</span><span class="s1"> from function &#39;</span>
+                     <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> with args </span><span class="si">{</span><span class="n">argrepr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">return_code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ERROR_CODES</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s1">&#39;unknown error </span><span class="si">{}</span><span class="s1"> from function </span><span class="si">{}</span><span class="s1"> with args: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">return_code</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">argrepr</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s1">&#39;error </span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1"> from function </span><span class="si">{}</span><span class="s1"> with args: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">return_code</span><span class="p">,</span>
+                <span class="n">ERROR_CODES</span><span class="p">[</span><span class="n">ReturnCode</span><span class="p">(</span><span class="n">return_code</span><span class="p">)],</span>
+                <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                <span class="n">argrepr</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">arguments</span>
+
+
+<span class="k">def</span> <span class="nf">_convert_bytes_to_str</span><span class="p">(</span>
+        <span class="n">output</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
+        <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+        <span class="n">arguments</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+
+
+<span class="c1"># CLASSES #</span>
+
+
+<div class="viewcode-block" id="Signature"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.dll_wrapper.Signature">[docs]</a><span class="k">class</span> <span class="nc">Signature</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="n">return_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">RETURN_CODE</span>
+    <span class="n">argument_types</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DllWrapperMeta"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.dll_wrapper.DllWrapperMeta">[docs]</a><span class="k">class</span> <span class="nc">DllWrapperMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;DLL-path-based &#39;singleton&#39; metaclass for DLL wrapper classes&quot;&quot;&quot;</span>
+
+    <span class="c1"># Only allow a single instance per DLL path.</span>
+    <span class="n">_instances</span><span class="p">:</span> <span class="s2">&quot;WeakValueDictionary[str, Any]&quot;</span> <span class="o">=</span> <span class="n">WeakValueDictionary</span><span class="p">()</span>
+
+    <span class="c1"># Note: without the &#39;type: ignore&#39; for the ``__call__`` method below, mypy</span>
+    <span class="c1"># generates &#39;Signature of &quot;__call__&quot; incompatible with supertype &quot;type&quot;&#39;</span>
+    <span class="c1"># error, which is an indicator of Liskov principle violation - subtypes</span>
+    <span class="c1"># should not change the method signatures, but we need it here in order to</span>
+    <span class="c1"># use the ``dll_path`` argument which the ``type`` superclass obviously</span>
+    <span class="c1"># does not have in its ``__call__`` method.</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>  <span class="c1"># type: ignore[override]</span>
+            <span class="bp">cls</span><span class="p">,</span>
+            <span class="n">dll_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="n">api</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dll_path</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">api</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Using existing instance for DLL path </span><span class="si">{</span><span class="n">dll_path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">api</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Creating new instance for DLL path </span><span class="si">{</span><span class="n">dll_path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="c1"># strong reference:</span>
+            <span class="n">new_api</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">dll_path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="n">dll_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_api</span>
+            <span class="k">return</span> <span class="n">new_api</span></div>
+
+
+<div class="viewcode-block" id="WrappedDll"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.AlazarTech.html#qcodes.instrument_drivers.AlazarTech.dll_wrapper.WrappedDll">[docs]</a><span class="k">class</span> <span class="nc">WrappedDll</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">DllWrapperMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A base class for wrapping DLL libraries.</span>
+
+<span class="sd">    Note that this class is still quite specific to Alazar ATS DLL library.</span>
+
+<span class="sd">    This class uses dictionary of the :attr:`signatures` attribute in order</span>
+<span class="sd">    to assign ``argtypes`` and ``restype`` attributes for functions of</span>
+<span class="sd">    a loaded DLL library (from the ``_dll`` attribute of the class).</span>
+<span class="sd">    If ``restype`` is of type ``RETURN_CODE``, then an exception is</span>
+<span class="sd">    raised in case the return code is an Alazar error code. For string-alike</span>
+<span class="sd">    ``restype`` s, the returned value is converted to a python string.</span>
+
+<span class="sd">    Functions are executed in a single separate thread (see what the</span>
+<span class="sd">    ``_executor`` gets initialize to), hence the class also has a lock</span>
+<span class="sd">    instance in the ``_lock`` attribute that is used to wrap around the</span>
+<span class="sd">    actual calls to the DLL library.</span>
+
+<span class="sd">    Method ``_sync_dll_call`` is supposed to be called when a subclass</span>
+<span class="sd">    implements calls to functions of the loaded DLL.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dll_path: Path to the DLL library to load and wrap</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">signatures</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Signature</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Signatures for loaded DLL functions;</span>
+<span class="sd">    It is to be filled with :class:`Signature` instances for the DLL</span>
+<span class="sd">    functions of interest in a subclass.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="c1"># This is the DLL library instance.</span>
+    <span class="n">_dll</span><span class="p">:</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">CDLL</span>
+
+    <span class="c1"># This lock guards DLL calls.</span>
+    <span class="n">_lock</span><span class="p">:</span> <span class="n">Lock</span>
+
+    <span class="c1"># This executor is used to execute DLL calls.</span>
+    <span class="n">_executor</span><span class="p">:</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">Executor</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dll_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dll</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="n">dll_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__apply_signatures</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span> <span class="o">=</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>  <span class="c1"># ATS API DLL is not guaranteed to be thread-safe</span>
+
+    <span class="k">def</span> <span class="nf">__apply_signatures</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply :mod:`ctypes` signatures for all of the C library functions</span>
+<span class="sd">        specified in :attr:`signatures` attribute.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">signature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">signatures</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">c_func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dll</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+            <span class="n">c_func</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="n">signature</span><span class="o">.</span><span class="n">argument_types</span>
+
+            <span class="n">ret_type</span> <span class="o">=</span> <span class="n">signature</span><span class="o">.</span><span class="n">return_type</span>
+            <span class="k">if</span> <span class="n">ret_type</span> <span class="ow">is</span> <span class="n">RETURN_CODE</span><span class="p">:</span>
+                <span class="n">ret_type</span> <span class="o">=</span> <span class="n">ret_type</span><span class="o">.</span><span class="n">__supertype__</span>
+                <span class="n">c_func</span><span class="o">.</span><span class="n">errcheck</span> <span class="o">=</span> <span class="n">_check_error_code</span>
+            <span class="k">elif</span> <span class="n">ret_type</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_char_p</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_char</span><span class="p">,</span>
+                              <span class="n">ctypes</span><span class="o">.</span><span class="n">c_wchar</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_wchar_p</span><span class="p">):</span>
+                <span class="n">c_func</span><span class="o">.</span><span class="n">errcheck</span> <span class="o">=</span> <span class="n">_convert_bytes_to_str</span>
+            <span class="n">c_func</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">ret_type</span>
+
+    <span class="k">def</span> <span class="nf">_sync_dll_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Call given function from the DLL library on the given arguments&quot;&quot;&quot;</span>
+        <span class="n">c_func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dll</span><span class="p">,</span> <span class="n">c_name</span><span class="p">)</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
+            <span class="n">_api_call_task</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">,</span>
+            <span class="n">c_func</span><span class="p">,</span>
+            <span class="n">partial</span><span class="p">(</span><span class="n">_mark_params_as_updated</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">),</span>
+            <span class="o">*</span><span class="n">_normalize_params</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

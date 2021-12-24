@@ -1,0 +1,61 @@
+qcodes.instrument\_drivers.Minicircuits package
+===============================================
+
+Submodules
+----------
+
+qcodes.instrument\_drivers.Minicircuits.Base\_SPDT module
+---------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.Minicircuits.Base_SPDT
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.Minicircuits.RC\_SP4T module
+-------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.Minicircuits.RC_SP4T
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.Minicircuits.RC\_SPDT module
+-------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.Minicircuits.RC_SPDT
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.Minicircuits.RUDAT\_13G\_90 module
+-------------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.Minicircuits.RUDAT_13G_90
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.Minicircuits.USBHIDMixin module
+----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.Minicircuits.USBHIDMixin
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.Minicircuits.USB\_SPDT module
+--------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.Minicircuits.USB_SPDT
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: qcodes.instrument_drivers.Minicircuits
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.data.io &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="qcodes.data.location" href="location.html" />
+    <link rel="prev" title="qcodes.data.hdf5_format_hickle" href="hdf5_format_hickle.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">QCoDes API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#qcodes-api">QCoDeS API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#legacy-api">Legacy API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../loops.html">qcodes.loops</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../actions.html">qcodes.actions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../measure.html">qcodes.measure</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">qcodes.data</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="data_array.html">qcodes.data.data_array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="data_set.html">qcodes.data.data_set</a></li>
+<li class="toctree-l4"><a class="reference internal" href="format.html">qcodes.data.format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gnuplot_format.html">qcodes.data.gnuplot_format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hdf5_format.html">qcodes.data.hdf5_format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hdf5_format_hickle.html">qcodes.data.hdf5_format_hickle</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">qcodes.data.io</a></li>
+<li class="toctree-l4"><a class="reference internal" href="location.html">qcodes.data.location</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../plots/index.html">qcodes.plots</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">QCoDes API documentation</a> &raquo;</li>
+          <li><a href="index.html">qcodes.data</a> &raquo;</li>
+      <li>qcodes.data.io</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/data/io.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="module-qcodes.data.io">
+<span id="qcodes-data-io"></span><h1>qcodes.data.io<a class="headerlink" href="#module-qcodes.data.io" title="Permalink to this headline"></a></h1>
+<p>IO managers for QCodes.</p>
+<p>IO managers wrap whatever physical storage layer the user wants to use
+in an interface mimicking the built-in &lt;open&gt; context manager, with
+some restrictions to minimize the overhead in creating new IO managers.</p>
+<p>The main thing these managers need to implement is the open context manager:</p>
+<ul>
+<li><p>Only the context manager needs to be implemented, not separate
+open function and close methods.</p></li>
+<li><p>open takes the standard parameters:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>filename: (string)</p></li>
+<li><p>mode: (string) only ‘r’ (read), ‘w’ (write), and ‘a’ (append) are
+expected to be implemented. As with normal file objects, the only
+difference between write and append is that write empties the file
+before adding new data, and append leaves the existing contents in
+place but starts writing at the end.</p></li>
+<li><p>encoding: If a special output encoding is desired. i.e. ‘utf8</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>the file-like object returned should implement a minimal set of operations.</p>
+<dl class="simple">
+<dt>In read mode:</dt><dd><ul class="simple">
+<li><p>read([size]): read to the end or at most size bytes into a string</p></li>
+<li><p>readline([size]): read until a newline or up to size bytes, into a string</p></li>
+<li><p>iter(): usually return self, but can be any iterator over lines</p></li>
+<li><p>next(): assuming iter() returns self, this yields the next line.</p></li>
+</ul>
+</dd>
+<dt>In write or append mode:</dt><dd><ul class="simple">
+<li><p>write(s): add string s to the end of the file.</p></li>
+<li><p>writelines(seq): add a sequence of strings</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>IO managers should also implement:</p>
+<ul class="simple">
+<li><p>a join method, ala <code class="docutils literal notranslate"><span class="pre">os.path.join(*args)</span></code>.</p></li>
+<li><p>a list method, that returns all objects matching location</p></li>
+<li><p>a remove method, ala os.remove(path) except that it will remove directories
+as well as files, since we’re allowing “locations” to be directories
+or files.</p></li>
+</ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="qcodes.data.io.DiskIO">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">qcodes.data.io.</span></span><span class="sig-name descname"><span class="pre">DiskIO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_location</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/io.html#DiskIO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.io.DiskIO" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.7/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Simple IO object to wrap disk operations with a custom base location.</p>
+<p>Also accepts both forward and backward slashes at any point, and
+normalizes both to the OS we are currently on.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>base_location</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – a path to the root data folder.
+Converted to an absolute path immediately, so even if you supply a
+relative path, later changes to the OS working directory will not
+affect data paths.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.io.DiskIO.open">
+<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/io.html#DiskIO.open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.io.DiskIO.open" title="Permalink to this definition"></a></dt>
+<dd><p>Mimic the interface of the built in open context manager.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – path relative to base_location.</p></li>
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – ‘r’ (read), ‘w’ (write), or ‘a’ (append).
+Other open modes are not supported because we don’t want
+to force all IO managers to support others.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>context manager yielding the open file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.io.DiskIO.to_path">
+<span class="sig-name descname"><span class="pre">to_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/io.html#DiskIO.to_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.io.DiskIO.to_path" title="Permalink to this definition"></a></dt>
+<dd><p>Convert a location string into a path on the local file system.</p>
+<p>For DiskIO this just fixes slashes and prepends the base location,
+doing nothing active with the file. But for other io managers that
+refer to remote storage, this method may actually fetch the file and
+put it at a temporary local path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>location</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – A location string for a complete dataset or
+a file within it.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The path on disk to which this location maps.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.io.DiskIO.to_location">
+<span class="sig-name descname"><span class="pre">to_location</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/io.html#DiskIO.to_location"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.io.DiskIO.to_location" title="Permalink to this definition"></a></dt>
+<dd><p>Convert a local filesystem path into a location string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – a path on the local file system.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the location string corresponding to this path.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.io.DiskIO.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/io.html#DiskIO.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.io.DiskIO.__repr__" title="Permalink to this definition"></a></dt>
+<dd><p>Show the base location in the repr.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.io.DiskIO.join">
+<span class="sig-name descname"><span class="pre">join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/io.html#DiskIO.join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.io.DiskIO.join" title="Permalink to this definition"></a></dt>
+<dd><p>Context-dependent os.path.join for this io manager.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.io.DiskIO.isfile">
+<span class="sig-name descname"><span class="pre">isfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/io.html#DiskIO.isfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.io.DiskIO.isfile" title="Permalink to this definition"></a></dt>
+<dd><p>Check whether this location matches a file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.io.DiskIO.list">
+<span class="sig-name descname"><span class="pre">list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxdepth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_dirs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/io.html#DiskIO.list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.io.DiskIO.list" title="Permalink to this definition"></a></dt>
+<dd><p>Return all files that match location.</p>
+<p>This is either files whose names match up to an arbitrary extension,
+or any files within an exactly matching directory name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>location</strong> (<a class="reference external" href="https://docs.python.org/3.7/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the location to match.
+May contain the usual path wildcards * and ?</p></li>
+<li><p><strong>maxdepth</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>]</em>) – maximum levels of directory nesting to
+recurse into looking for files. Default 1.</p></li>
+<li><p><strong>include_dirs</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.7/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>]</em>) – whether to allow directories in
+the results or just files. Default False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of matching files and/or directories, as locations
+relative to our base_location.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.io.DiskIO.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/io.html#DiskIO.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.io.DiskIO.remove" title="Permalink to this definition"></a></dt>
+<dd><p>Delete a file or folder and prune the directory tree.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qcodes.data.io.DiskIO.remove_all">
+<span class="sig-name descname"><span class="pre">remove_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/qcodes/data/io.html#DiskIO.remove_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qcodes.data.io.DiskIO.remove_all" title="Permalink to this definition"></a></dt>
+<dd><p>Delete all files/directories in the dataset at this location.</p>
+<p>Afterward prunes the directory tree.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hdf5_format_hickle.html" class="btn btn-neutral float-left" title="qcodes.data.hdf5_format_hickle" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="location.html" class="btn btn-neutral float-right" title="qcodes.data.location" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

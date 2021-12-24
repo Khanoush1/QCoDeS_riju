@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.instrument.visa &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.instrument.visa</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.instrument.visa</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Visa instrument driver based on pyvisa.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">packaging.version</span> <span class="kn">import</span> <span class="n">Version</span>
+
+<span class="kn">import</span> <span class="nn">pyvisa</span> <span class="k">as</span> <span class="nn">visa</span>
+<span class="kn">import</span> <span class="nn">pyvisa.constants</span> <span class="k">as</span> <span class="nn">vi_const</span>
+<span class="kn">import</span> <span class="nn">pyvisa.resources</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Instrument</span><span class="p">,</span> <span class="n">InstrumentBase</span>
+
+<span class="kn">import</span> <span class="nn">qcodes.utils.validators</span> <span class="k">as</span> <span class="nn">vals</span>
+<span class="kn">from</span> <span class="nn">qcodes.utils.deprecate</span> <span class="kn">import</span> <span class="n">deprecate</span>
+<span class="kn">from</span> <span class="nn">qcodes.logger.instrument_logger</span> <span class="kn">import</span> <span class="n">get_instrument_logger</span>
+<span class="kn">from</span> <span class="nn">qcodes.utils.delaykeyboardinterrupt</span> <span class="kn">import</span> <span class="n">DelayedKeyboardInterrupt</span>
+
+<span class="n">VISA_LOGGER</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">InstrumentBase</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="s1">&#39;com&#39;</span><span class="p">,</span> <span class="s1">&#39;visa&#39;</span><span class="p">))</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="VisaInstrument"><a class="viewcode-back" href="../../../api/instrument/visa.html#qcodes.instrument.visa.VisaInstrument">[docs]</a><span class="k">class</span> <span class="nc">VisaInstrument</span><span class="p">(</span><span class="n">Instrument</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for all instruments using visa connections.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name: What this instrument is called locally.</span>
+<span class="sd">        address: The visa resource name to use to connect.</span>
+<span class="sd">        timeout: seconds to allow for responses. Default 5.</span>
+<span class="sd">        terminator: Read termination character(s) to look for. Default ``&#39;&#39;``.</span>
+<span class="sd">        device_clear: Perform a device clear. Default True.</span>
+<span class="sd">        visalib: Visa backend to use when connecting to this instrument.</span>
+<span class="sd">            This should be in the form of a string &#39;@&lt;backend&gt;&#39;.</span>
+<span class="sd">            By default the NI backend is used, but &#39;@py&#39; will use the</span>
+<span class="sd">            ``pyvisa-py`` backend. Note that QCoDeS does not install (or even require)</span>
+<span class="sd">            ANY backends, it is up to the user to do that. see eg:</span>
+<span class="sd">            http://pyvisa.readthedocs.org/en/stable/names.html</span>
+<span class="sd">        metadata: additional static metadata to add to this</span>
+<span class="sd">            instrument&#39;s JSON snapshot.</span>
+
+<span class="sd">    See help for :class:`.Instrument` for additional information on writing</span>
+<span class="sd">    instrument subclasses.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        visa_handle (pyvisa.resources.Resource): The communication channel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+                 <span class="n">terminator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">device_clear</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">visalib</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visa_log</span> <span class="o">=</span> <span class="n">get_instrument_logger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">VISA_LOGGER</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visabackend</span><span class="p">:</span> <span class="nb">str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visa_handle</span><span class="p">:</span> <span class="n">visa</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">MessageBasedResource</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visalib</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s1">&#39;timeout&#39;</span><span class="p">,</span>
+                           <span class="n">get_cmd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_visa_timeout</span><span class="p">,</span>
+                           <span class="n">set_cmd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_set_visa_timeout</span><span class="p">,</span>
+                           <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span>
+                           <span class="n">vals</span><span class="o">=</span><span class="n">vals</span><span class="o">.</span><span class="n">MultiType</span><span class="p">(</span><span class="n">vals</span><span class="o">.</span><span class="n">Numbers</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                                               <span class="n">vals</span><span class="o">.</span><span class="n">Enum</span><span class="p">(</span><span class="kc">None</span><span class="p">)))</span>
+
+        <span class="c1"># backwards-compatibility</span>
+        <span class="k">if</span> <span class="n">address</span> <span class="ow">and</span> <span class="s1">&#39;@&#39;</span> <span class="ow">in</span> <span class="n">address</span><span class="p">:</span>
+            <span class="n">address</span><span class="p">,</span> <span class="n">visa_library</span> <span class="o">=</span> <span class="n">address</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">visalib</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;You have specified the VISA library in two &#39;</span>
+                              <span class="s1">&#39;different ways. Please do not include &quot;@&quot; in &#39;</span>
+                              <span class="s1">&#39;the address kwarg and only use the visalib &#39;</span>
+                              <span class="s1">&#39;kwarg for that.&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">visalib</span> <span class="o">=</span> <span class="n">visalib</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;You have specified the VISA library using &#39;</span>
+                              <span class="s1">&#39;an &quot;@&quot; in the address kwarg. Please use the &#39;</span>
+                              <span class="s1">&#39;visalib kwarg instead.&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">visalib</span> <span class="o">=</span> <span class="s1">&#39;@&#39;</span> <span class="o">+</span> <span class="n">visa_library</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visalib</span> <span class="o">=</span> <span class="n">visalib</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_address</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visa_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not connect at </span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">e</span>
+
+        <span class="k">if</span> <span class="n">device_clear</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">device_clear</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_terminator</span><span class="p">(</span><span class="n">terminator</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+
+<div class="viewcode-block" id="VisaInstrument.set_address"><a class="viewcode-back" href="../../../api/instrument/visa.html#qcodes.instrument.visa.VisaInstrument.set_address">[docs]</a>    <span class="k">def</span> <span class="nf">set_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the address for this instrument.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            address: The visa resource name to use to connect. The address</span>
+<span class="sd">                should be the actual address and just that. If you wish to</span>
+<span class="sd">                change the backend for VISA, use the self.visalib attribute</span>
+<span class="sd">                (and then call this function).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># in case we&#39;re changing the address - close the old handle first</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;visa_handle&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visa_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">visalib</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visa_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Opening PyVISA Resource Manager with visalib:&#39;</span>
+                          <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">visalib</span><span class="p">))</span>
+            <span class="n">resource_manager</span> <span class="o">=</span> <span class="n">visa</span><span class="o">.</span><span class="n">ResourceManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">visalib</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visabackend</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">visalib</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visa_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Opening PyVISA Resource Manager with default&#39;</span>
+                          <span class="s1">&#39; backend.&#39;</span><span class="p">)</span>
+            <span class="n">resource_manager</span> <span class="o">=</span> <span class="n">visa</span><span class="o">.</span><span class="n">ResourceManager</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visabackend</span> <span class="o">=</span> <span class="s1">&#39;ni&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">visa_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Opening PyVISA resource at address: </span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="n">resource_manager</span><span class="o">.</span><span class="n">open_resource</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resource</span><span class="p">,</span> <span class="n">visa</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">MessageBasedResource</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;QCoDeS only support MessageBasedResource &quot;</span>
+                            <span class="s2">&quot;Visa resources&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visa_handle</span> <span class="o">=</span> <span class="n">resource</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_address</span> <span class="o">=</span> <span class="n">address</span></div>
+
+<div class="viewcode-block" id="VisaInstrument.device_clear"><a class="viewcode-back" href="../../../api/instrument/visa.html#qcodes.instrument.visa.VisaInstrument.device_clear">[docs]</a>    <span class="k">def</span> <span class="nf">device_clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Clear the buffers of the device&quot;&quot;&quot;</span>
+
+        <span class="c1"># Serial instruments have a separate flush method to clear</span>
+        <span class="c1"># their buffers which behaves differently to clear. This is</span>
+        <span class="c1"># particularly important for instruments which do not support</span>
+        <span class="c1"># SCPI commands.</span>
+
+        <span class="c1"># Simulated instruments do not support a handle clear</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">visabackend</span> <span class="o">==</span> <span class="s1">&#39;sim&#39;</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">flush_operation</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">vi_const</span><span class="o">.</span><span class="n">BufferOperation</span><span class="o">.</span><span class="n">discard_read_buffer_no_io</span> <span class="o">|</span>
+                <span class="n">vi_const</span><span class="o">.</span><span class="n">BufferOperation</span><span class="o">.</span><span class="n">discard_write_buffer</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">visa_handle</span><span class="p">,</span> <span class="n">pyvisa</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">SerialInstrument</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visa_handle</span><span class="o">.</span><span class="n">flush</span><span class="p">(</span><span class="n">flush_operation</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visa_handle</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="VisaInstrument.set_terminator"><a class="viewcode-back" href="../../../api/instrument/visa.html#qcodes.instrument.visa.VisaInstrument.set_terminator">[docs]</a>    <span class="k">def</span> <span class="nf">set_terminator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">terminator</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Change the read terminator to use.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            terminator: Character(s) to look for at the end of a read.</span>
+<span class="sd">                eg. ``\r\n``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visa_handle</span><span class="o">.</span><span class="n">write_termination</span> <span class="o">=</span> <span class="n">terminator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visa_handle</span><span class="o">.</span><span class="n">read_termination</span> <span class="o">=</span> <span class="n">terminator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_terminator</span> <span class="o">=</span> <span class="n">terminator</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">visabackend</span> <span class="o">==</span> <span class="s1">&#39;sim&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visa_handle</span><span class="o">.</span><span class="n">write_termination</span> <span class="o">=</span> <span class="n">terminator</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_visa_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># according to https://pyvisa.readthedocs.io/en/latest/introduction/resources.html#timeout</span>
+        <span class="c1"># both float(&#39;+inf&#39;) and None are accepted as meaning infinite timeout</span>
+        <span class="c1"># however None does not pass the typechecking in 1.11.1</span>
+        <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visa_handle</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;+inf&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># pyvisa uses milliseconds but we use seconds</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visa_handle</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span> <span class="o">*</span> <span class="mf">1000.0</span>
+
+    <span class="k">def</span> <span class="nf">_get_visa_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+
+        <span class="n">timeout_ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">visa_handle</span><span class="o">.</span><span class="n">timeout</span>
+        <span class="k">if</span> <span class="n">timeout_ms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># pyvisa uses milliseconds but we use seconds</span>
+            <span class="k">return</span> <span class="n">timeout_ms</span> <span class="o">/</span> <span class="mi">1000</span>
+
+<div class="viewcode-block" id="VisaInstrument.close"><a class="viewcode-back" href="../../../api/instrument/visa.html#qcodes.instrument.visa.VisaInstrument.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Disconnect and irreversibly tear down the instrument.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;visa_handle&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visa_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="VisaInstrument.check_error"><a class="viewcode-back" href="../../../api/instrument/visa.html#qcodes.instrument.visa.VisaInstrument.check_error">[docs]</a>    <span class="nd">@deprecate</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="s2">&quot;pyvisa already checks the error code itself&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">check_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ret_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Default error checking, raises an error if return code ``!=0``.</span>
+<span class="sd">        Does not differentiate between warnings or specific error messages.</span>
+<span class="sd">        Override this function in your driver if you want to add specific</span>
+<span class="sd">        error messages.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ret_code: A Visa error code. See eg:</span>
+<span class="sd">                https://github.com/hgrecco/pyvisa/blob/master/pyvisa/errors.py</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            visa.VisaIOError: if ``ret_code`` indicates a communication</span>
+<span class="sd">                problem.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ret_code</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">visa</span><span class="o">.</span><span class="n">VisaIOError</span><span class="p">(</span><span class="n">ret_code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VisaInstrument.write_raw"><a class="viewcode-back" href="../../../api/instrument/visa.html#qcodes.instrument.visa.VisaInstrument.write_raw">[docs]</a>    <span class="k">def</span> <span class="nf">write_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Low-level interface to ``visa_handle.write``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cmd: The command to send to the instrument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">DelayedKeyboardInterrupt</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visa_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Writing: </span><span class="si">{</span><span class="n">cmd</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visa_handle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VisaInstrument.ask_raw"><a class="viewcode-back" href="../../../api/instrument/visa.html#qcodes.instrument.visa.VisaInstrument.ask_raw">[docs]</a>    <span class="k">def</span> <span class="nf">ask_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Low-level interface to ``visa_handle.ask``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cmd: The command to send to the instrument.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The instrument&#39;s response.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">DelayedKeyboardInterrupt</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visa_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Querying: </span><span class="si">{</span><span class="n">cmd</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">visa_handle</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visa_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Response: </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="VisaInstrument.snapshot_base"><a class="viewcode-back" href="../../../api/instrument/visa.html#qcodes.instrument.visa.VisaInstrument.snapshot_base">[docs]</a>    <span class="k">def</span> <span class="nf">snapshot_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                      <span class="n">params_to_skip_update</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+                      <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        State of the instrument as a JSON-compatible dict (everything that</span>
+<span class="sd">        the custom JSON encoder class :class:`qcodes.utils.helpers.NumpyJSONEncoder`</span>
+<span class="sd">        supports).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            update: If True, update the state by querying the</span>
+<span class="sd">                instrument. If None only update if the state is known to be</span>
+<span class="sd">                invalid. If False, just use the latest values in memory and</span>
+<span class="sd">                never update.</span>
+<span class="sd">            params_to_skip_update: List of parameter names that will be skipped</span>
+<span class="sd">                in update even if update is True. This is useful if you have</span>
+<span class="sd">                parameters that are slow to update but can be updated in a</span>
+<span class="sd">                different way (as in the qdac). If you want to skip the</span>
+<span class="sd">                update of certain parameters in all snapshots, use the</span>
+<span class="sd">                ``snapshot_get``  attribute of those parameters instead.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: base snapshot</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">snap</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">snapshot_base</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">update</span><span class="p">,</span>
+                                     <span class="n">params_to_skip_update</span><span class="o">=</span><span class="n">params_to_skip_update</span><span class="p">)</span>
+
+        <span class="n">snap</span><span class="p">[</span><span class="s1">&#39;address&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_address</span>
+        <span class="n">snap</span><span class="p">[</span><span class="s1">&#39;terminator&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_terminator</span>
+        <span class="n">snap</span><span class="p">[</span><span class="s1">&#39;timeout&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">snap</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.data.gnuplot_format &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.data.gnuplot_format</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.data.gnuplot_format</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">qcodes.utils.helpers</span> <span class="kn">import</span> <span class="n">deep_update</span><span class="p">,</span> <span class="n">NumpyJSONEncoder</span>
+<span class="kn">from</span> <span class="nn">.data_array</span> <span class="kn">import</span> <span class="n">DataArray</span>
+<span class="kn">from</span> <span class="nn">.format</span> <span class="kn">import</span> <span class="n">Formatter</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.data_set</span> <span class="kn">import</span> <span class="n">DataSet</span>
+
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="GNUPlotFormat"><a class="viewcode-back" href="../../../api/data/gnuplot_format.html#qcodes.data.gnuplot_format.GNUPlotFormat">[docs]</a><span class="k">class</span> <span class="nc">GNUPlotFormat</span><span class="p">(</span><span class="n">Formatter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Saves data in one or more gnuplot-format files. We make one file for</span>
+<span class="sd">    each set of matching dependent variables in the loop.</span>
+
+<span class="sd">    Args:</span>
+
+<span class="sd">        extension (str): file extension for data files. Defaults to</span>
+<span class="sd">            &#39;dat&#39;</span>
+
+<span class="sd">        terminator (str): newline character(s) to use on write</span>
+<span class="sd">            not used for reading, we will read any combination of &#39;\\\\r&#39;</span>
+<span class="sd">            and &#39;\\\\n&#39;. Defaults to &#39;\\\\n&#39;</span>
+
+<span class="sd">        separator (str): field (column) separator, must be whitespace.</span>
+<span class="sd">            Only used for writing, we will read with any whitespace separation.</span>
+<span class="sd">            Defaults to &#39;\\\\t&#39;.</span>
+
+<span class="sd">        comment (str): lines starting with this are not data</span>
+<span class="sd">            Comments are written with this full string, and identified on read</span>
+<span class="sd">            by just the string after stripping whitespace. Defaults to &#39;# &#39;.</span>
+
+<span class="sd">        number_format (str): from the format mini-language, how to</span>
+<span class="sd">            format numeric data into a string. Defaults to &#39;g&#39;.</span>
+
+<span class="sd">        always_nest (bool): whether to always make a folder for files</span>
+<span class="sd">            or just make a single data file if all data has the same setpoints.</span>
+<span class="sd">            Defaults to bool.</span>
+
+<span class="sd">    These files are basically tab-separated values, but any quantity of</span>
+<span class="sd">    any whitespace characters is accepted.</span>
+
+<span class="sd">    Each row represents one setting of the setpoint variable(s)</span>
+<span class="sd">    the setpoint variable(s) are in the first column(s)</span>
+<span class="sd">    measured variable(s) come after.</span>
+
+<span class="sd">    The data is preceded by comment lines (starting with #).</span>
+<span class="sd">    We use three:</span>
+
+<span class="sd">    - one for the variable name</span>
+<span class="sd">    - the (longer) axis label, in quotes so a label can contain whitespace.</span>
+<span class="sd">    - for each dependent var, the (max) number of points in that dimension</span>
+<span class="sd">      (this also tells us how many dependent vars we have in this file)</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        # id1\tid2\tid3...</span>
+<span class="sd">        # &quot;label1&quot;\t&quot;label2&quot;\t&quot;label3&quot;...</span>
+<span class="sd">        # 100\t250</span>
+<span class="sd">        1\t2\t3...</span>
+<span class="sd">        2\t3\t4...</span>
+
+<span class="sd">    For data of 2 dependent variables, gnuplot puts each inner loop into one</span>
+<span class="sd">    block, then increments the outer loop in the next block, separated by a</span>
+<span class="sd">    blank line.</span>
+
+<span class="sd">    We extend this to an arbitrary quantity of dependent variables by using</span>
+<span class="sd">    one blank line for each loop level that resets. (gnuplot *does* seem to</span>
+<span class="sd">    use 2 blank lines sometimes, to denote a whole new dataset, which sort</span>
+<span class="sd">    of corresponds to our situation.)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;dat&#39;</span><span class="p">,</span> <span class="n">terminator</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span>
+                 <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;# &#39;</span><span class="p">,</span> <span class="n">number_format</span><span class="o">=</span><span class="s1">&#39;.15g&#39;</span><span class="p">,</span> <span class="n">metadata_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_file</span> <span class="o">=</span> <span class="n">metadata_file</span> <span class="ow">or</span> <span class="s1">&#39;snapshot.json&#39;</span>
+        <span class="c1"># file extension: accept either with or without leading dot</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">extension</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># line terminator (only used for writing; will read any \r\n combo)</span>
+        <span class="k">if</span> <span class="n">terminator</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">r</span><span class="s1">&#39;GNUPlotFormat terminator must be \r, \n, or \r\n&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terminator</span> <span class="o">=</span> <span class="n">terminator</span>
+
+        <span class="c1"># field separator (only used for writing; will read any whitespace)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s+&#39;</span><span class="p">,</span> <span class="n">separator</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;GNUPlotFormat separator must be whitespace&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">separator</span> <span class="o">=</span> <span class="n">separator</span>
+
+        <span class="c1"># beginning of a comment line. (when reading, just checks the</span>
+        <span class="c1"># non-whitespace character(s) of comment</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comment</span> <span class="o">=</span> <span class="n">comment</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comment_chars</span> <span class="o">=</span> <span class="n">comment</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">comment_chars</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;comment must have some non-whitespace&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">comment_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">comment_chars</span><span class="p">)</span>
+
+        <span class="c1"># number format (only used for writing; will read any number)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_format</span> <span class="o">=</span> <span class="s1">&#39;{:&#39;</span> <span class="o">+</span> <span class="n">number_format</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span>
+
+<div class="viewcode-block" id="GNUPlotFormat.read_one_file"><a class="viewcode-back" href="../../../api/data/gnuplot_format.html#qcodes.data.gnuplot_format.GNUPlotFormat.read_one_file">[docs]</a>    <span class="k">def</span> <span class="nf">read_one_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_set</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ids_read</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called by Formatter.read to bring one data file into</span>
+<span class="sd">        a DataSet. Setpoint data may be duplicated across multiple files,</span>
+<span class="sd">        but each measured DataArray must only map to one file.</span>
+
+<span class="sd">        args:</span>
+<span class="sd">            data_set: the DataSet we are reading into</span>
+<span class="sd">            f: a file-like object to read from</span>
+<span class="sd">            ids_read: a `set` of array_ids that we have already read.</span>
+<span class="sd">                when you read an array, check that it&#39;s not in this set (except</span>
+<span class="sd">                setpoints, which can be in several files with different inner loop)</span>
+<span class="sd">                then add it to the set so other files know not to read it again</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="n">arrays</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">arrays</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_comment_line</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_labels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_read_comment_line</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_comment_line</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+        <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="n">set_arrays</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="n">data_arrays</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">indexed_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">ids</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">array_id</span> <span class="ow">in</span> <span class="n">indexed_ids</span><span class="p">[:</span><span class="n">ndim</span><span class="p">]:</span>
+            <span class="n">snap</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">get_array_metadata</span><span class="p">(</span><span class="n">array_id</span><span class="p">)</span>
+
+            <span class="c1"># setpoint arrays</span>
+            <span class="n">set_shape</span> <span class="o">=</span> <span class="n">shape</span><span class="p">[:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">array_id</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">:</span>
+                <span class="n">set_array</span> <span class="o">=</span> <span class="n">arrays</span><span class="p">[</span><span class="n">array_id</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">set_array</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">set_shape</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s1">&#39;shapes do not match for set array: &#39;</span> <span class="o">+</span> <span class="n">array_id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">array_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ids_read</span><span class="p">:</span>
+                    <span class="c1"># it&#39;s OK for setpoints to be duplicated across</span>
+                    <span class="c1"># multiple files, but we should only empty the</span>
+                    <span class="c1"># array out the first time we see it, so subsequent</span>
+                    <span class="c1"># reads can check for consistency</span>
+                    <span class="n">set_array</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">set_array</span> <span class="o">=</span> <span class="n">DataArray</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">array_id</span><span class="o">=</span><span class="n">array_id</span><span class="p">,</span>
+                                      <span class="n">set_arrays</span><span class="o">=</span><span class="n">set_arrays</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">set_shape</span><span class="p">,</span>
+                                      <span class="n">is_setpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">snapshot</span><span class="o">=</span><span class="n">snap</span><span class="p">)</span>
+                <span class="n">set_array</span><span class="o">.</span><span class="n">init_data</span><span class="p">()</span>
+                <span class="n">data_set</span><span class="o">.</span><span class="n">add_array</span><span class="p">(</span><span class="n">set_array</span><span class="p">)</span>
+
+            <span class="n">set_arrays</span> <span class="o">=</span> <span class="n">set_arrays</span> <span class="o">+</span> <span class="p">(</span><span class="n">set_array</span><span class="p">,</span> <span class="p">)</span>
+            <span class="n">ids_read</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">array_id</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">array_id</span> <span class="ow">in</span> <span class="n">indexed_ids</span><span class="p">[</span><span class="n">ndim</span><span class="p">:]:</span>
+            <span class="n">snap</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">get_array_metadata</span><span class="p">(</span><span class="n">array_id</span><span class="p">)</span>
+
+            <span class="c1"># data arrays</span>
+            <span class="k">if</span> <span class="n">array_id</span> <span class="ow">in</span> <span class="n">ids_read</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;duplicate data id found: &#39;</span> <span class="o">+</span> <span class="n">array_id</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">array_id</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">:</span>
+                <span class="n">data_array</span> <span class="o">=</span> <span class="n">arrays</span><span class="p">[</span><span class="n">array_id</span><span class="p">]</span>
+                <span class="n">data_array</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data_array</span> <span class="o">=</span> <span class="n">DataArray</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">array_id</span><span class="o">=</span><span class="n">array_id</span><span class="p">,</span>
+                                       <span class="n">set_arrays</span><span class="o">=</span><span class="n">set_arrays</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
+                                       <span class="n">snapshot</span><span class="o">=</span><span class="n">snap</span><span class="p">)</span>
+                <span class="n">data_array</span><span class="o">.</span><span class="n">init_data</span><span class="p">()</span>
+                <span class="n">data_set</span><span class="o">.</span><span class="n">add_array</span><span class="p">(</span><span class="n">data_array</span><span class="p">)</span>
+            <span class="n">data_arrays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_array</span><span class="p">)</span>
+            <span class="n">ids_read</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">array_id</span><span class="p">)</span>
+
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">ndim</span>
+        <span class="n">first_point</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">resetting</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_comment</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># ignore leading or trailing whitespace (including in blank lines)</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="c1"># each consecutive blank line implies one more loop to reset</span>
+                <span class="c1"># when we read the next data point. Don&#39;t depend on the number</span>
+                <span class="c1"># of setpoints that change, as there could be weird cases, like</span>
+                <span class="c1"># bidirectional sweeps, or highly diagonal sweeps, where this</span>
+                <span class="c1"># is incorrect. Anyway this really only matters for &gt;2D sweeps.</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">first_point</span><span class="p">:</span>
+                    <span class="n">resetting</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+
+            <span class="n">values</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+
+            <span class="k">if</span> <span class="n">resetting</span><span class="p">:</span>
+                <span class="n">indices</span><span class="p">[</span><span class="o">-</span><span class="n">resetting</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">indices</span><span class="p">[</span><span class="o">-</span><span class="n">resetting</span><span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">resetting</span>
+                <span class="n">resetting</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">set_array</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">values</span><span class="p">[:</span><span class="n">ndim</span><span class="p">],</span> <span class="n">set_arrays</span><span class="p">):</span>
+                <span class="n">nparray</span> <span class="o">=</span> <span class="n">set_array</span><span class="o">.</span><span class="n">ndarray</span>
+                <span class="n">myindices</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">indices</span><span class="p">[:</span><span class="n">nparray</span><span class="o">.</span><span class="n">ndim</span><span class="p">])</span>
+                <span class="n">stored_value</span> <span class="o">=</span> <span class="n">nparray</span><span class="p">[</span><span class="n">myindices</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">stored_value</span><span class="p">):</span>
+                    <span class="n">nparray</span><span class="p">[</span><span class="n">myindices</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">elif</span> <span class="n">stored_value</span> <span class="o">!=</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;inconsistent setpoint values&#39;</span><span class="p">,</span>
+                                     <span class="n">stored_value</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">set_array</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                     <span class="n">myindices</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">value</span><span class="p">,</span> <span class="n">data_array</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">ndim</span><span class="p">:],</span> <span class="n">data_arrays</span><span class="p">):</span>
+                <span class="c1"># set .ndarray directly to avoid the overhead of __setitem__</span>
+                <span class="c1"># which updates modified_range on every call</span>
+                <span class="n">data_array</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">indices</span><span class="p">)]</span> <span class="o">=</span> <span class="n">value</span>
+
+            <span class="n">indices</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">first_point</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Since we skipped __setitem__, back up to the last read point and</span>
+        <span class="c1"># mark it as saved that far.</span>
+        <span class="c1"># Using mark_saved is better than directly setting last_saved_index</span>
+        <span class="c1"># because it also ensures modified_range is set correctly.</span>
+        <span class="n">indices</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">set_arrays</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">data_arrays</span><span class="p">):</span>
+            <span class="n">array</span><span class="o">.</span><span class="n">mark_saved</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">flat_index</span><span class="p">(</span><span class="n">indices</span><span class="p">[:</span><span class="n">array</span><span class="o">.</span><span class="n">ndim</span><span class="p">]))</span></div>
+
+    <span class="k">def</span> <span class="nf">_is_comment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">line</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">comment_len</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">comment_chars</span>
+
+    <span class="k">def</span> <span class="nf">_read_comment_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_comment</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;expected a comment line, found:</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">comment_len</span><span class="p">:]</span>
+
+    <span class="k">def</span> <span class="nf">_get_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labelstr</span><span class="p">):</span>
+        <span class="n">labelstr</span> <span class="o">=</span> <span class="n">labelstr</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">labelstr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&quot;&#39;</span> <span class="ow">or</span> <span class="n">labelstr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">:</span>
+            <span class="c1"># fields are *not* quoted</span>
+            <span class="k">return</span> <span class="n">labelstr</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># fields *are* quoted (and escaped)</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="se">\\</span><span class="s1">s+&quot;&#39;</span><span class="p">,</span> <span class="n">labelstr</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">]</span>
+
+    <span class="c1"># this signature is unfortunatly incompatible with the super class</span>
+    <span class="c1"># so we have to ignore type errors</span>
+<div class="viewcode-block" id="GNUPlotFormat.write"><a class="viewcode-back" href="../../../api/data/gnuplot_format.html#qcodes.data.gnuplot_format.GNUPlotFormat.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>  <span class="c1"># type: ignore[override]</span>
+              <span class="n">data_set</span><span class="p">:</span> <span class="s1">&#39;DataSet&#39;</span><span class="p">,</span>
+              <span class="n">io_manager</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">force_write</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">write_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only_complete</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write updates in this DataSet to storage.</span>
+
+<span class="sd">        Will choose append if possible, overwrite if not.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_set: the data we&#39;re storing</span>
+<span class="sd">            io_manager (io_manager): the base location to write to</span>
+<span class="sd">            location (str): the file location within io_manager</span>
+<span class="sd">            only_complete (bool): passed to match_save_range, answers the</span>
+<span class="sd">                following question: Should we write all available new data,</span>
+<span class="sd">                or only complete rows? Is used to make sure that everything</span>
+<span class="sd">                gets written when the DataSet is finalised, even if some</span>
+<span class="sd">                dataarrays are strange (like, full of nans)</span>
+<span class="sd">            filename (Optional[str]): Filename to save to. Will override</span>
+<span class="sd">                the usual naming scheme and possibly overwrite files, so</span>
+<span class="sd">                use with care. The file will be saved in the normal location.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">arrays</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">arrays</span>
+
+        <span class="c1"># puts everything with same dimensions together</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">)</span>
+        <span class="n">existing_files</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">io_manager</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">location</span><span class="p">))</span>
+        <span class="n">written_files</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="c1"># Every group gets its own datafile</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Attempting to write the following &#39;</span>
+                      <span class="s1">&#39;group: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="c1"># it might be useful to output the whole group as below but it is</span>
+            <span class="c1"># very verbose</span>
+            <span class="c1">#log.debug(&#39;containing {}&#39;.format(group))</span>
+
+            <span class="k">if</span> <span class="n">filename</span><span class="p">:</span>
+                <span class="n">fn</span> <span class="o">=</span> <span class="n">io_manager</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">filename</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fn</span> <span class="o">=</span> <span class="n">io_manager</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">)</span>
+
+            <span class="n">written_files</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+
+            <span class="c1"># fn may or may not be an absolute path depending on the location manager</span>
+            <span class="c1"># used however, io_manager always returns relative paths so make sure both are</span>
+            <span class="c1"># relative by calling to_location</span>
+            <span class="n">file_exists</span> <span class="o">=</span> <span class="n">io_manager</span><span class="o">.</span><span class="n">to_location</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="ow">in</span> <span class="n">existing_files</span>
+            <span class="n">save_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_save_range</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">file_exists</span><span class="p">,</span>
+                                               <span class="n">only_complete</span><span class="o">=</span><span class="n">only_complete</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">save_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Cannot match save range, skipping this group.&#39;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">overwrite</span> <span class="o">=</span> <span class="n">save_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">force_write</span>
+            <span class="n">open_mode</span> <span class="o">=</span> <span class="s1">&#39;w&#39;</span> <span class="k">if</span> <span class="n">overwrite</span> <span class="k">else</span> <span class="s1">&#39;a&#39;</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">set_arrays</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+
+            <span class="k">with</span> <span class="n">io_manager</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">open_mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_make_header</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Wrote header to file&#39;</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">save_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">save_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+
+                    <span class="c1"># insert a blank line for each loop that reset (to index 0)</span>
+                    <span class="c1"># note that if *all* indices are zero (the first point)</span>
+                    <span class="c1"># we won&#39;t put any blanks</span>
+                    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">indices</span><span class="p">)):</span>
+                        <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">j</span><span class="p">:</span>
+                                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">terminator</span> <span class="o">*</span> <span class="n">j</span><span class="p">)</span>
+                            <span class="k">break</span>
+
+                    <span class="n">one_point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_point</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separator</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">one_point</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminator</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Wrote to file from &#39;</span>
+                          <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> to </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">save_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">save_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+            <span class="c1"># now that we&#39;ve saved the data, mark it as such in the data.</span>
+            <span class="c1"># we mark the data arrays and the inner setpoint array. Outer</span>
+            <span class="c1"># setpoint arrays have different dimension (so would need a</span>
+            <span class="c1"># different unraveled index) but more importantly could have</span>
+            <span class="c1"># a different saved range anyway depending on whether there</span>
+            <span class="c1"># is outer data taken before or after the inner loop. Anyway we</span>
+            <span class="c1"># never look at the outer setpoint last_saved_index or</span>
+            <span class="c1"># modified_range, we just assume it&#39;s got the values we need.</span>
+            <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">data</span> <span class="o">+</span> <span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">set_arrays</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],):</span>
+                <span class="n">array</span><span class="o">.</span><span class="n">mark_saved</span><span class="p">(</span><span class="n">save_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">write_metadata</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_metadata</span><span class="p">(</span>
+                <span class="n">data_set</span><span class="p">,</span> <span class="n">io_manager</span><span class="o">=</span><span class="n">io_manager</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="n">location</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GNUPlotFormat.write_metadata"><a class="viewcode-back" href="../../../api/data/gnuplot_format.html#qcodes.data.gnuplot_format.GNUPlotFormat.write_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">write_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_set</span><span class="p">:</span> <span class="s1">&#39;DataSet&#39;</span><span class="p">,</span> <span class="n">io_manager</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span>
+                       <span class="n">read_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write all metadata in this DataSet to storage.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_set: the data we&#39;re storing</span>
+
+<span class="sd">            io_manager (io_manager): the base location to write to</span>
+
+<span class="sd">            location (str): the file location within io_manager</span>
+
+<span class="sd">            read_first (Optional[bool]): read previously saved metadata before</span>
+<span class="sd">                writing? The current metadata will still be the used if</span>
+<span class="sd">                there are changes, but if the saved metadata has information</span>
+<span class="sd">                not present in the current metadata, it will be retained.</span>
+<span class="sd">                Default True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">read_first</span><span class="p">:</span>
+            <span class="c1"># In case the saved file has more metadata than we have here,</span>
+            <span class="c1"># read it in first. But any changes to the in-memory copy should</span>
+            <span class="c1"># override the saved file data.</span>
+            <span class="n">memory_metadata</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">metadata</span>
+            <span class="n">data_set</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">read_metadata</span><span class="p">(</span><span class="n">data_set</span><span class="p">)</span>
+            <span class="n">deep_update</span><span class="p">(</span><span class="n">data_set</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span> <span class="n">memory_metadata</span><span class="p">)</span>
+
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">io_manager</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_file</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">io_manager</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">snap_file</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data_set</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span> <span class="n">snap_file</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">NumpyJSONEncoder</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GNUPlotFormat.read_metadata"><a class="viewcode-back" href="../../../api/data/gnuplot_format.html#qcodes.data.gnuplot_format.GNUPlotFormat.read_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">read_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_set</span><span class="p">):</span>
+        <span class="n">io_manager</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">io</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">location</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">io_manager</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">io_manager</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+            <span class="k">with</span> <span class="n">io_manager</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">snap_file</span><span class="p">:</span>
+                <span class="n">metadata</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">snap_file</span><span class="p">)</span>
+            <span class="n">data_set</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_make_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">ids</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">set_arrays</span> <span class="o">+</span> <span class="n">group</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="n">ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">array_id</span><span class="p">)</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">array_id</span><span class="p">)</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\\\</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="n">label</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+
+        <span class="n">shape</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">size</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">set_arrays</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">set_arrays</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;array dimensionality does not match setpoints&#39;</span><span class="p">)</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_comment_line</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comment_line</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">+</span>
+               <span class="bp">self</span><span class="o">.</span><span class="n">_comment_line</span><span class="p">(</span><span class="n">shape</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="k">def</span> <span class="nf">_comment_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">comment</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">separator</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminator</span>
+
+    <span class="k">def</span> <span class="nf">_data_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">set_arrays</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">indices</span><span class="p">[:</span><span class="n">array</span><span class="o">.</span><span class="n">ndim</span><span class="p">]])</span>
+
+        <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">indices</span><span class="p">])</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

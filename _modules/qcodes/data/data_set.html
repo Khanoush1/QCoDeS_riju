@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.data.data_set &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.data.data_set</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.data.data_set</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;DataSet class and factory functions.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">traceback</span> <span class="kn">import</span> <span class="n">format_exc</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+
+<span class="kn">from</span> <span class="nn">qcodes.data.data_array</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DataArray</span><span class="p">,</span>
+    <span class="n">data_array_to_xarray_dictionary</span><span class="p">,</span>
+    <span class="n">xarray_data_array_dictionary_to_data_array</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">qcodes.utils.helpers</span> <span class="kn">import</span> <span class="n">DelegateAttributes</span><span class="p">,</span> <span class="n">deep_update</span><span class="p">,</span> <span class="n">full_class</span>
+
+<span class="kn">from</span> <span class="nn">.gnuplot_format</span> <span class="kn">import</span> <span class="n">GNUPlotFormat</span>
+<span class="kn">from</span> <span class="nn">.io</span> <span class="kn">import</span> <span class="n">DiskIO</span>
+<span class="kn">from</span> <span class="nn">.location</span> <span class="kn">import</span> <span class="n">FormatLocation</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="new_data"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.new_data">[docs]</a><span class="k">def</span> <span class="nf">new_data</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">loc_record</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+             <span class="n">io</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a new DataSet.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        location (Optional[Union[str,Callable, Bool]]): If you provide a string,</span>
+<span class="sd">            it must be an unused location in the io manager. Can also be:</span>
+
+<span class="sd">            - a Callable ``location provider`` with one required parameter</span>
+<span class="sd">              (the io manager), and one optional (``record`` dict),</span>
+<span class="sd">              which returns a location string when called</span>
+<span class="sd">            - ``False`` - denotes an only-in-memory temporary DataSet.</span>
+
+<span class="sd">            Note that the full path to or physical location of the data is a</span>
+<span class="sd">            combination of io + location. the default ``DiskIO`` sets the base</span>
+<span class="sd">            directory, which this location is a relative path inside.</span>
+<span class="sd">            Default ``DataSet.location_provider`` which is initially</span>
+<span class="sd">            ``FormatLocation()``</span>
+
+<span class="sd">        loc_record (Optional[dict]): If location is a callable, this will be</span>
+<span class="sd">            passed to it as ``record``</span>
+
+<span class="sd">        name (Optional[str]): overrides the ``name`` key in the ``loc_record``.</span>
+
+<span class="sd">        overwrite (bool): Are we allowed to overwrite an existing location?</span>
+<span class="sd">            Default False.</span>
+
+<span class="sd">        io (Optional[io_manager]): base physical location of the ``DataSet``.</span>
+<span class="sd">            Default ``DataSet.default_io`` is initially ``DiskIO(&#39;.&#39;)`` which</span>
+<span class="sd">            says the root data directory is the current working directory, ie</span>
+<span class="sd">            where you started the python session.</span>
+
+<span class="sd">        arrays (Optional[List[qcodes.data.data_array.DataArray]): arrays to add</span>
+<span class="sd">            to the DataSet. Can be added later with ``self.add_array(array)``.</span>
+
+<span class="sd">        formatter (Optional[Formatter]): sets the file format/structure to</span>
+<span class="sd">            write (and read) with. Default ``DataSet.default_formatter`` which</span>
+<span class="sd">            is initially ``GNUPlotFormat()``.</span>
+
+<span class="sd">        write_period (Optional[float]): seconds</span>
+<span class="sd">            between saves to disk.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        A new ``DataSet`` object ready for storing new data in.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">io</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">io</span> <span class="o">=</span> <span class="n">DataSet</span><span class="o">.</span><span class="n">default_io</span>
+
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">loc_record</span><span class="p">:</span>
+            <span class="n">loc_record</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">loc_record</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">if</span> <span class="n">location</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="n">DataSet</span><span class="o">.</span><span class="n">location_provider</span>
+
+    <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">location</span><span class="p">):</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="n">location</span><span class="p">(</span><span class="n">io</span><span class="p">,</span> <span class="n">record</span><span class="o">=</span><span class="n">loc_record</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">location</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">overwrite</span><span class="p">)</span> <span class="ow">and</span> <span class="n">io</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">location</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="n">location</span> <span class="o">+</span> <span class="s1">&#39;&quot; already has data&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">DataSet</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="n">location</span><span class="p">,</span> <span class="n">io</span><span class="o">=</span><span class="n">io</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_data"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.load_data">[docs]</a><span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">formatter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">io</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load an existing DataSet.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        location (Optional[str]): the location to load from. Default is the</span>
+<span class="sd">            current live DataSet.</span>
+<span class="sd">            Note that the full path to or physical location of the data is a</span>
+<span class="sd">            combination of io + location. the default ``DiskIO`` sets the base</span>
+<span class="sd">            directory, which this location is a relative path inside.</span>
+
+<span class="sd">        formatter (Optional[Formatter]): sets the file format/structure to</span>
+<span class="sd">            read with. Default ``DataSet.default_formatter`` which</span>
+<span class="sd">            is initially ``GNUPlotFormat()``.</span>
+
+<span class="sd">        io (Optional[io_manager]): base physical location of the ``DataSet``.</span>
+<span class="sd">            Default ``DataSet.default_io`` is initially ``DiskIO(&#39;.&#39;)`` which</span>
+<span class="sd">            says the root data directory is the current working directory, ie</span>
+<span class="sd">            where you started the python session.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A new ``DataSet`` object loaded with pre-existing data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">location</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;location=False means a temporary DataSet, &#39;</span>
+                         <span class="s1">&#39;which is incompatible with load_data&#39;</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">DataSet</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="n">location</span><span class="p">,</span> <span class="n">formatter</span><span class="o">=</span><span class="n">formatter</span><span class="p">,</span> <span class="n">io</span><span class="o">=</span><span class="n">io</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">read_metadata</span><span class="p">()</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="DataSet"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet">[docs]</a><span class="k">class</span> <span class="nc">DataSet</span><span class="p">(</span><span class="n">DelegateAttributes</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A container for one complete measurement loop.</span>
+
+<span class="sd">    May contain many individual arrays with potentially different</span>
+<span class="sd">    sizes and dimensionalities.</span>
+
+<span class="sd">    Normally a DataSet should not be instantiated directly, but through</span>
+<span class="sd">    ``new_data`` or ``load_data``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        location (Union[str,bool]): A location in the io manager, or ``False``</span>
+<span class="sd">            for an only-in-memory temporary DataSet.</span>
+<span class="sd">            Note that the full path to or physical location of the data is a</span>
+<span class="sd">            combination of io + location. the default ``DiskIO`` sets the base</span>
+<span class="sd">            directory, which this location is a relative path inside.</span>
+
+<span class="sd">        io (Optional[io_manager]): base physical location of the ``DataSet``.</span>
+<span class="sd">            Default ``DataSet.default_io`` is initially ``DiskIO(&#39;.&#39;)`` which</span>
+<span class="sd">            says the root data directory is the current working directory, ie</span>
+<span class="sd">            where you started the python session.</span>
+
+<span class="sd">        arrays (Optional[List[qcodes.data.data_array.DataArray]): arrays to add</span>
+<span class="sd">            to the DataSet. Can be added later with ``self.add_array(array)``.</span>
+
+<span class="sd">        formatter (Optional[Formatter]): sets the file format/structure to</span>
+<span class="sd">            write (and read) with. Default ``DataSet.default_formatter`` which</span>
+<span class="sd">            is initially ``GNUPlotFormat()``.</span>
+
+<span class="sd">        write_period (Optional[float]): Only if ``mode=LOCAL``, seconds</span>
+<span class="sd">            between saves to disk. If not ``LOCAL``, the ``DataServer`` handles</span>
+<span class="sd">            this and generally writes more often. Use None to disable writing</span>
+<span class="sd">            from calls to ``self.store``. Default 5.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># ie data_set.arrays[&#39;vsd&#39;] === data_set.vsd</span>
+    <span class="n">delegate_attr_dicts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;arrays&#39;</span><span class="p">]</span>
+
+    <span class="n">default_io</span> <span class="o">=</span> <span class="n">DiskIO</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="n">default_formatter</span> <span class="o">=</span> <span class="n">GNUPlotFormat</span><span class="p">()</span>
+    <span class="n">location_provider</span> <span class="o">=</span> <span class="n">FormatLocation</span><span class="p">()</span>
+
+    <span class="n">background_functions</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The value ``fn`` is a callable accepting no</span>
+<span class="sd">    arguments, and ``key`` is a name to identify the function and help</span>
+<span class="sd">    you attach and remove it.</span>
+
+<span class="sd">    In ``DataSet.complete`` we call each of these periodically, in the</span>
+<span class="sd">    order that they were attached.</span>
+
+<span class="sd">    Note that because this is a class attribute, the functions will</span>
+<span class="sd">    apply to every DataSet. If you want specific functions for one</span>
+<span class="sd">    DataSet you can override this with an instance attribute.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arrays</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">formatter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">io</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">write_period</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">location</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">location</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">location</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;unrecognized location &#39;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="n">location</span><span class="p">))</span>
+
+        <span class="c1"># TODO: when you change formatter or io (and there&#39;s data present)</span>
+        <span class="c1"># make it all look unsaved</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="n">formatter</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_formatter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">io</span> <span class="o">=</span> <span class="n">io</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_io</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_period</span> <span class="o">=</span> <span class="n">write_period</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_write</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_store</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span> <span class="o">=</span> <span class="n">_PrettyPrintDict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">arrays</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">action_id_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clean_array_ids</span><span class="p">(</span><span class="n">arrays</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_array</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">array</span><span class="o">.</span><span class="n">init_data</span><span class="p">()</span>
+
+<div class="viewcode-block" id="DataSet.sync"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.sync">[docs]</a>    <span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Synchronize this DataSet with the DataServer or storage.</span>
+
+<span class="sd">        If this DataSet is on the server, asks the server for changes.</span>
+<span class="sd">        If not, reads the entire DataSet from disk.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if this DataSet is live on the server</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: sync implies bidirectional... and it could be!</span>
+        <span class="c1"># we should keep track of last sync timestamp and last modification</span>
+        <span class="c1"># so we can tell whether this one, the other one, or both copies have</span>
+        <span class="c1"># changed (and I guess throw an error if both did? Would be cool if we</span>
+        <span class="c1"># could find a robust and intuitive way to make modifications to the</span>
+        <span class="c1"># version on the DataServer from the main copy)</span>
+
+        <span class="c1"># LOCAL DataSet - no need to sync just use local data</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="DataSet.fraction_complete"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.fraction_complete">[docs]</a>    <span class="k">def</span> <span class="nf">fraction_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the fraction of this DataSet which has data in it.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: the average of all measured (not setpoint) arrays&#39;</span>
+<span class="sd">                ``fraction_complete()`` values, independent of the individual</span>
+<span class="sd">                array sizes. If there are no measured arrays, returns zero.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">array_count</span><span class="p">,</span> <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">array</span><span class="o">.</span><span class="n">is_setpoint</span><span class="p">:</span>
+                <span class="n">array_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">total</span> <span class="o">+=</span> <span class="n">array</span><span class="o">.</span><span class="n">fraction_complete</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">total</span> <span class="o">/</span> <span class="p">(</span><span class="n">array_count</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataSet.complete"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.complete">[docs]</a>    <span class="k">def</span> <span class="nf">complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mf">1.5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Periodically sync the DataSet and display percent complete status.</span>
+
+<span class="sd">        Also, each period, execute functions stored in (class attribute)</span>
+<span class="sd">        ``self.background_functions``. If a function fails, we log its</span>
+<span class="sd">        traceback and continue on. If any one function fails twice in</span>
+<span class="sd">        a row, it gets removed.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            delay (float): seconds between iterations. Default 1.5</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;waiting for DataSet &lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s1">&gt; to complete&#39;</span><span class="p">)</span>
+
+        <span class="n">failing</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_functions</span><span class="p">}</span>
+
+        <span class="n">completed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;DataSet: </span><span class="si">{:.0f}% c</span><span class="s1">omplete&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fraction_complete</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span>
+
+            <span class="c1"># first check if we&#39;re done</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">completed</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># then even if we *are* done, execute the background functions</span>
+            <span class="c1"># because we want things like live plotting to get the final data</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">fn</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">background_functions</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;calling </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">fn</span><span class="p">()</span>
+                    <span class="n">failing</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">format_exc</span><span class="p">())</span>
+                    <span class="k">if</span> <span class="n">failing</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="s1">&#39;background function </span><span class="si">{}</span><span class="s1"> failed twice in a row, &#39;</span>
+                            <span class="s1">&#39;removing it&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+                        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">background_functions</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                    <span class="n">failing</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">if</span> <span class="n">completed</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="c1"># but only sleep if we&#39;re not already finished</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;DataSet &lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="si">}</span><span class="s1">&gt; is complete&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataSet.get_changes"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.get_changes">[docs]</a>    <span class="k">def</span> <span class="nf">get_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">synced_indices</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find changes since the last sync of this DataSet.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            synced_indices (dict): ``{array_id: synced_index}`` where</span>
+<span class="sd">                synced_index is the last flat index which has already</span>
+<span class="sd">                been synced, for any (usually all) arrays in the DataSet.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[dict]: keys are ``array_id`` for each array with changes,</span>
+<span class="sd">                values are dicts as returned by ``DataArray.get_changes``</span>
+<span class="sd">                and required as kwargs to ``DataArray.apply_changes``.</span>
+<span class="sd">                Note that not all arrays in ``synced_indices`` need be</span>
+<span class="sd">                present in the return, only those with changes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">changes</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">array_id</span><span class="p">,</span> <span class="n">synced_index</span> <span class="ow">in</span> <span class="n">synced_indices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">array_changes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="p">[</span><span class="n">array_id</span><span class="p">]</span><span class="o">.</span><span class="n">get_changes</span><span class="p">(</span><span class="n">synced_index</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">array_changes</span><span class="p">:</span>
+                <span class="n">changes</span><span class="p">[</span><span class="n">array_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">array_changes</span>
+
+        <span class="k">return</span> <span class="n">changes</span></div>
+
+<div class="viewcode-block" id="DataSet.add_array"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.add_array">[docs]</a>    <span class="k">def</span> <span class="nf">add_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_array</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add one DataArray to this DataSet, and mark it as part of this DataSet.</span>
+
+<span class="sd">        Note: DO NOT just set ``data_set.arrays[id] = data_array``, because</span>
+<span class="sd">        this will not check if we are overwriting another array, nor set the</span>
+<span class="sd">        reference back to this DataSet, nor that the ``array_id`` in the array</span>
+<span class="sd">        matches how you&#39;re storing it here.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_array (DataArray): the new array to add</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if there is already an array with this id here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: mask self.arrays so you *can&#39;t* set it directly?</span>
+
+        <span class="k">if</span> <span class="n">data_array</span><span class="o">.</span><span class="n">array_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;array_id </span><span class="si">{}</span><span class="s1"> already exists in this &#39;</span>
+                             <span class="s1">&#39;DataSet&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data_array</span><span class="o">.</span><span class="n">array_id</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="p">[</span><span class="n">data_array</span><span class="o">.</span><span class="n">array_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_array</span>
+
+        <span class="c1"># back-reference to the DataSet</span>
+        <span class="n">data_array</span><span class="o">.</span><span class="n">data_set</span> <span class="o">=</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="DataSet.remove_array"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.remove_array">[docs]</a>    <span class="k">def</span> <span class="nf">remove_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Remove an array from a dataset</span>
+
+<span class="sd">        Throws an exception when the array specified is refereced by other</span>
+<span class="sd">        arrays in the dataset.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            array_id (str): array_id of array to be removed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="p">:</span>
+            <span class="n">sa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">set_arrays</span>
+            <span class="k">if</span> <span class="n">array_id</span> <span class="ow">in</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">array_id</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">sa</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s1">&#39;cannot remove array </span><span class="si">%s</span><span class="s1"> as it is referenced by a&#39;</span> <span class="o">%</span> <span class="n">array_id</span><span class="p">)</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">array_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_id_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clean_array_ids</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+
+    <span class="k">def</span> <span class="nf">_clean_array_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arrays</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        replace action_indices tuple with compact string array_ids</span>
+<span class="sd">        stripping off as much extraneous info as possible</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">action_indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">array</span><span class="o">.</span><span class="n">action_indices</span> <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">full_name</span>
+            <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">is_setpoint</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;_set&#39;</span><span class="p">):</span>
+                <span class="n">name</span> <span class="o">+=</span> <span class="s1">&#39;_set&#39;</span>
+
+            <span class="n">array</span><span class="o">.</span><span class="n">array_id</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="n">array_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">array</span><span class="o">.</span><span class="n">array_id</span> <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">array_ids</span><span class="p">:</span>
+            <span class="n">param_arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">array</span> <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span>
+                            <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">array_id</span> <span class="o">==</span> <span class="n">name</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_clean_param_ids</span><span class="p">(</span><span class="n">param_arrays</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+        <span class="n">array_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">array</span><span class="o">.</span><span class="n">array_id</span> <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">action_indices</span><span class="p">,</span> <span class="n">array_ids</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_clean_param_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arrays</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="c1"># strip off as many leading equal indices as possible</span>
+        <span class="c1"># and append the rest to the back of the name with underscores</span>
+        <span class="n">param_action_indices</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">action_indices</span><span class="p">)</span> <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">]</span>
+        <span class="k">while</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ai</span><span class="p">)</span> <span class="k">for</span> <span class="n">ai</span> <span class="ow">in</span> <span class="n">param_action_indices</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">({</span><span class="n">ai</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">ai</span> <span class="ow">in</span> <span class="n">param_action_indices</span><span class="p">})</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">ai</span> <span class="ow">in</span> <span class="n">param_action_indices</span><span class="p">:</span>
+                    <span class="n">ai</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">for</span> <span class="n">array</span><span class="p">,</span> <span class="n">ai</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">param_action_indices</span><span class="p">):</span>
+            <span class="n">array</span><span class="o">.</span><span class="n">array_id</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ai</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DataSet.store"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.store">[docs]</a>    <span class="k">def</span> <span class="nf">store</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop_indices</span><span class="p">,</span> <span class="n">ids_values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Insert data into one or more of our DataArrays.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            loop_indices (tuple): the indices within whatever loops we are</span>
+<span class="sd">                inside. May have fewer dimensions than some of the arrays</span>
+<span class="sd">                we are inserting into, if the corresponding value makes up</span>
+<span class="sd">                the remaining dimensionality.</span>
+<span class="sd">            values (Dict[Union[float, Sequence]]): a dict whose keys are</span>
+<span class="sd">                array_ids, and values are single numbers or entire slices</span>
+<span class="sd">                to insert into that array.</span>
+<span class="sd">         &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">array_id</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">ids_values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="p">[</span><span class="n">array_id</span><span class="p">][</span><span class="n">loop_indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_store</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">write_period</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_write</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_period</span><span class="p">):</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Attempting to write&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_write</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span></div>
+        <span class="c1"># The below could be useful but as it writes at every single</span>
+        <span class="c1"># step of the loop its too verbose even at debug</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     log.debug(&#39;.store method: This is not the right time to write&#39;)</span>
+
+<div class="viewcode-block" id="DataSet.default_parameter_name"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.default_parameter_name">[docs]</a>    <span class="k">def</span> <span class="nf">default_parameter_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramname</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return name of default parameter for plotting</span>
+
+<span class="sd">        The default parameter is determined by looking into</span>
+<span class="sd">        metdata[&#39;default_parameter_name&#39;].  If this variable is not present,</span>
+<span class="sd">        then the closest match to the argument paramname is tried.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            paramname: Name to match to parameter name</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Name of the default parameter, or None if no parameter is found</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">arraynames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+        <span class="c1"># overrule parameter name from the metadata</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default_parameter_name&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">paramname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;default_parameter_name&#39;</span><span class="p">]</span>
+
+        <span class="c1"># try to return the exact name</span>
+        <span class="k">if</span> <span class="n">paramname</span> <span class="ow">in</span> <span class="n">arraynames</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">paramname</span>
+
+        <span class="c1"># try find something similar</span>
+        <span class="k">if</span> <span class="n">paramname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vv</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">arraynames</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">paramname</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">vv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">vv</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">arraynames</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">paramname</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">vv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># try to get the first non-setpoint array</span>
+        <span class="n">vv</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">arraynames</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">is_setpoint</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">vv</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># fallback: any array found</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">arraynames</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">name</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DataSet.default_parameter_array"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.default_parameter_array">[docs]</a>    <span class="k">def</span> <span class="nf">default_parameter_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramname</span><span class="o">=</span><span class="s1">&#39;amplitude&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return default parameter array</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            paramname (str): Name to match to parameter name.</span>
+<span class="sd">                 Defaults to &#39;amplitude&#39;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataArray: array corresponding to the default parameter</span>
+
+<span class="sd">        See also:</span>
+<span class="sd">            default_parameter_name</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">paramname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_parameter_name</span><span class="p">(</span><span class="n">paramname</span><span class="o">=</span><span class="n">paramname</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paramname</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataSet.read"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read the whole DataSet from storage, overwriting the local data.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataSet.read_metadata"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.read_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">read_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read the metadata from storage, overwriting the local data.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">read_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataSet.write"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">write_metadata</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">only_complete</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes updates to the DataSet to storage.</span>
+<span class="sd">        N.B. it is recommended to call data_set.finalize() when a DataSet is</span>
+<span class="sd">        no longer expected to change to ensure files get closed</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            write_metadata (bool): write the metadata to disk</span>
+<span class="sd">            only_complete (bool): passed on to the match_save_range inside</span>
+<span class="sd">                self.formatter.write. Used to ensure that all new data gets</span>
+<span class="sd">                saved even when some columns are strange.</span>
+<span class="sd">            filename (Optional[str]): The filename (minus extension) to use.</span>
+<span class="sd">                The file gets saved in the usual location.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Only the gnuplot formatter has a &quot;filename&quot; kwarg</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="p">,</span> <span class="n">GNUPlotFormat</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
+                                 <span class="n">write_metadata</span><span class="o">=</span><span class="n">write_metadata</span><span class="p">,</span>
+                                 <span class="n">only_complete</span><span class="o">=</span><span class="n">only_complete</span><span class="p">,</span>
+                                 <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
+                                 <span class="n">write_metadata</span><span class="o">=</span><span class="n">write_metadata</span><span class="p">,</span>
+                                 <span class="n">only_complete</span><span class="o">=</span><span class="n">only_complete</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataSet.write_copy"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.write_copy">[docs]</a>    <span class="k">def</span> <span class="nf">write_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">io_manager</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write a new complete copy of this DataSet to storage.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (Optional[str]): An absolute path on this system to write to.</span>
+<span class="sd">                If you specify this, you may not include either ``io_manager``</span>
+<span class="sd">                or ``location``.</span>
+
+<span class="sd">            io_manager (Optional[io_manager]): A new ``io_manager`` to use with</span>
+<span class="sd">                either the ``DataSet``&#39;s same or a new ``location``.</span>
+
+<span class="sd">            location (Optional[str]): A new ``location`` to write to, using</span>
+<span class="sd">                either this ``DataSet``&#39;s same or a new ``io_manager``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">io_manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">location</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;If you provide io_manager or location &#39;</span>
+                                <span class="s1">&#39;to write_copy, you may not provide path.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">io_manager</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">io_manager</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span>
+            <span class="k">elif</span> <span class="n">location</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span>
+        <span class="k">elif</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">io_manager</span> <span class="o">=</span> <span class="n">DiskIO</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">location</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;You must provide at least one argument &#39;</span>
+                            <span class="s1">&#39;to write_copy&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">location</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;write_copy needs a location, not False&#39;</span><span class="p">)</span>
+
+        <span class="n">lsi_cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">mr_cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">array_id</span><span class="p">,</span> <span class="n">array</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">lsi_cache</span><span class="p">[</span><span class="n">array_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">last_saved_index</span>
+            <span class="n">mr_cache</span><span class="p">[</span><span class="n">array_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">modified_range</span>
+            <span class="c1"># array.clear_save() is not enough, we _need_ to set modified_range</span>
+            <span class="c1"># TODO - identify *when* clear_save is not enough, and fix it</span>
+            <span class="c1"># so we *can* use it. That said, maybe we will *still* want to</span>
+            <span class="c1"># use the full array here no matter what, or strip trailing NaNs</span>
+            <span class="c1"># separately, either here or in formatter.write?</span>
+            <span class="n">array</span><span class="o">.</span><span class="n">last_saved_index</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">array</span><span class="o">.</span><span class="n">modified_range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">io_manager</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">force_write</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">write_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">io_manager</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span>
+                                          <span class="n">read_first</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">array_id</span><span class="p">,</span> <span class="n">array</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">array</span><span class="o">.</span><span class="n">last_saved_index</span> <span class="o">=</span> <span class="n">lsi_cache</span><span class="p">[</span><span class="n">array_id</span><span class="p">]</span>
+                <span class="n">array</span><span class="o">.</span><span class="n">modified_range</span> <span class="o">=</span> <span class="n">mr_cache</span><span class="p">[</span><span class="n">array_id</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="DataSet.add_metadata"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.add_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">add_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_metadata</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update DataSet.metadata with additional data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            new_metadata (dict): new data to be deep updated into</span>
+<span class="sd">                the existing metadata</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">deep_update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span> <span class="n">new_metadata</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataSet.save_metadata"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.save_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">save_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Evaluate and save the DataSet&#39;s metadata.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">write_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataSet.finalize"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">write_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Mark the DataSet complete and write any remaining modifications.</span>
+
+<span class="sd">        Also closes the data file(s), if the ``Formatter`` we&#39;re using</span>
+<span class="sd">        supports that.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename (Optional[str]): The file name (minus extension) to</span>
+<span class="sd">                write to. The location of the file is the usual one.</span>
+<span class="sd">            write_metadata (bool): Whether to save a snapshot. For e.g. dumping</span>
+<span class="sd">                raw data inside a loop, a snapshot is not wanted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Finalising the DataSet. Writing.&#39;</span><span class="p">)</span>
+        <span class="c1"># write all new data, not only (to?) complete columns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">only_complete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="p">,</span> <span class="s1">&#39;close_file&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">close_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">write_metadata</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_metadata</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DataSet.snapshot"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.snapshot">[docs]</a>    <span class="k">def</span> <span class="nf">snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;JSON state of the DataSet.&quot;&quot;&quot;</span>
+        <span class="n">array_snaps</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">array_id</span><span class="p">,</span> <span class="n">array</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">array_snaps</span><span class="p">[</span><span class="n">array_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">snapshot</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">update</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+            <span class="s1">&#39;__class__&#39;</span><span class="p">:</span> <span class="n">full_class</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+            <span class="s1">&#39;location&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
+            <span class="s1">&#39;arrays&#39;</span><span class="p">:</span> <span class="n">array_snaps</span><span class="p">,</span>
+            <span class="s1">&#39;formatter&#39;</span><span class="p">:</span> <span class="n">full_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="p">),</span>
+            <span class="s1">&#39;io&#39;</span><span class="p">:</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">io</span><span class="p">)</span>
+        <span class="p">})</span>
+        <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataSet.get_array_metadata"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.get_array_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">get_array_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the metadata for a single contained DataArray.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            array_id (str): the array to get metadata for.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: metadata for this array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;arrays&#39;</span><span class="p">][</span><span class="n">array_id</span><span class="p">]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DataSet.__repr__"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Rich information about the DataSet and contained arrays.&quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span>
+
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">)]]</span>
+        <span class="n">attr_template</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">   </span><span class="si">{:8}</span><span class="s1"> = </span><span class="si">{}</span><span class="s1">&#39;</span>
+        <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">+=</span> <span class="n">attr_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+        <span class="n">arr_info</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;&lt;Type&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;array_id&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;array.name&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;array.shape&gt;&#39;</span><span class="p">]]</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;action_id_map&#39;</span><span class="p">):</span>
+            <span class="n">id_items</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">item</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_id_map</span><span class="o">.</span><span class="n">items</span><span class="p">())]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">id_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">array_id</span> <span class="ow">in</span> <span class="n">id_items</span><span class="p">:</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrays</span><span class="p">[</span><span class="n">array_id</span><span class="p">]</span>
+            <span class="n">setp</span> <span class="o">=</span> <span class="s1">&#39;Setpoint&#39;</span> <span class="k">if</span> <span class="n">array</span><span class="o">.</span><span class="n">is_setpoint</span> <span class="k">else</span> <span class="s1">&#39;Measured&#39;</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="s1">&#39;None&#39;</span>
+            <span class="n">array_id</span> <span class="o">=</span> <span class="n">array_id</span> <span class="ow">or</span> <span class="s1">&#39;None&#39;</span>
+            <span class="n">arr_info</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">setp</span><span class="p">,</span> <span class="n">array_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">)])</span>
+
+        <span class="n">column_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">arr_info</span><span class="p">)</span>
+                          <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arr_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]))]</span>
+        <span class="n">out_template</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">   &#39;</span>
+                        <span class="s1">&#39;{info[0]:</span><span class="si">{lens[0]}</span><span class="s1">} | {info[1]:</span><span class="si">{lens[1]}</span><span class="s1">} | &#39;</span>
+                        <span class="s1">&#39;{info[2]:</span><span class="si">{lens[2]}</span><span class="s1">} | </span><span class="si">{info[3]}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">arr_info_i</span> <span class="ow">in</span> <span class="n">arr_info</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">+=</span> <span class="n">out_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">info</span><span class="o">=</span><span class="n">arr_info_i</span><span class="p">,</span> <span class="n">lens</span><span class="o">=</span><span class="n">column_lengths</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">out</span></div>
+
+<div class="viewcode-block" id="DataSet.to_xarray"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.to_xarray">[docs]</a>    <span class="k">def</span> <span class="nf">to_xarray</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Convert the dataset to an xarray Dataset &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">qcodes_dataset_to_xarray_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataSet.from_xarray"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.DataSet.from_xarray">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_xarray</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">xarray_dataset</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DataSet&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Convert the dataset to an xarray DataSet &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">xarray_dataset_to_qcodes_dataset</span><span class="p">(</span><span class="n">xarray_dataset</span><span class="p">)</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">_PrettyPrintDict</span><span class="p">(</span><span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    simple wrapper for a dict to repr its items on separate lines</span>
+<span class="sd">    with a bit of indentation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="nb">repr</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indent</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;{</span><span class="se">\n</span><span class="s2">  &quot;</span> <span class="o">+</span> <span class="n">body</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">}&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_indent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="dataset_to_xarray_dictionary"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.dataset_to_xarray_dictionary">[docs]</a><span class="k">def</span> <span class="nf">dataset_to_xarray_dictionary</span><span class="p">(</span>
+    <span class="n">data_set</span><span class="p">:</span> <span class="n">DataSet</span><span class="p">,</span> <span class="n">include_metadata</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Convert QcodesDataSet to dictionary.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data_set: The data to convert.</span>
+<span class="sd">        include_data: If True then include the ndarray field.</span>
+<span class="sd">        include_metadata: If True then include the metadata.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary containing the serialized data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data_dictionary</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;dims&quot;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s2">&quot;attrs&quot;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s2">&quot;coords&quot;</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s2">&quot;data_vars&quot;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="p">}</span>
+
+    <span class="n">pa</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">default_parameter_array</span><span class="p">()</span>
+    <span class="n">dimensions</span> <span class="o">=</span> <span class="p">[(</span><span class="n">a</span><span class="o">.</span><span class="n">array_id</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">pa</span><span class="o">.</span><span class="n">set_arrays</span><span class="p">]</span>
+    <span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;dims&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dimensions</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">array_id</span> <span class="ow">in</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">dimensions</span><span class="p">]:</span>
+        <span class="n">data_array</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">arrays</span><span class="p">[</span><span class="n">array_id</span><span class="p">]</span>
+        <span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">][</span><span class="n">array_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_array_to_xarray_dictionary</span><span class="p">(</span>
+            <span class="n">data_array</span>
+        <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">array_id</span><span class="p">,</span> <span class="n">data_array</span> <span class="ow">in</span> <span class="n">data_set</span><span class="o">.</span><span class="n">arrays</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data_array</span><span class="o">.</span><span class="n">is_setpoint</span><span class="p">:</span>
+            <span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;data_vars&quot;</span><span class="p">][</span><span class="n">array_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_array_to_xarray_dictionary</span><span class="p">(</span>
+                <span class="n">data_array</span>
+            <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">include_metadata</span><span class="p">:</span>
+        <span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;attrs&quot;</span><span class="p">][</span><span class="s2">&quot;metadata&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">metadata</span>
+        <span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;attrs&quot;</span><span class="p">][</span><span class="s2">&quot;qcodes_location&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">location</span>
+
+    <span class="k">return</span> <span class="n">data_dictionary</span></div>
+
+
+<div class="viewcode-block" id="qcodes_dataset_to_xarray_dataset"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.qcodes_dataset_to_xarray_dataset">[docs]</a><span class="k">def</span> <span class="nf">qcodes_dataset_to_xarray_dataset</span><span class="p">(</span>
+    <span class="n">data_set</span><span class="p">:</span> <span class="n">DataSet</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Convert QCoDeS gridded dataset to xarray dataset &quot;&quot;&quot;</span>
+    <span class="n">xarray_dictionary</span> <span class="o">=</span> <span class="n">dataset_to_xarray_dictionary</span><span class="p">(</span><span class="n">data_set</span><span class="p">)</span>
+    <span class="n">xarray_dataset</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">xarray_dictionary</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xarray_dataset</span></div>
+
+
+<div class="viewcode-block" id="xarray_dictionary_to_dataset"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.xarray_dictionary_to_dataset">[docs]</a><span class="k">def</span> <span class="nf">xarray_dictionary_to_dataset</span><span class="p">(</span>
+    <span class="n">xarray_dictionary</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataSet</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Convert xarray dictionary to Qcodes DataSet.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        xarray_dictionary: data to convert</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        QCoDeS dataSet with converted data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">new_data</span><span class="p">()</span>
+    <span class="n">dataset</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">xarray_dictionary</span><span class="p">[</span><span class="s2">&quot;attrs&quot;</span><span class="p">])</span>
+
+    <span class="n">grid_coords</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">set_array_names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">array_key</span><span class="p">,</span> <span class="n">coord_dictionary</span> <span class="ow">in</span> <span class="n">xarray_dictionary</span><span class="p">[</span><span class="s2">&quot;coords&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">preset_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coord_dictionary</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+
+        <span class="n">tiled_preset_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">preset_data</span><span class="p">,</span> <span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">size</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">grid_coords</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">grid_coords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">preset_data</span><span class="p">)</span>
+
+        <span class="n">data_array</span> <span class="o">=</span> <span class="n">xarray_data_array_dictionary_to_data_array</span><span class="p">(</span>
+            <span class="n">array_key</span><span class="p">,</span> <span class="n">coord_dictionary</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">preset_data</span><span class="o">=</span><span class="n">tiled_preset_data</span>
+        <span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">add_array</span><span class="p">(</span><span class="n">data_array</span><span class="p">)</span>
+        <span class="n">set_array_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array_key</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">array_key</span><span class="p">,</span> <span class="n">datavar_dictionary</span> <span class="ow">in</span> <span class="n">xarray_dictionary</span><span class="p">[</span><span class="s2">&quot;data_vars&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">set_arrays</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">arrays</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">set_array_names</span><span class="p">)</span>
+
+        <span class="n">data_array</span> <span class="o">=</span> <span class="n">xarray_data_array_dictionary_to_data_array</span><span class="p">(</span>
+            <span class="n">array_key</span><span class="p">,</span> <span class="n">datavar_dictionary</span><span class="p">,</span> <span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">data_array</span><span class="o">.</span><span class="n">set_arrays</span> <span class="o">=</span> <span class="n">set_arrays</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">add_array</span><span class="p">(</span><span class="n">data_array</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dataset</span></div>
+
+
+<div class="viewcode-block" id="xarray_dataset_to_qcodes_dataset"><a class="viewcode-back" href="../../../api/data/data_set.html#qcodes.data.data_set.xarray_dataset_to_qcodes_dataset">[docs]</a><span class="k">def</span> <span class="nf">xarray_dataset_to_qcodes_dataset</span><span class="p">(</span><span class="n">xarray_data_set</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataSet</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Convert QCoDeS gridded dataset to xarray dataset &quot;&quot;&quot;</span>
+    <span class="n">xarray_dictionary</span> <span class="o">=</span> <span class="n">xarray_data_set</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+    <span class="n">qcodes_dataset</span> <span class="o">=</span> <span class="n">xarray_dictionary_to_dataset</span><span class="p">(</span><span class="n">xarray_dictionary</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">qcodes_dataset</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+qcodes.instrument\_drivers.QDev package
+=======================================
+
+Submodules
+----------
+
+qcodes.instrument\_drivers.QDev.QDac\_channels module
+-----------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.QDev.QDac_channels
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: qcodes.instrument_drivers.QDev
+   :members:
+   :undoc-members:
+   :show-inheritance:

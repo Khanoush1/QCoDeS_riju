@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.utils.slack &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.utils.slack</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.utils.slack</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Slack bot is used to send information about qcodes via Slack IMs.</span>
+<span class="sd">Some default commands are provided, and custom commands/tasks can be</span>
+<span class="sd">attached (see below).</span>
+
+<span class="sd">To setup the Slack bot, a bot first has to be created via Slack</span>
+<span class="sd">by clicking &#39;Create New App&#39; on https://api.slack.com/apps.</span>
+<span class="sd">Once created, the bot will have a name and unique token.</span>
+<span class="sd">These and other settings have to be saved in a config dict (see init( or</span>
+<span class="sd">Parameters) in :class:`Slack`).</span>
+
+<span class="sd">The App containing your bot needs to have the following bot token scopes to</span>
+<span class="sd">perform all methods successfully:</span>
+<span class="sd">- channels:history</span>
+<span class="sd">- channels:read</span>
+<span class="sd">- chat:write</span>
+<span class="sd">- files:write</span>
+<span class="sd">- users:read</span>
+<span class="sd">These can be set after clicking OAuth &amp; Permissions in the left menubar after</span>
+<span class="sd">selecting your bot at https://api.slack.com/apps (or during creation).</span>
+
+<span class="sd">Communication with the Slack bot is performed via instant messaging.</span>
+<span class="sd">When an IM is sent to the Slack bot, it will be processed during the next</span>
+<span class="sd">`update()` call (provided the username is registered in the config).</span>
+<span class="sd">Standard commands provided to the Slack bot are:</span>
+
+<span class="sd">- plot: Upload latest qcodes plot.</span>
+<span class="sd">- msmt/measurement: Print information about latest measurement.</span>
+<span class="sd">- notify finished: Send message once measurement is finished.</span>
+
+<span class="sd">Custom commands can be added as (cmd, func) key-value pairs to</span>
+<span class="sd">`self.commands`. When `cmd` is sent to the bot, `func` is evaluated.</span>
+
+<span class="sd">Custom tasks can be added as well. These are functions that are performed</span>
+<span class="sd">every time an update is called. The function must return a boolean that</span>
+<span class="sd">indicates if the task should be removed from the list of tasks.</span>
+<span class="sd">A custom task can be added as a (cmd, func) key-value pair  to</span>
+<span class="sd">`self.task_commands`.</span>
+<span class="sd">They can then be called through Slack IM via:</span>
+
+<span class="sd">``notify/task {cmd} *args:`` register task with name `cmd` that is</span>
+<span class="sd">performed every time `update()` is called.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+
+<span class="kn">from</span> <span class="nn">requests.exceptions</span> <span class="kn">import</span> <span class="n">ConnectTimeout</span><span class="p">,</span> <span class="n">HTTPError</span><span class="p">,</span> <span class="n">ReadTimeout</span>
+<span class="kn">from</span> <span class="nn">requests.packages.urllib3.exceptions</span> <span class="kn">import</span> <span class="n">ReadTimeoutError</span>
+<span class="kn">from</span> <span class="nn">slack_sdk</span> <span class="kn">import</span> <span class="n">WebClient</span>
+
+<span class="kn">from</span> <span class="nn">qcodes</span> <span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">qc_config</span>
+<span class="kn">from</span> <span class="nn">qcodes.instrument.parameter</span> <span class="kn">import</span> <span class="n">_BaseParameter</span>
+<span class="kn">from</span> <span class="nn">qcodes.loops</span> <span class="kn">import</span> <span class="n">active_data_set</span><span class="p">,</span> <span class="n">active_loop</span>
+<span class="kn">from</span> <span class="nn">qcodes.plots.base</span> <span class="kn">import</span> <span class="n">BasePlot</span>
+
+
+<div class="viewcode-block" id="SlackTimeoutWarning"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.SlackTimeoutWarning">[docs]</a><span class="k">class</span> <span class="nc">SlackTimeoutWarning</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="convert_command"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.convert_command">[docs]</a><span class="k">def</span> <span class="nf">convert_command</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">try_convert_str</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">val</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">val</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">string</span>
+
+    <span class="c1"># Format text to lowercase, and remove trailing whitespaces</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="n">command</span><span class="p">,</span> <span class="o">*</span><span class="n">args_str</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="c1"># Convert string args to floats/kwargs</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args_str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;=&#39;</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">:</span>
+            <span class="c1"># arg is a kwarg</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>
+            <span class="c1"># Try to convert into a float</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">try_convert_str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># arg is not a kwarg</span>
+            <span class="c1"># Try to convert into a float</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">try_convert_str</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">command</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span></div>
+
+
+<div class="viewcode-block" id="Slack"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack">[docs]</a><span class="k">class</span> <span class="nc">Slack</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">auto_start</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">commands</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes Slack bot, including auto-updating widget if in notebook</span>
+<span class="sd">        and using multiprocessing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            interval (int): Update interval for widget (must be over 1s).</span>
+<span class="sd">            config (Optional[dict]): Config dict</span>
+<span class="sd">                If not given, uses qc.config[&#39;user&#39;][&#39;slack&#39;]</span>
+<span class="sd">                The config dict must contain the following keys:</span>
+
+<span class="sd">                - &#39;bot_name&#39;: Name of the bot</span>
+<span class="sd">                - &#39;bot_token&#39;: Token from bot (obtained from slack website)</span>
+<span class="sd">                - &#39;names&#39;: Usernames to periodically check for IM messages</span>
+
+<span class="sd">            auto_start (bool): Defaults to True.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">qc_config</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">slack</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">slack</span> <span class="o">=</span> <span class="n">WebClient</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;token&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">users</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_users</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_im_ids</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">commands</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;plot&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">upload_latest_plot</span><span class="p">,</span>
+                         <span class="s1">&#39;msmt&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_measurement_information</span><span class="p">,</span>
+                         <span class="s1">&#39;measurement&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_measurement_information</span><span class="p">,</span>
+                         <span class="s1">&#39;notify&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_task</span><span class="p">,</span>
+                         <span class="s1">&#39;help&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">help_message</span><span class="p">,</span>
+                         <span class="s1">&#39;task&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_task</span><span class="p">,</span>
+                         <span class="o">**</span><span class="n">commands</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task_commands</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;finished&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_msmt_finished</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="n">interval</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Flag that exits loop when set to True (called via self.exit())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exit</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Flag that enables actions to be performed in the event loop</span>
+        <span class="c1"># Enabled via self.start(), disabled via self.stop()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_active</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Call Thread init</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">auto_start</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Slack.start"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_active</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Start thread, can only be called once</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="c1"># Thread already started, ignoring</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Slack.run"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Thread event loop that periodically checks for updates.</span>
+<span class="sd">        Can be stopped via  :meth:`stop` , after which the Thread is stopped.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exit</span><span class="p">:</span>
+            <span class="c1"># Continue event loop</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_active</span><span class="p">:</span>
+                <span class="c1"># check for updates</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+            <span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Slack.stop"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stop checking for updates. Can be started again via :meth:`start`.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_active</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Slack.exit"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack.exit">[docs]</a>    <span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Exit event loop, stop Thread.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Slack.user_from_id"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack.user_from_id">[docs]</a>    <span class="k">def</span> <span class="nf">user_from_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve user from user id.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            user_id: Id from which to retrieve user information.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: User information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">slack</span><span class="o">.</span><span class="n">users_info</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user_id</span><span class="p">)[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Slack.get_users"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack.get_users">[docs]</a>    <span class="k">def</span> <span class="nf">get_users</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">usernames</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extracts user information for users.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            usernames: Slack usernames of users.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: {username: user}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">users</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">slack</span><span class="o">.</span><span class="n">users_list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;members&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">member</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">usernames</span><span class="p">:</span>
+                <span class="n">users</span><span class="p">[</span><span class="n">member</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">member</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">usernames</span><span class="p">):</span>
+            <span class="n">remaining_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">usernames</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">users</span><span class="p">]</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Could not find names </span><span class="si">{</span><span class="n">remaining_names</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">users</span></div>
+
+<div class="viewcode-block" id="Slack.get_im_ids"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack.get_im_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_im_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">users</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds IM ids of users to users dict.</span>
+<span class="sd">        Also adds `last_ts` to the latest IM message</span>
+<span class="sd">        Args:</span>
+<span class="sd">            users (dict): {username: user}</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">slack</span><span class="o">.</span><span class="n">conversations_list</span><span class="p">(</span><span class="n">types</span><span class="o">=</span><span class="s1">&#39;im&#39;</span><span class="p">)</span>
+        <span class="n">user_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">username</span><span class="p">:</span> <span class="n">user</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">username</span><span class="p">,</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">im_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">chan</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]:</span> <span class="n">chan</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">chan</span> <span class="ow">in</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;channels&#39;</span><span class="p">]}</span>
+        <span class="k">for</span> <span class="n">username</span><span class="p">,</span> <span class="n">user_id</span> <span class="ow">in</span> <span class="n">user_ids</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">user_id</span> <span class="ow">in</span> <span class="n">im_ids</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">users</span><span class="p">[</span><span class="n">username</span><span class="p">][</span><span class="s1">&#39;im_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">im_ids</span><span class="p">[</span><span class="n">user_id</span><span class="p">]</span>
+                <span class="c1"># update last ts</span>
+                <span class="n">messages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_im_messages</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">messages</span><span class="p">:</span>
+                    <span class="n">users</span><span class="p">[</span><span class="n">username</span><span class="p">][</span><span class="s1">&#39;last_ts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">messages</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ts&#39;</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">users</span><span class="p">[</span><span class="n">username</span><span class="p">][</span><span class="s1">&#39;last_ts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Slack.get_im_messages"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack.get_im_messages">[docs]</a>    <span class="k">def</span> <span class="nf">get_im_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves IM messages from username.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            username: Name of user.</span>
+<span class="sd">            **kwargs: Additional kwargs for retrieving IM messages.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of IM messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># provide backward compatibility with &#39;count&#39; keyword. It still works,</span>
+        <span class="c1"># but is undocumented. &#39;count&#39; likely does the same as &#39;limit&#39;, but</span>
+        <span class="c1"># &#39;limit&#39; takes precedence</span>
+        <span class="k">if</span> <span class="s1">&#39;limit&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;limit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">[</span><span class="n">username</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;im_id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">channel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">slack</span><span class="o">.</span><span class="n">conversations_history</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
+                                                        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;messages&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Slack.get_new_im_messages"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack.get_new_im_messages">[docs]</a>    <span class="k">def</span> <span class="nf">get_new_im_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves new IM messages for each user in self.users.</span>
+<span class="sd">        Updates user[&#39;last_ts&#39;] to ts of newest message.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            im_messages (Dict): {username: [messages list]} newer than last_ts.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">im_messages</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">username</span><span class="p">,</span> <span class="n">user</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">last_ts</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;last_ts&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">new_messages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_im_messages</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span>
+                                                <span class="n">oldest</span><span class="o">=</span><span class="n">last_ts</span><span class="p">)</span>
+            <span class="c1"># Kwarg &#39;oldest&#39; sometimes also returns message with ts==last_ts</span>
+            <span class="n">new_messages</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">new_messages</span> <span class="k">if</span>
+                            <span class="nb">float</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">last_ts</span><span class="p">]</span>
+            <span class="n">im_messages</span><span class="p">[</span><span class="n">username</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_messages</span>
+            <span class="k">if</span> <span class="n">new_messages</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">[</span><span class="n">username</span><span class="p">][</span><span class="s1">&#39;last_ts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_messages</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ts&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">im_messages</span></div>
+
+<div class="viewcode-block" id="Slack.update"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performs tasks, and checks for new messages.</span>
+<span class="sd">        Periodically called from widget update.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_tasks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">:</span>
+            <span class="n">task_finished</span> <span class="o">=</span> <span class="n">task</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">task_finished</span><span class="p">:</span>
+                <span class="n">new_tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">=</span> <span class="n">new_tasks</span>
+
+        <span class="n">new_messages</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">new_messages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_new_im_messages</span><span class="p">()</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">ReadTimeout</span><span class="p">,</span> <span class="n">HTTPError</span><span class="p">,</span> <span class="n">ConnectTimeout</span><span class="p">,</span> <span class="n">ReadTimeoutError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># catch any timeouts caused by network delays</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;error retrieving slack messages&#39;</span><span class="p">,</span>
+                          <span class="n">SlackTimeoutWarning</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handle_messages</span><span class="p">(</span><span class="n">new_messages</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Slack.help_message"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack.help_message">[docs]</a>    <span class="k">def</span> <span class="nf">help_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return simple help message&quot;&quot;&quot;</span>
+        <span class="n">cc</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;`&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;`&quot;</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">commands</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Available commands: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">cc</span></div>
+
+<div class="viewcode-block" id="Slack.handle_messages"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack.handle_messages">[docs]</a>    <span class="k">def</span> <span class="nf">handle_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performs commands depending on messages.</span>
+<span class="sd">        This includes adding tasks to be performed during each update.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">user</span><span class="p">,</span> <span class="n">user_messages</span> <span class="ow">in</span> <span class="n">messages</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">user_messages</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">[</span><span class="n">user</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]:</span>
+                    <span class="c1"># Filter out bot messages</span>
+                    <span class="k">continue</span>
+                <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">[</span><span class="n">user</span><span class="p">][</span><span class="s1">&#39;im_id&#39;</span><span class="p">]</span>
+                <span class="c1"># Extract command (first word) and possible args</span>
+                <span class="n">command</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">convert_command</span><span class="p">(</span><span class="n">message</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">command</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">commands</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Executing </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+                        <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
+                        <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">kwargs</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">slack</span><span class="o">.</span><span class="n">chat_postMessage</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">msg</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span>
+
+                    <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">commands</span><span class="p">[</span><span class="n">command</span><span class="p">]</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">_BaseParameter</span><span class="p">):</span>
+                            <span class="n">results</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># Only add channel and Slack if they are explicit</span>
+                            <span class="c1"># kwargs</span>
+                            <span class="n">func_sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="s1">&#39;channel&#39;</span> <span class="ow">in</span> <span class="n">func_sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+                                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;channel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">channel</span>
+                            <span class="k">if</span> <span class="s1">&#39;slack&#39;</span> <span class="ow">in</span> <span class="n">func_sig</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+                                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;slack&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+                            <span class="n">results</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">results</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">slack</span><span class="o">.</span><span class="n">chat_postMessage</span><span class="p">(</span>
+                                <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Results: </span><span class="si">{</span><span class="n">results</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                                <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span>
+
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">slack</span><span class="o">.</span><span class="n">chat_postMessage</span><span class="p">(</span>
+                            <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Error: </span><span class="si">{</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                            <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">slack</span><span class="o">.</span><span class="n">chat_postMessage</span><span class="p">(</span>
+                        <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Command </span><span class="si">{}</span><span class="s1"> not understood. Try `help`&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">command</span><span class="p">),</span>
+                        <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Slack.add_task"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack.add_task">[docs]</a>    <span class="k">def</span> <span class="nf">add_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a task to self.tasks, which will be executed during each update</span>
+<span class="sd">        Args:</span>
+<span class="sd">            command: Task command.</span>
+<span class="sd">            *args: Additional args for command.</span>
+<span class="sd">            channel: Slack channel (can also be IM channel).</span>
+<span class="sd">            **kwargs: Additional kwargs for particular.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">command</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_commands</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slack</span><span class="o">.</span><span class="n">chat_postMessage</span><span class="p">(</span>
+                <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Added task &quot;</span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">,</span>
+                <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_commands</span><span class="p">[</span><span class="n">command</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slack</span><span class="o">.</span><span class="n">chat_postMessage</span><span class="p">(</span>
+                <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Task command </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s1"> not understood&#39;</span><span class="p">,</span>
+                <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Slack.upload_latest_plot"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack.upload_latest_plot">[docs]</a>    <span class="k">def</span> <span class="nf">upload_latest_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Uploads latest plot (if any) to slack channel.</span>
+<span class="sd">        The latest plot is retrieved from</span>
+<span class="sd">        :class:`qcodes.plots.base.BasePlot`, which is updated</span>
+<span class="sd">        every time a new qcodes plot is instantiated.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            channel: Slack channel (can also be IM channel).</span>
+<span class="sd">            **kwargs: Not used.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create temporary filename</span>
+        <span class="n">temp_filename</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mktemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.jpg&#39;</span><span class="p">)</span>
+        <span class="c1"># Retrieve latest plot</span>
+        <span class="n">latest_plot</span> <span class="o">=</span> <span class="n">BasePlot</span><span class="o">.</span><span class="n">latest_plot</span>
+        <span class="k">if</span> <span class="n">latest_plot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Saves latest plot to filename</span>
+            <span class="n">latest_plot</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">temp_filename</span><span class="p">)</span>
+            <span class="c1"># Upload plot to slack</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slack</span><span class="o">.</span><span class="n">files_upload</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">temp_filename</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">temp_filename</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slack</span><span class="o">.</span><span class="n">chat_postMessage</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;No latest plot&#39;</span><span class="p">,</span>
+                                        <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Slack.print_measurement_information"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack.print_measurement_information">[docs]</a>    <span class="k">def</span> <span class="nf">print_measurement_information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints information about the current measurement.</span>
+<span class="sd">        Information printed is percentage complete, and dataset representation.</span>
+<span class="sd">        Dataset is retrieved from DataSet.latest_dataset, which updates itself</span>
+<span class="sd">        every time a new dataset is created</span>
+<span class="sd">        Args:</span>
+<span class="sd">            channel: Slack channel (can also be IM channel).</span>
+<span class="sd">            **kwargs: Not used.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">active_data_set</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slack</span><span class="o">.</span><span class="n">chat_postMessage</span><span class="p">(</span>
+                <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Measurement is </span><span class="si">{:.0f}% c</span><span class="s1">omplete&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="mi">100</span> <span class="o">*</span> <span class="n">dataset</span><span class="o">.</span><span class="n">fraction_complete</span><span class="p">()),</span>
+                <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slack</span><span class="o">.</span><span class="n">chat_postMessage</span><span class="p">(</span>
+                <span class="n">text</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="n">dataset</span><span class="p">),</span> <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slack</span><span class="o">.</span><span class="n">chat_postMessage</span><span class="p">(</span>
+                <span class="n">text</span><span class="o">=</span><span class="s1">&#39;No latest dataset found&#39;</span><span class="p">,</span>
+                <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Slack.check_msmt_finished"><a class="viewcode-back" href="../../../api/utils/slack.html#qcodes.utils.slack.Slack.check_msmt_finished">[docs]</a>    <span class="k">def</span> <span class="nf">check_msmt_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if the latest measurement is completed.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            channel: Slack channel (can also be IM channel).</span>
+<span class="sd">            **kwargs: Not used.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if measurement is finished, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">active_loop</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">slack</span><span class="o">.</span><span class="n">chat_postMessage</span><span class="p">(</span>
+                <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Measurement complete&#39;</span><span class="p">,</span>
+                <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

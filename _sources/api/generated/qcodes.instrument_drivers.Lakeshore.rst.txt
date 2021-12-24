@@ -1,0 +1,45 @@
+qcodes.instrument\_drivers.Lakeshore package
+============================================
+
+Submodules
+----------
+
+qcodes.instrument\_drivers.Lakeshore.Model\_325 module
+------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.Lakeshore.Model_325
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.Lakeshore.Model\_336 module
+------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.Lakeshore.Model_336
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.Lakeshore.Model\_372 module
+------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.Lakeshore.Model_372
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.Lakeshore.lakeshore\_base module
+-----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.Lakeshore.lakeshore_base
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: qcodes.instrument_drivers.Lakeshore
+   :members:
+   :undoc-members:
+   :show-inheritance:

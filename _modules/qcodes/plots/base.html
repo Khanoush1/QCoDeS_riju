@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.plots.base &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.plots.base</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.plots.base</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Live plotting in Jupyter notebooks</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="BasePlot"><a class="viewcode-back" href="../../../api/plots/base.html#qcodes.plots.base.BasePlot">[docs]</a><span class="k">class</span> <span class="nc">BasePlot</span><span class="p">:</span>
+    <span class="n">latest_plot</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Auto-updating plot connected to a Jupyter notebook</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        interval (int): period in seconds between update checks</span>
+<span class="sd">         default 1</span>
+
+<span class="sd">        data_keys (str): sequence of keys in trace config can contain data</span>
+<span class="sd">            that we should look for updates in.</span>
+<span class="sd">            default &#39;xyz&#39; (treated as a sequence) but add more if</span>
+<span class="sd">            for example marker size or color can contain data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">data_keys</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">):</span>
+        <span class="n">BasePlot</span><span class="o">.</span><span class="n">latest_plot</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_keys</span> <span class="o">=</span> <span class="n">data_keys</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_updaters</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="n">interval</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">standardunits</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;eV&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;Hz&#39;</span><span class="p">,</span> <span class="s1">&#39;rad&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;Pa&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;Ω&#39;</span><span class="p">,</span> <span class="s1">&#39;Ohm&#39;</span><span class="p">,</span>
+                              <span class="s1">&#39;S&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="BasePlot.clear"><a class="viewcode-back" href="../../../api/plots/base.html#qcodes.plots.base.BasePlot.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clears the plot window and removes all subplots and traces</span>
+<span class="sd">        so that the window can be reused.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># any derived class should implement this</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="c1"># typically traces and subplots should be cleared as well as the</span>
+        <span class="c1"># figure window for the particular backend</span>
+        <span class="c1"># TODO(giulioungaretti) the following unreachable lines should really</span>
+        <span class="c1"># be documentation.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subplots</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="BasePlot.replace"><a class="viewcode-back" href="../../../api/plots/base.html#qcodes.plots.base.BasePlot.replace">[docs]</a>    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">updater</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear all content and add new trace.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            args: optional way to provide x/y/z data without keywords</span>
+<span class="sd">                If the last one is 1D, may be `y` or `x`, `y`</span>
+<span class="sd">                If the last one is 2D, may be `z` or `x`, `y`, `z`</span>
+
+<span class="sd">            updater: a callable (with no args) that updates the data in this trace</span>
+<span class="sd">                if omitted, we will look for DataSets referenced in this data, and</span>
+<span class="sd">                call their sync methods.</span>
+
+<span class="sd">            **kwargs: passed on to self.add()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">updater</span><span class="o">=</span><span class="n">updater</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasePlot.add"><a class="viewcode-back" href="../../../api/plots/base.html#qcodes.plots.base.BasePlot.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">updater</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add one trace to this plot.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            args: optional way to provide x/y/z data without keywords</span>
+<span class="sd">                If the last one is 1D, may be `y` or `x`, `y`</span>
+<span class="sd">                If the last one is 2D, may be `z` or `x`, `y`, `z`</span>
+
+<span class="sd">            updater: a callable (with no args) that updates the data in this trace</span>
+<span class="sd">                if omitted, we will look for DataSets referenced in this data, and</span>
+<span class="sd">                call their sync methods.</span>
+
+<span class="sd">            kwargs: after inserting info found in args and possibly in set_arrays</span>
+<span class="sd">                into `x`, `y`, and optionally `z`, these are passed along to</span>
+<span class="sd">                self.add_to_plot.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Plot handle for trace</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            To use custom labels and units pass for example:</span>
+
+<span class="sd">            &gt;&gt;&gt; plot.add(x=set, y=amplitude,</span>
+<span class="sd">            &gt;&gt;&gt;          xlabel=&quot;set&quot;,</span>
+<span class="sd">            &gt;&gt;&gt;          xunit=&quot;V&quot;,</span>
+<span class="sd">            &gt;&gt;&gt;          ylabel= &quot;Amplitude&quot;,</span>
+<span class="sd">            &gt;&gt;&gt;          yunit =&quot;V&quot;)</span>
+
+<span class="sd">        Array shapes for 2D plots:</span>
+<span class="sd">            x:(1D-length m), y:(1D-length n), z: (2D- n*m array)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO(giulioungaretti): replace with an explicit version, see expand trace</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expand_trace</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">plot_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_to_plot</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_updater</span><span class="p">(</span><span class="n">updater</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">plot_object</span></div>
+
+<div class="viewcode-block" id="BasePlot.add_to_plot"><a class="viewcode-back" href="../../../api/plots/base.html#qcodes.plots.base.BasePlot.add_to_plot">[docs]</a>    <span class="k">def</span> <span class="nf">add_to_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a trace the plot itself (typically called by self.add,</span>
+<span class="sd">        which incorporates args into kwargs, so the subclass doesn&#39;t</span>
+<span class="sd">        need to worry about this). Data will be in `x`, `y`, and optionally</span>
+<span class="sd">        `z`.</span>
+
+<span class="sd">        Should be implemented by a subclass, and each call should append</span>
+<span class="sd">        a dictionary to self.traces, containing at least {&#39;config&#39;: kwargs}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BasePlot.add_updater"><a class="viewcode-back" href="../../../api/plots/base.html#qcodes.plots.base.BasePlot.add_updater">[docs]</a>    <span class="k">def</span> <span class="nf">add_updater</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">updater</span><span class="p">,</span> <span class="n">plot_config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add an updater to the plot.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            updater (Callable): callable (with no args) that updates the data in this trace</span>
+<span class="sd">                if omitted, we will look for DataSets referenced in this data, and</span>
+<span class="sd">                call their sync methods.</span>
+<span class="sd">            plot_config (dict): this is a dictionary that gets populated inside</span>
+<span class="sd">                add() via expand_trace().</span>
+<span class="sd">                The reason this is here is to fetch from the data_set the sync method</span>
+<span class="sd">                to use it as an updater.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">updater</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_updaters</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">updater</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_keys</span><span class="p">:</span>
+                <span class="n">data_array</span> <span class="o">=</span> <span class="n">plot_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="s1">&#39;data_set&#39;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">data_array</span><span class="o">.</span><span class="n">data_set</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">data_updaters</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">data_array</span><span class="o">.</span><span class="n">data_set</span><span class="o">.</span><span class="n">sync</span><span class="p">)</span>
+
+        <span class="c1"># If previous data on this plot became static, perhaps because</span>
+        <span class="c1"># its measurement loop finished, the updater may have been halted.</span>
+        <span class="c1"># If we have new update functions, re-activate the updater</span>
+        <span class="c1"># by reinstating its update interval</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_updaters</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;update_widget&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_widget</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span></div>
+
+<div class="viewcode-block" id="BasePlot.get_default_title"><a class="viewcode-back" href="../../../api/plots/base.html#qcodes.plots.base.BasePlot.get_default_title">[docs]</a>    <span class="k">def</span> <span class="nf">get_default_title</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the default title, which for a plot is just a list of DataSet locations.</span>
+<span class="sd">        A custom title can be set when adding any trace (via either __init__ or add.</span>
+<span class="sd">        these kwargs all eventually end up in self.traces[i][&#39;config&#39;]) and it looks</span>
+<span class="sd">        like we will take the first title we find from any trace... otherwise, if no</span>
+<span class="sd">        trace specifies a title, then we combine whatever dataset locations we find.</span>
+
+<span class="sd">        Note: (alexj): yeah, that&#39;s awkward, isn&#39;t it, and it looks like a weird</span>
+<span class="sd">        implementation, feel free to change it 👼</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: the title of the figure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">title_parts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[</span><span class="s1">&#39;config&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s1">&#39;title&#39;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>  <span class="c1"># can be passed using **kw</span>
+                <span class="k">return</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_keys</span><span class="p">:</span>
+                <span class="n">data_array</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="s1">&#39;data_set&#39;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">data_array</span><span class="o">.</span><span class="n">data_set</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">location</span> <span class="o">=</span> <span class="n">data_array</span><span class="o">.</span><span class="n">data_set</span><span class="o">.</span><span class="n">location</span>
+                        <span class="k">if</span> <span class="n">location</span> <span class="ow">and</span> <span class="n">location</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">title_parts</span><span class="p">:</span>
+                            <span class="n">title_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">title_parts</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasePlot.get_label"><a class="viewcode-back" href="../../../api/plots/base.html#qcodes.plots.base.BasePlot.get_label">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_label</span><span class="p">(</span><span class="n">data_array</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Look for a label in data_array falling back on name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_array (DataArray): data array to get label from</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: label or name of the data_array</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO this should really be a static method</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">or</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+        <span class="n">unit</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">return</span>  <span class="n">name</span><span class="p">,</span> <span class="n">unit</span></div>
+
+<div class="viewcode-block" id="BasePlot.expand_trace"><a class="viewcode-back" href="../../../api/plots/base.html#qcodes.plots.base.BasePlot.expand_trace">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">expand_trace</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Complete the x, y (and possibly z) data definition for a trace.</span>
+
+<span class="sd">        Also modifies kwargs in place so that all the data needed to fully</span>
+<span class="sd">        specify the trace is present (ie either x and y or x and y and z)</span>
+
+<span class="sd">        Both ``__init__`` (for the first trace) and the ``add`` method support</span>
+<span class="sd">        multiple ways to specify the data in the trace:</span>
+
+<span class="sd">        As ``*args``:</span>
+<span class="sd">            - ``add(y)`` or ``add(z)`` specify just the main 1D or 2D data, with</span>
+<span class="sd">              the setpoint axis or axes implied.</span>
+<span class="sd">            - ``add(x, y)`` or ``add(x, y, z)`` specify all axes of the data.</span>
+<span class="sd">        And as ``**kwargs``:</span>
+<span class="sd">            - ``add(x=x, y=y, z=z)`` you specify exactly the data you want on</span>
+<span class="sd">              each axis. Any but the last (y or z) can be omitted, which allows</span>
+<span class="sd">              for all of the same forms as with ``*args``, plus x and z or y and</span>
+<span class="sd">              z, with just one axis implied from the setpoints of the z data.</span>
+
+<span class="sd">        This method takes any of those forms and converts them into a complete</span>
+<span class="sd">        set of kwargs, containing all of the explicit or implied data to be used</span>
+<span class="sd">        in plotting this trace.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            args (Tuple[DataArray]): positional args, as passed to either</span>
+<span class="sd">                ``__init__`` or ``add``</span>
+<span class="sd">            kwargs (Dict(DataArray]): keyword args, as passed to either</span>
+<span class="sd">                ``__init__`` or ``add``. kwargs may contain non-data items in</span>
+<span class="sd">                keys other than x, y, and z.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">           ValueError: if the shape of the data does not match that of args</span>
+<span class="sd">           ValueError: if the data is provided twice</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO(giulioungaretti): replace with an explicit version:</span>
+        <span class="c1"># return the new kwargs  instead of modifying in place</span>
+        <span class="c1"># TODO this should really be a static method</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;__len__&#39;</span><span class="p">):</span>
+                <span class="c1"># 2D (or higher... but ignore this for now)</span>
+                <span class="c1"># this test works for both numpy arrays and bare sequences</span>
+                <span class="n">axletters</span> <span class="o">=</span> <span class="s1">&#39;xyz&#39;</span>
+                <span class="n">ndim</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">axletters</span> <span class="o">=</span> <span class="s1">&#39;xy&#39;</span>
+                <span class="n">ndim</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">axletters</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">D data needs 1 or </span><span class="si">{}</span><span class="s1"> unnamed args&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">ndim</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">axletters</span><span class="p">)))</span>
+
+            <span class="n">arg_axletters</span> <span class="o">=</span> <span class="n">axletters</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">):]</span>
+
+            <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">arg_axletters</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">arg_axletters</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">arg_axletters</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">arg_axletters</span> <span class="o">+</span> <span class="s1">&#39; data provided twice&#39;</span><span class="p">)</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="n">arg_axletters</span><span class="p">]</span> <span class="o">=</span> <span class="n">arg</span>
+
+        <span class="c1"># reset axletters, we may or may not have found them above</span>
+        <span class="n">axletters</span> <span class="o">=</span> <span class="s1">&#39;xyz&#39;</span> <span class="k">if</span> <span class="s1">&#39;z&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="s1">&#39;xy&#39;</span>
+        <span class="n">main_data</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">axletters</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">main_data</span><span class="p">,</span> <span class="s1">&#39;set_arrays&#39;</span><span class="p">):</span>
+            <span class="n">num_axes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">axletters</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="c1"># things will probably fail if we try to plot arrays of the</span>
+            <span class="c1"># wrong dimension... but we&#39;ll give it a shot anyway.</span>
+            <span class="n">set_arrays</span> <span class="o">=</span> <span class="n">main_data</span><span class="o">.</span><span class="n">set_arrays</span><span class="p">[</span><span class="o">-</span><span class="n">num_axes</span><span class="p">:]</span>
+            <span class="c1"># for 2D: y is outer loop, which is earlier in set_arrays,</span>
+            <span class="c1"># and x is the inner loop... is this the right convention?</span>
+            <span class="n">set_axletters</span> <span class="o">=</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">axletters</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">axletter</span><span class="p">,</span> <span class="n">set_array</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">set_axletters</span><span class="p">,</span> <span class="n">set_arrays</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">axletter</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="n">axletter</span><span class="p">]</span> <span class="o">=</span> <span class="n">set_array</span></div>
+
+<div class="viewcode-block" id="BasePlot.update"><a class="viewcode-back" href="../../../api/plots/base.html#qcodes.plots.base.BasePlot.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the data in this plot, using the updaters given with</span>
+<span class="sd">        MatPlot.add() or in the included DataSets, then include this in</span>
+<span class="sd">        the plot.</span>
+
+<span class="sd">        This is a wrapper routine that the update widget calls,</span>
+<span class="sd">        inside this we call self.update() which should be subclassed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">any_updates</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">updater</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_updaters</span><span class="p">:</span>
+            <span class="n">updates</span> <span class="o">=</span> <span class="n">updater</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">updates</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">any_updates</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">()</span>
+
+        <span class="c1"># once all updaters report they&#39;re finished (by returning exactly</span>
+        <span class="c1"># False) we stop updating the plot.</span>
+        <span class="k">if</span> <span class="n">any_updates</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">halt</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BasePlot.update_plot"><a class="viewcode-back" href="../../../api/plots/base.html#qcodes.plots.base.BasePlot.update_plot">[docs]</a>    <span class="k">def</span> <span class="nf">update_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the plot itself (typically called by self.update).</span>
+<span class="sd">        Should be implemented by a subclass</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BasePlot.halt"><a class="viewcode-back" href="../../../api/plots/base.html#qcodes.plots.base.BasePlot.halt">[docs]</a>    <span class="k">def</span> <span class="nf">halt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stop automatic updates to this plot, by canceling its update widget</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;update_widget&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_widget</span><span class="o">.</span><span class="n">halt</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BasePlot.save"><a class="viewcode-back" href="../../../api/plots/base.html#qcodes.plots.base.BasePlot.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save current plot to filename</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename (Optional[str]): Location of the file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

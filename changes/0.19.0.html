@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog for QCoDeS 0.19.0 &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Changelog for QCoDeS 0.18.0" href="0.18.0.html" />
+    <link rel="prev" title="Changelog for QCoDeS 0.19.1" href="0.19.1.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Changelogs</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="unreleased.html">Unreleased</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.31.0.html">0.31.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.30.1.html">0.30.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.30.0.html">0.30.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.29.1.html">0.29.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.29.0.html">0.29.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.28.0.html">0.28.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.27.0.html">0.27.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.26.0.html">0.26.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.25.0.html">0.25.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.24.0.html">0.24.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.23.0.html">0.23.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.22.0.html">0.22.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.21.0.html">0.21.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.20.1.html">0.20.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.20.0.html">0.20.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.19.2.html">0.19.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.19.1.html">0.19.1</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">0.19.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#breaking-changes">Breaking Changes:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#new">New:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#improved">Improved:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#new-drivers">New drivers:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#improved-drivers">Improved drivers:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#under-the-hood">Under the hood:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dependencies">Dependencies:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="0.18.0.html">0.18.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.17.0.html">0.17.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.16.0.html">0.16.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.15.0.html">0.15.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.15.0a1.html">0.15.0a1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.14.0.html">0.14.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.13.0.html">0.13.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.12.1.html">0.12.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.12.0.html">0.12.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.11.0.html">0.11.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.10.0.html">0.10.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.9.0.html">0.9.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.8.1.html">0.8.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.8.0.html">0.8.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.7.0.html">0.7.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.6.0.html">0.6.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.5.2.html">0.5.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.5.1.html">0.5.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.5.0.html">0.5.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.4.0.html">0.4.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.3.0.html">0.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.2.1.html">0.2.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.2.0.html">0.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.11.html">0.1.11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.10.html">0.1.10</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.9.html">0.1.9</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.7.html">0.1.7</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.6.html">0.1.6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.5.html">0.1.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.4.html">0.1.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.3.html">0.1.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.2.html">0.1.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0.1.0.html">0.1.0</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Changelogs</a> &raquo;</li>
+      <li>Changelog for QCoDeS 0.19.0</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/changes/0.19.0.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="changelog-for-qcodes-0-19-0">
+<h1>Changelog for QCoDeS 0.19.0<a class="headerlink" href="#changelog-for-qcodes-0-19-0" title="Permalink to this headline"></a></h1>
+<p>The October 2020 release of QCoDeS.</p>
+<section id="breaking-changes">
+<h2>Breaking Changes:<a class="headerlink" href="#breaking-changes" title="Permalink to this headline"></a></h2>
+<ul>
+<li><p>A number of long deprecated drivers have been removed:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Keysight_344xxA</span></code> drivers: Use <code class="docutils literal notranslate"><span class="pre">Keysight_344xxA_submodules</span></code> drivers (#2325)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QDac</span></code> driver: Use <code class="docutils literal notranslate"><span class="pre">QDac_channels</span></code> driver as an alternative (#2314)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">keithley_2600</span></code>: Use <code class="docutils literal notranslate"><span class="pre">keithley_2600_channels</span></code> as an alternative (#2315)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>In the <code class="docutils literal notranslate"><span class="pre">QDac_channels</span></code> driver a deprecated parameter (<code class="docutils literal notranslate"><span class="pre">fast_voltage_set</span></code>)
+and a deprecated method (<code class="docutils literal notranslate"><span class="pre">read_state</span></code>) has been removed (#2314)</p></li>
+</ul>
+</section>
+<section id="new">
+<h2>New:<a class="headerlink" href="#new" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>Add optional shape metadata to dataset (#2145)</p></li>
+<li><p>Allow string and time/datetime data to be stored in array measurements (#2313)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KeysightB1511B</span></code> SMU driver has been added for support with the B1500 (#2278)</p></li>
+<li><p>Notebook: Example of how buffered sweep could be done on param with setpoints (#2263)</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">allow_changes</span></code> option to <code class="docutils literal notranslate"><span class="pre">set_to</span></code> method of <code class="docutils literal notranslate"><span class="pre">Parameter</span></code>, and
+add another context manager for restoring current value (#2220)</p></li>
+</ul>
+</section>
+<section id="improved">
+<h2>Improved:<a class="headerlink" href="#improved" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>Station: Take verbose error message when validating station yaml against
+schema (#2282)</p></li>
+<li><p>Fix <code class="docutils literal notranslate"><span class="pre">Sequence</span></code> validator <code class="docutils literal notranslate"><span class="pre">sorted</span></code> check to work correctly with sequence
+types other than list (#2271)</p></li>
+<li><p>Experiemnt widget: sort <code class="docutils literal notranslate"><span class="pre">None</span></code> timestamps as oldest (#2275)</p></li>
+<li><p>Use predefined mock instruments in docs (#2190)</p></li>
+<li><p>Support pyvisa 1.11 (#2304)</p></li>
+</ul>
+</section>
+<section id="new-drivers">
+<h2>New drivers:<a class="headerlink" href="#new-drivers" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>Alazar ATS9440 card (#2258)</p></li>
+</ul>
+</section>
+<section id="improved-drivers">
+<h2>Improved drivers:<a class="headerlink" href="#improved-drivers" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>AMI430: <code class="docutils literal notranslate"><span class="pre">has_current_rating</span></code> has been removed in the driver to work with the new
+firmware version (#2291, #2312)</p></li>
+<li><p>Small typo fix in alazer drivers (#2296)</p></li>
+<li><p>Yokogawa GS200: <code class="docutils literal notranslate"><span class="pre">source_mode</span></code> bug fix (#2143) and update its example notebook (#2197)</p></li>
+<li><p>Keysight B1517A: Improvments for valid voltage and current output ranges (#2278)</p></li>
+<li><p>Keithley 3706A: improvements / warnings cleanup (#2318)</p></li>
+<li><p>Yokogawa GS200: Add trigger, and program features (#2138)</p></li>
+<li><p>Keithley 7510: Add digitizer feature (#2138)</p></li>
+</ul>
+</section>
+<section id="under-the-hood">
+<h2>Under the hood:<a class="headerlink" href="#under-the-hood" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>Filter out telemetry messages in console handler (#2322)</p></li>
+<li><p>Docs: add title to home page, and make version bar appear (#2323)</p></li>
+<li><p>Small improvements in legacy data notebook (#2295)</p></li>
+<li><p>Station example doc: update update_config_schema example to refer to
+qcodes_contrib_drivers (#2272)</p></li>
+<li><p>Fix header levels in example notebooks (#2265)</p></li>
+<li><p>Fix legacy imports in driver examples (#2249)</p></li>
+<li><p>rework 2d tests to sweep over two separate parameters (#2187)</p></li>
+<li><p>Update test for <code class="docutils literal notranslate"><span class="pre">get_data</span></code> method (#2196)</p></li>
+<li><p>Fix some of the warnings triggered by numpy 1.19 (#2239)</p></li>
+<li><p>Pylint and it’s dependencies removed from test_requirements (#2297)</p></li>
+<li><p>Expand documentation requirments.txt (#2289)</p></li>
+<li><p>Move tests related to qcodes.data loop etc to a legacy folder (#2238)</p></li>
+<li><p>Legacy: ensure that datasets have unique names to avoid potential race
+condition (#2276)</p></li>
+<li><p>Don’t exclude instrument drivers from codecov (#2326)</p></li>
+</ul>
+</section>
+<section id="dependencies">
+<h2>Dependencies:<a class="headerlink" href="#dependencies" title="Permalink to this headline"></a></h2>
+<p>Please note that these dependencies are only related to <cite>requirements.txt</cite></p>
+<ul class="simple">
+<li><p>Update lxml requirement from ~=4.5.1 to ~=6.0.0 (#2300)</p></li>
+<li><p>Update traitlets requirement from ~=5.0.4 to ~=5.0.5 (#2298)</p></li>
+<li><p>Update nbclient requirement from ~=0.5.0 to ~=0.5.1 (#2299)</p></li>
+<li><p>Update zipp requirement from ~=3.3.0 to ~=3.3.1 (#2294)</p></li>
+<li><p>Update hypothesis requirement from ~=5.37.1 to ~= 5.37.3 (#2287)</p></li>
+<li><p>Update pillow requirement from ~=7.2.0 to ~=8.0.0 (#2286)</p></li>
+<li><p>Update nbformat requirement from ~=5.0.7 to ~=5.0.8 (#2288)</p></li>
+<li><p>Update iniconfig requirement from ~=1.0.1 to ~=1.1.1 (#2283)</p></li>
+<li><p>Update opencensus-ext-azure requirement from ~=1.0.4 to ~=1.0.5 (#2279)</p></li>
+<li><p>Update opencensus-context requirement from ~=0.1.1 to ~=0.1.2 (#2167)</p></li>
+<li><p>Update opencensus requirement from ~=0.7.10 to ~=0.7.11 (#2280)</p></li>
+<li><p>Update prompt-toolkit requirement from ~=3.0.7 to ~=3.0.8 (#2273)</p></li>
+<li><p>Update colorama requirement from ~=0.4.3 to ~=0.4.4 (#2274)</p></li>
+<li><p>Update codecov requirement from ~=2.1.9 to ~=2.1.10 (#2267)</p></li>
+<li><p>Update sphinx-jsonschema requirement from ~=1.16.4 to ~=1.16.5 (#2266)</p></li>
+<li><p>Update tqdm requirement from ~=4.50.1 to ~=4.50.2 (#2260)</p></li>
+<li><p>Update google-api-core requirement from ~=1.22.3 to ~=1.22.4 (#2246)</p></li>
+<li><p>Update pandas requirement from ~=1.1.2 to ~=1.1.3 (#2248)</p></li>
+<li><p>Update google-auth requirement from ~=1.22.0 to ~=1.22.1 (#2245)</p></li>
+<li><p>Update sphinx-jsonschema requirement from ~=1.16.3 to ~=1.16.4 (#2247)</p></li>
+<li><p>Update pytest requirement from ~=6.1.0 to ~=6.1.1 (#2241)</p></li>
+<li><p>Update gitpython requirement from ~=3.1.8 to ~=3.1.9 (#2229)</p></li>
+<li><p>Update jupyterlab-pygments requirement from ~=0.1.1 to ~=0.1.2 (#2226)</p></li>
+<li><p>Update nest-asyncio requirement from ~=1.4.0 to ~=1.4.1 (#2224)</p></li>
+<li><p>Update tqdm requirement from ~=4.49.0 to ~=4.50.0 (#2219)</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="0.19.1.html" class="btn btn-neutral float-left" title="Changelog for QCoDeS 0.19.1" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="0.18.0.html" class="btn btn-neutral float-right" title="Changelog for QCoDeS 0.18.0" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

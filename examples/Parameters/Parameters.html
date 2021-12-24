@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parameters in QCoDeS &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="ScaledParameter" href="Scaled_Parameter.html" />
+    <link rel="prev" title="ParameterWithSetpoints with setpoints defined on another instrument." href="Parameter-With-Setpoints-defined-on-a-different-instrument.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Examples of using QCoDeS</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#basic-examples">Basic examples</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#parameters">Parameters</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="Complex_Parameters.html">Complex Numbers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Parameter-With-Setpoints-defined-on-a-different-instrument.html">ParameterWithSetpoints with setpoints defined on another instrument.</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Parameters in QCoDeS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Parameter">Parameter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ArrayParameter">ArrayParameter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#MultiParameter">MultiParameter</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Scaled_Parameter.html">ScaledParameter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Simple-Example-of-ParameterWithSetpoints.html">Simple Example of ParameterWithSetpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#dataset">DataSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#plotting">Plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#drivers">Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#writing-drivers">Writing Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#logging">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#legacy-examples">Legacy examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Examples of using QCoDeS</a> &raquo;</li>
+      <li>Parameters in QCoDeS</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/Parameters/Parameters.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="admonition note">
+  <p>This page was generated from
+    <a class="reference external"
+    href="https://github.com/qcodes/qcodes/blob/master/docs/examples/Parameters/Parameters.ipynb">docs/examples/Parameters/Parameters.ipynb</a>.
+    Interactive online version:
+    <a href="https://mybinder.org/v2/gh/qcodes/qcodes/master?filepath=docs/examples/Parameters/Parameters.ipynb"><img
+alt="Binder badge"
+    src="https://mybinder.org/badge_logo.svg"
+    style="vertical-align:text-bottom"></a>.
+  </p>
+  <script>
+    if (document.location.host) {
+      var p = document.currentScript.previousSibling.previousSibling;
+      var a = document.createElement('a');
+      a.innerHTML = 'View in <em>nbviewer</em>';
+      a.href = `https://nbviewer.jupyter.org/url${
+        (window.location.protocol == 'https:' ? 's/' : '/') +
+        window.location.host +
+        window.location.pathname.slice(0, -4) }ipynb`;
+      a.classList.add('reference');
+      a.classList.add('external');
+      p.appendChild(a);
+      p.appendChild(document.createTextNode('.'));
+    }
+  </script>
+</div><section id="Parameters-in-QCoDeS">
+<h1>Parameters in QCoDeS<a class="headerlink" href="#Parameters-in-QCoDeS" title="Permalink to this headline"></a></h1>
+<p>A <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> is the basis of measurements and control within QCoDeS. Anything that you want to either measure or control within QCoDeS should satisfy the <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> interface. You may read more about the <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> <a class="reference external" href="http://qcodes.github.io/Qcodes/user/intro.html#parameter">here</a>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">qcodes.instrument.base</span> <span class="kn">import</span> <span class="n">InstrumentBase</span>
+<span class="kn">from</span> <span class="nn">qcodes.instrument.parameter</span> <span class="kn">import</span> <span class="n">Parameter</span><span class="p">,</span> <span class="n">ArrayParameter</span><span class="p">,</span> <span class="n">MultiParameter</span><span class="p">,</span> <span class="n">ManualParameter</span>
+<span class="kn">from</span> <span class="nn">qcodes.tests.instrument_mocks</span> <span class="kn">import</span> <span class="n">DummyInstrument</span>
+<span class="kn">from</span> <span class="nn">qcodes.utils</span> <span class="kn">import</span> <span class="n">validators</span>
+</pre></div>
+</div>
+</div>
+<p>QCoDeS provides the following classes of built-in parameters:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Parameter</span></code> represents a single value at a time</p>
+<ul>
+<li><p>Example: voltage</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ParameterWithSetpoints</span></code> is intended for array-values parameters. This Parameter class is intended for anything where a call to the instrument returns an array of values. <a class="reference internal" href="Simple-Example-of-ParameterWithSetpoints.html"><span class="doc">This notebook</span></a> gives more detailed examples of how this parameter can be used.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ArrayParameter</span></code> represents an array of values of all the same type that are returned all at once.</p>
+<ul>
+<li><p>Example: voltage vs time waveform</p></li>
+<li><p><strong>NOTE:</strong> This is an older base class for array-valued parameters. For any new driver we strongly recommend using <code class="docutils literal notranslate"><span class="pre">ParameterWithSetpoints</span></code> class which is both more flexible and significantly easier to use. Refer to notebook on <a class="reference internal" href="Simple-Example-of-ParameterWithSetpoints.html"><span class="doc">writing drivers with ParameterWithSetpoints</span></a></p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MultiParameter</span></code> represents a collection of values with different meaning and possibly different dimension</p>
+<ul>
+<li><p>Example: I and Q, or I vs time and Q vs time</p></li>
+</ul>
+</li>
+</ul>
+<p>Parameters are described in detail in the <a class="reference internal" href="../writing_drivers/Creating-Instrument-Drivers.html"><span class="doc">Creating Instrument Drivers</span></a> tutorial.</p>
+<section id="Parameter">
+<h2>Parameter<a class="headerlink" href="#Parameter" title="Permalink to this headline"></a></h2>
+<p>Most of the time you can use <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> directly; even if you have custom <code class="docutils literal notranslate"><span class="pre">get</span></code>/<code class="docutils literal notranslate"><span class="pre">set</span></code> functions, but sometimes it’s useful to subclass <code class="docutils literal notranslate"><span class="pre">Parameter</span></code>. Note that since the superclass <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> actually wraps these functions (to include some extra nice-to-have functionality), your subclass should define <code class="docutils literal notranslate"><span class="pre">get_raw</span></code> and <code class="docutils literal notranslate"><span class="pre">set_raw</span></code> rather than <code class="docutils literal notranslate"><span class="pre">get</span></code> and <code class="docutils literal notranslate"><span class="pre">set</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">class</span> <span class="nc">MyCounter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="c1"># only name is required</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Times this has been read&#39;</span><span class="p">,</span>
+                         <span class="n">vals</span><span class="o">=</span><span class="n">validators</span><span class="o">.</span><span class="n">Ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                         <span class="n">docstring</span><span class="o">=</span><span class="s1">&#39;counts how many times get has been called &#39;</span>
+                                   <span class="s1">&#39;but can be reset to any integer &gt;= 0 by set&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># you must provide a get method, a set method, or both.</span>
+    <span class="k">def</span> <span class="nf">get_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span>
+
+    <span class="k">def</span> <span class="nf">set_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="n">val</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">MyCounter</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
+<span class="n">c2</span> <span class="o">=</span> <span class="n">MyCounter</span><span class="p">(</span><span class="s1">&#39;c2&#39;</span><span class="p">)</span>
+
+<span class="c1"># c() is equivalent to c.get()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;first call:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;second call:&#39;</span><span class="p">,</span> <span class="n">c</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+first call: 1
+second call: 2
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># c2(val) is equivalent to c2.set(val)</span>
+<span class="n">c2</span><span class="p">(</span><span class="mi">22</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<p>The gettable and settable attributes on the parameter should be used to detect if the parameter is settable or gettable.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;c is gettable </span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">gettable</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;c is settable </span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">settable</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+c is gettable True
+c is settable True
+</pre></div></div>
+</div>
+<section id="Virtual-Paramter-with-Underlying-Instrument-Knowledge">
+<h3>Virtual Paramter with Underlying Instrument Knowledge<a class="headerlink" href="#Virtual-Paramter-with-Underlying-Instrument-Knowledge" title="Permalink to this headline"></a></h3>
+<p>First of all, it is important to understand that Virtual Parameter is not a separate class in the QCoDeS but we notice that users often create parameters over already existing parameters, we call these secondary parameters as virtual parameter. An example is as follows.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">dac</span> <span class="o">=</span> <span class="n">DummyInstrument</span><span class="p">(</span><span class="s1">&#39;dac&#39;</span><span class="p">,</span> <span class="n">gates</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ch1&#39;</span><span class="p">,</span> <span class="s1">&#39;ch2&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">class</span> <span class="nc">VirtualParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dac_param</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dac_param</span> <span class="o">=</span> <span class="n">dac_param</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dac_param</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">vp1</span> <span class="o">=</span> <span class="n">VirtualParameter</span><span class="p">(</span><span class="s1">&#39;param_without_underlying_instrument_knowledge&#39;</span><span class="p">,</span> <span class="n">dac</span><span class="o">.</span><span class="n">ch1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">vp1</span><span class="o">.</span><span class="n">underlying_instrument</span>
+</pre></div>
+</div>
+</div>
+<p>Right now, parameter <code class="docutils literal notranslate"><span class="pre">vp1</span></code> has no knowledge of the instrument of the parameter it wraps around. This can be addressed as follows.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">class</span> <span class="nc">NewVirtualParameter</span><span class="p">(</span><span class="n">Parameter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dac_param</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dac_param</span> <span class="o">=</span> <span class="n">dac_param</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">underlying_instrument</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">InstrumentBase</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dac_param</span><span class="o">.</span><span class="n">root_instrument</span>
+
+    <span class="k">def</span> <span class="nf">get_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dac_param</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">vp2</span> <span class="o">=</span> <span class="n">NewVirtualParameter</span><span class="p">(</span><span class="s1">&#39;param_with_underlying_instrument_knowledge&#39;</span><span class="p">,</span> <span class="n">dac</span><span class="o">.</span><span class="n">ch1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">vp2</span><span class="o">.</span><span class="n">underlying_instrument</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;DummyInstrument: dac&gt;
+</pre></div></div>
+</div>
+<p>Now, <code class="docutils literal notranslate"><span class="pre">vp2</span></code> parameter knows that its underlying instrument is <code class="docutils literal notranslate"><span class="pre">dac</span></code>. This is quite useful while measuring these virtual parameters with <code class="docutils literal notranslate"><span class="pre">doNd</span></code> functions when <code class="docutils literal notranslate"><span class="pre">use_threads</span></code> flag set to <code class="docutils literal notranslate"><span class="pre">True</span></code> (or when using <code class="docutils literal notranslate"><span class="pre">ThreadPoolParamsCaller</span></code> or <code class="docutils literal notranslate"><span class="pre">call_params_threaded</span></code> function from <code class="docutils literal notranslate"><span class="pre">qcodes.utils.threading</span></code>) because when this flag is set to true threads are created per underlying instrument for faster data acuisition. All the parameters belonging to same underlying instrument get assigned to
+one thread created for the instrument. This makes the data acquisition safe as race condition does not occur, which could have occured if parameters belonging to same instrument are assigned to different threads.</p>
+</section>
+</section>
+<section id="ArrayParameter">
+<h2>ArrayParameter<a class="headerlink" href="#ArrayParameter" title="Permalink to this headline"></a></h2>
+<p><strong>NOTE:</strong> This is an older base class for array-valued parameters. For any new driver we strongly recommend using <code class="docutils literal notranslate"><span class="pre">ParameterWithSetpoints</span></code> class which is both more flexible and significantly easier to use. Refer to notebook on <a class="reference internal" href="Simple-Example-of-ParameterWithSetpoints.html"><span class="doc">writing drivers with ParameterWithSetpoints</span></a>.</p>
+<p>We have kept the documentation shown below of <code class="docutils literal notranslate"><span class="pre">ArrayParameter</span></code> for the legacy purpose.</p>
+<p>For actions that create a whole array of values at once. When you use it in a <code class="docutils literal notranslate"><span class="pre">Loop</span></code>, it makes a single <code class="docutils literal notranslate"><span class="pre">DataArray</span></code> with the array returned by <code class="docutils literal notranslate"><span class="pre">get</span></code> nested inside extra dimension(s) for the loop.</p>
+<p>While storing the <code class="docutils literal notranslate"><span class="pre">ArrayParameter</span></code> data in the database using <code class="docutils literal notranslate"><span class="pre">datasaver.add_result()</span></code> , be informed that it is stored as BLOB in one row of sqlite database. Where the BLOB in sqlite has a default max length limit set at 1 billion (1,000,000,000) bytes.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ArrayParameter</span></code> is, for now, only gettable.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">class</span> <span class="nc">ArrayCounter</span><span class="p">(</span><span class="n">ArrayParameter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># only name and shape are required</span>
+        <span class="c1"># the setpoints I&#39;m giving here are identical to the defaults</span>
+        <span class="c1"># this param would get but I&#39;ll give them anyway for</span>
+        <span class="c1"># demonstration purposes</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;array_counter&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                         <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Total number of values provided&#39;</span><span class="p">,</span>
+                         <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                         <span class="c1"># first setpoint array is 1D, second is 2D, etc...</span>
+                         <span class="n">setpoints</span><span class="o">=</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))),</span>
+                         <span class="n">setpoint_names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;index0&#39;</span><span class="p">,</span> <span class="s1">&#39;index1&#39;</span><span class="p">),</span>
+                         <span class="n">setpoint_labels</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Outer param index&#39;</span><span class="p">,</span> <span class="s1">&#39;Inner param index&#39;</span><span class="p">),</span>
+                         <span class="n">docstring</span><span class="o">=</span><span class="s1">&#39;fills a 3x2 array with increasing integers&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">get_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># here I&#39;m returning a nested list, but any sequence type will do.</span>
+        <span class="c1"># tuple, np.array, DataArray...</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">_val</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="n">j</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_val</span> <span class="o">+=</span> <span class="mi">6</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+<span class="n">array_counter</span> <span class="o">=</span> <span class="n">ArrayCounter</span><span class="p">()</span>
+
+<span class="c1"># simple get</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;first call:&#39;</span><span class="p">,</span> <span class="n">array_counter</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+first call: [[0, 1], [2, 3], [4, 5]]
+</pre></div></div>
+</div>
+</section>
+<section id="MultiParameter">
+<h2>MultiParameter<a class="headerlink" href="#MultiParameter" title="Permalink to this headline"></a></h2>
+<p>Return multiple items at once, where each item can be a single value or an array.</p>
+<p>NOTE: Most of the kwarg names here are the plural of those used in <code class="docutils literal notranslate"><span class="pre">Parameter</span></code> and <code class="docutils literal notranslate"><span class="pre">ArrayParameter</span></code>. In particular, <code class="docutils literal notranslate"><span class="pre">MultiParameter</span></code> is the ONLY one that uses <code class="docutils literal notranslate"><span class="pre">units</span></code>, all the others use <code class="docutils literal notranslate"><span class="pre">unit</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">MultiParameter</span></code> is, for now, only gettable.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">class</span> <span class="nc">SingleIQPair</span><span class="p">(</span><span class="n">MultiParameter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale_param</span><span class="p">):</span>
+        <span class="c1"># only name, names, and shapes are required</span>
+        <span class="c1"># this version returns two scalars (shape = `()`)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;single_iq&#39;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">),</span> <span class="n">shapes</span><span class="o">=</span><span class="p">((),</span> <span class="p">()),</span>
+                         <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;In phase amplitude&#39;</span><span class="p">,</span> <span class="s1">&#39;Quadrature amplitude&#39;</span><span class="p">),</span>
+                         <span class="n">units</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">),</span>
+                         <span class="c1"># including these setpoints is unnecessary here, but</span>
+                         <span class="c1"># if you have a parameter that returns a scalar alongside</span>
+                         <span class="c1"># an array you can represent the scalar as an empty sequence.</span>
+                         <span class="n">setpoints</span><span class="o">=</span><span class="p">((),</span> <span class="p">()),</span>
+                         <span class="n">docstring</span><span class="o">=</span><span class="s1">&#39;param that returns two single values, I and Q&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scale_param</span> <span class="o">=</span> <span class="n">scale_param</span>
+
+    <span class="k">def</span> <span class="nf">get_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">scale_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale_param</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">scale_val</span><span class="p">,</span> <span class="n">scale_val</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">scale</span> <span class="o">=</span> <span class="n">ManualParameter</span><span class="p">(</span><span class="s1">&#39;scale&#39;</span><span class="p">,</span> <span class="n">initial_value</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">iq</span> <span class="o">=</span> <span class="n">SingleIQPair</span><span class="p">(</span><span class="n">scale_param</span><span class="o">=</span><span class="n">scale</span><span class="p">)</span>
+
+<span class="c1"># simple get</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;simple get:&#39;</span><span class="p">,</span> <span class="n">iq</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+simple get: (2, 1.0)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">class</span> <span class="nc">IQArray</span><span class="p">(</span><span class="n">MultiParameter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale_param</span><span class="p">):</span>
+        <span class="c1"># names, labels, and units are the same</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s1">&#39;iq_array&#39;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">),</span> <span class="n">shapes</span><span class="o">=</span><span class="p">((</span><span class="mi">5</span><span class="p">,),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,)),</span>
+                         <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;In phase amplitude&#39;</span><span class="p">,</span> <span class="s1">&#39;Quadrature amplitude&#39;</span><span class="p">),</span>
+                         <span class="n">units</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">),</span>
+                         <span class="c1"># note that EACH item needs a sequence of setpoint arrays</span>
+                         <span class="c1"># so a 1D item has its setpoints wrapped in a length-1 tuple</span>
+                         <span class="n">setpoints</span><span class="o">=</span><span class="p">(((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),),</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),)),</span>
+                         <span class="n">docstring</span><span class="o">=</span><span class="s1">&#39;param that returns two single values, I and Q&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scale_param</span> <span class="o">=</span> <span class="n">scale_param</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">get_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">scale_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale_param</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">*</span> <span class="n">scale_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">*</span> <span class="n">scale_val</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">iq_array</span> <span class="o">=</span> <span class="n">IQArray</span><span class="p">(</span><span class="n">scale_param</span><span class="o">=</span><span class="n">scale</span><span class="p">)</span>
+
+<span class="c1"># simple get</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;simple get&#39;</span><span class="p">,</span> <span class="n">iq_array</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+simple get (array([0, 2, 4, 6, 8]), array([0., 1., 2., 3., 4.]))
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Parameter-With-Setpoints-defined-on-a-different-instrument.html" class="btn btn-neutral float-left" title="ParameterWithSetpoints with setpoints defined on another instrument." accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Scaled_Parameter.html" class="btn btn-neutral float-right" title="ScaledParameter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

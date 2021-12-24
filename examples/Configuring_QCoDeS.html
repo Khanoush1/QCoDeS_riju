@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QCoDeS config &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="QCoDeS Tutorials" href="Main.html" />
+    <link rel="prev" title="Examples of using QCoDeS" href="index.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Examples of using QCoDeS</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#basic-examples">Basic examples</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">QCoDeS config</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Configuring-QCoDeS">Configuring QCoDeS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Saving-changes">Saving changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Changing-core">Changing core</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Main.html">QCoDeS Tutorials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Station.html">Station</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#dataset">DataSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#plotting">Plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#drivers">Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#writing-drivers">Writing Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#logging">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#legacy-examples">Legacy examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Examples of using QCoDeS</a> &raquo;</li>
+      <li>QCoDeS config</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/examples/Configuring_QCoDeS.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="admonition note">
+  <p>This page was generated from
+    <a class="reference external"
+    href="https://github.com/qcodes/qcodes/blob/master/docs/examples/Configuring_QCoDeS.ipynb">docs/examples/Configuring_QCoDeS.ipynb</a>.
+    Interactive online version:
+    <a href="https://mybinder.org/v2/gh/qcodes/qcodes/master?filepath=docs/examples/Configuring_QCoDeS.ipynb"><img
+alt="Binder badge"
+    src="https://mybinder.org/badge_logo.svg"
+    style="vertical-align:text-bottom"></a>.
+  </p>
+  <script>
+    if (document.location.host) {
+      var p = document.currentScript.previousSibling.previousSibling;
+      var a = document.createElement('a');
+      a.innerHTML = 'View in <em>nbviewer</em>';
+      a.href = `https://nbviewer.jupyter.org/url${
+        (window.location.protocol == 'https:' ? 's/' : '/') +
+        window.location.host +
+        window.location.pathname.slice(0, -4) }ipynb`;
+      a.classList.add('reference');
+      a.classList.add('external');
+      p.appendChild(a);
+      p.appendChild(document.createTextNode('.'));
+    }
+  </script>
+</div><div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
+<span class="kn">import</span> <span class="nn">qcodes</span> <span class="k">as</span> <span class="nn">qc</span>
+</pre></div>
+</div>
+</div>
+<section id="QCoDeS-config">
+<h1>QCoDeS config<a class="headerlink" href="#QCoDeS-config" title="Permalink to this headline"></a></h1>
+<p>The QCoDeS config module uses JSON files to store QCoDeS configuration.</p>
+<p>The config file controls various options to QCoDeS such as the default path and name of the database in which your data is stored and logging level of the debug output. QCoDeS is shipped with a default configuration. As we shall see, you can overwrite these default values in several different ways to customize the configuration. In particular, you may want to change the path of your database which by default is <code class="docutils literal notranslate"><span class="pre">~/experiments.db</span></code> (here, <code class="docutils literal notranslate"><span class="pre">~</span></code> stands for the path of the user’s home directory).
+In the following example, I have changed the default path of my database, represented by the key <code class="docutils literal notranslate"><span class="pre">db_location</span></code>, in such a way that my data will be stored inside a sub-folder within my home folder.</p>
+<p>QCoDeS loads both the defaults and the active configuration at the module import so that you can directly inspect them</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">current_config</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;core&#39;: {&#39;default_fmt&#39;: &#39;data/{date}/#{counter}_{name}_{time}&#39;,
+  &#39;register_magic&#39;: True,
+  &#39;import_legacy_api&#39;: False,
+  &#39;db_location&#39;: &#39;~/experiments.db&#39;,
+  &#39;db_debug&#39;: False,
+  &#39;loglevel&#39;: &#39;WARNING&#39;,
+  &#39;file_loglevel&#39;: &#39;INFO&#39;},
+ &#39;logger&#39;: {&#39;start_logging_on_import&#39;: &#39;if_telemetry_set_up&#39;,
+  &#39;console_level&#39;: &#39;WARNING&#39;,
+  &#39;file_level&#39;: &#39;INFO&#39;,
+  &#39;logger_levels&#39;: {&#39;pyvisa&#39;: &#39;INFO&#39;}},
+ &#39;subscription&#39;: {&#39;subscribers&#39;: {&#39;QCPlot&#39;: {&#39;factory&#39;: &#39;qcplotutils.qcodes_dataset.QCPlotDatasetSubscriber&#39;,
+    &#39;factory_kwargs&#39;: {&#39;log&#39;: False},
+    &#39;subscription_kwargs&#39;: {&#39;min_wait&#39;: 0,
+     &#39;min_count&#39;: 1,
+     &#39;callback_kwargs&#39;: {}}}},
+  &#39;default_subscribers&#39;: []},
+ &#39;gui&#39;: {&#39;notebook&#39;: True,
+  &#39;plotlib&#39;: None,
+  &#39;pyqtmaxplots&#39;: 100,
+  &#39;defaultcolormap&#39;: &#39;hot&#39;},
+ &#39;plotting&#39;: {&#39;default_color_map&#39;: &#39;viridis&#39;,
+  &#39;rasterize_threshold&#39;: 5000,
+  &#39;auto_color_scale&#39;: {&#39;enabled&#39;: False,
+   &#39;cutoff_percentile&#39;: [0.5, 0.5],
+   &#39;color_over&#39;: &#39;#a1c4fc&#39;,
+   &#39;color_under&#39;: &#39;#017000&#39;}},
+ &#39;user&#39;: {&#39;scriptfolder&#39;: &#39;.&#39;, &#39;mainfolder&#39;: &#39;.&#39;},
+ &#39;station&#39;: {&#39;enable_forced_reconnect&#39;: False,
+  &#39;default_folder&#39;: &#39;.&#39;,
+  &#39;default_file&#39;: None,
+  &#39;use_monitor&#39;: False},
+ &#39;GUID_components&#39;: {&#39;location&#39;: 0, &#39;work_station&#39;: 0, &#39;sample&#39;: 0},
+ &#39;dataset&#39;: {&#39;write_in_background&#39;: False,
+  &#39;write_period&#39;: 5.0,
+  &#39;use_threads&#39;: False,
+  &#39;dond_plot&#39;: False,
+  &#39;dond_show_progress&#39;: False,
+  &#39;export_automatic&#39;: False,
+  &#39;export_type&#39;: None,
+  &#39;export_prefix&#39;: &#39;qcodes_&#39;,
+  &#39;export_path&#39;: &#39;~&#39;,
+  &#39;export_name_elements&#39;: [&#39;captured_run_id&#39;, &#39;guid&#39;]},
+ &#39;telemetry&#39;: {&#39;enabled&#39;: False,
+  &#39;instrumentation_key&#39;: &#39;00000000-0000-0000-0000-000000000000&#39;}}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">defaults</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;core&#39;: {&#39;default_fmt&#39;: &#39;data/{date}/#{counter}_{name}_{time}&#39;,
+  &#39;register_magic&#39;: True,
+  &#39;import_legacy_api&#39;: False,
+  &#39;db_location&#39;: &#39;~/experiments.db&#39;,
+  &#39;db_debug&#39;: False,
+  &#39;loglevel&#39;: &#39;WARNING&#39;,
+  &#39;file_loglevel&#39;: &#39;INFO&#39;},
+ &#39;logger&#39;: {&#39;start_logging_on_import&#39;: &#39;if_telemetry_set_up&#39;,
+  &#39;console_level&#39;: &#39;WARNING&#39;,
+  &#39;file_level&#39;: &#39;INFO&#39;,
+  &#39;logger_levels&#39;: {&#39;pyvisa&#39;: &#39;INFO&#39;}},
+ &#39;subscription&#39;: {&#39;subscribers&#39;: {&#39;QCPlot&#39;: {&#39;factory&#39;: &#39;qcplotutils.qcodes_dataset.QCPlotDatasetSubscriber&#39;,
+    &#39;factory_kwargs&#39;: {&#39;log&#39;: False},
+    &#39;subscription_kwargs&#39;: {&#39;min_wait&#39;: 0,
+     &#39;min_count&#39;: 1,
+     &#39;callback_kwargs&#39;: {}}}},
+  &#39;default_subscribers&#39;: []},
+ &#39;gui&#39;: {&#39;notebook&#39;: True,
+  &#39;plotlib&#39;: None,
+  &#39;pyqtmaxplots&#39;: 100,
+  &#39;defaultcolormap&#39;: &#39;hot&#39;},
+ &#39;plotting&#39;: {&#39;default_color_map&#39;: &#39;viridis&#39;,
+  &#39;rasterize_threshold&#39;: 5000,
+  &#39;auto_color_scale&#39;: {&#39;enabled&#39;: False,
+   &#39;cutoff_percentile&#39;: [0.5, 0.5],
+   &#39;color_over&#39;: &#39;#a1c4fc&#39;,
+   &#39;color_under&#39;: &#39;#017000&#39;}},
+ &#39;user&#39;: {&#39;scriptfolder&#39;: &#39;.&#39;, &#39;mainfolder&#39;: &#39;.&#39;},
+ &#39;station&#39;: {&#39;enable_forced_reconnect&#39;: False,
+  &#39;default_folder&#39;: &#39;.&#39;,
+  &#39;default_file&#39;: None,
+  &#39;use_monitor&#39;: False},
+ &#39;GUID_components&#39;: {&#39;location&#39;: 0, &#39;work_station&#39;: 0, &#39;sample&#39;: 0},
+ &#39;dataset&#39;: {&#39;write_in_background&#39;: False,
+  &#39;write_period&#39;: 5.0,
+  &#39;use_threads&#39;: False,
+  &#39;dond_plot&#39;: False,
+  &#39;dond_show_progress&#39;: False,
+  &#39;export_automatic&#39;: False,
+  &#39;export_type&#39;: None,
+  &#39;export_prefix&#39;: &#39;qcodes_&#39;,
+  &#39;export_path&#39;: &#39;~&#39;,
+  &#39;export_name_elements&#39;: [&#39;captured_run_id&#39;, &#39;guid&#39;]},
+ &#39;telemetry&#39;: {&#39;enabled&#39;: False,
+  &#39;instrumentation_key&#39;: &#39;00000000-0000-0000-0000-000000000000&#39;}}
+</pre></div></div>
+</div>
+<p>One can inspect what the configuration options mean at runtime</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;core&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+controls core settings of qcodes.
+Current value: {&#39;default_fmt&#39;: &#39;data/{date}/#{counter}_{name}_{time}&#39;, &#39;register_magic&#39;: True, &#39;import_legacy_api&#39;: False, &#39;db_location&#39;: &#39;~/experiments.db&#39;, &#39;db_debug&#39;: False, &#39;loglevel&#39;: &#39;WARNING&#39;, &#39;file_loglevel&#39;: &#39;INFO&#39;}. Type: object. Default: Not defined.
+</pre></div></div>
+</div>
+<section id="Configuring-QCoDeS">
+<h2>Configuring QCoDeS<a class="headerlink" href="#Configuring-QCoDeS" title="Permalink to this headline"></a></h2>
+<p>Defaults are the settings that are shipped with the package, which you can overwrite programmatically.</p>
+<p>A way to customize QCoDeS is to write your own JSON files, they are expected to be in the directories printed below. One will be empty because one needs to define first the environment variable in the OS.</p>
+<p>They are ordered by “weight”, meaning that the last file always wins if it’s overwriting any preconfigured defaults or values in the other files.</p>
+<p>Simply copy the file to the directories and you are good to go.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">home_file_name</span><span class="p">,</span> <span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">env_file_name</span><span class="p">,</span> <span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">cwd_file_name</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+/home/runner/qcodesrc.json
+
+/home/runner/work/Qcodes/Qcodes/docs/examples/qcodesrc.json
+</pre></div></div>
+</div>
+<p>The easiest way to add something to the configuration is to use the provided helper:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;base_location&quot;</span><span class="p">,</span> <span class="s2">&quot;/dev/random&quot;</span><span class="p">,</span> <span class="n">value_type</span><span class="o">=</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Location of data&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;/dev/random&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>This will add a <code class="docutils literal notranslate"><span class="pre">base_location</span></code> with value <code class="docutils literal notranslate"><span class="pre">/dev/random</span></code> to the current configuration, and validate it’s value to be of type string, will also set the description and what one would want to have as default. The new entry is saved in the ‘user’ part of the configuration.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;user.base_location&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Location of data.
+Current value: /dev/random. Type: string. Default: /dev/random.
+</pre></div></div>
+</div>
+<p>You can also manually update the configuration from a specific file by supplying the path of the directory as the argument of <code class="docutils literal notranslate"><span class="pre">qc.config.update_config</span></code> method as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update_config</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;C:</span><span class="se">\\</span><span class="s2">Users</span><span class="se">\\</span><span class="s2">jenielse</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;core&#39;: {&#39;default_fmt&#39;: &#39;data/{date}/#{counter}_{name}_{time}&#39;,
+  &#39;register_magic&#39;: True,
+  &#39;import_legacy_api&#39;: False,
+  &#39;db_location&#39;: &#39;~/experiments.db&#39;,
+  &#39;db_debug&#39;: False,
+  &#39;loglevel&#39;: &#39;WARNING&#39;,
+  &#39;file_loglevel&#39;: &#39;INFO&#39;},
+ &#39;logger&#39;: {&#39;start_logging_on_import&#39;: &#39;if_telemetry_set_up&#39;,
+  &#39;console_level&#39;: &#39;WARNING&#39;,
+  &#39;file_level&#39;: &#39;INFO&#39;,
+  &#39;logger_levels&#39;: {&#39;pyvisa&#39;: &#39;INFO&#39;}},
+ &#39;subscription&#39;: {&#39;subscribers&#39;: {&#39;QCPlot&#39;: {&#39;factory&#39;: &#39;qcplotutils.qcodes_dataset.QCPlotDatasetSubscriber&#39;,
+    &#39;factory_kwargs&#39;: {&#39;log&#39;: False},
+    &#39;subscription_kwargs&#39;: {&#39;min_wait&#39;: 0,
+     &#39;min_count&#39;: 1,
+     &#39;callback_kwargs&#39;: {}}}},
+  &#39;default_subscribers&#39;: []},
+ &#39;gui&#39;: {&#39;notebook&#39;: True,
+  &#39;plotlib&#39;: None,
+  &#39;pyqtmaxplots&#39;: 100,
+  &#39;defaultcolormap&#39;: &#39;hot&#39;},
+ &#39;plotting&#39;: {&#39;default_color_map&#39;: &#39;viridis&#39;,
+  &#39;rasterize_threshold&#39;: 5000,
+  &#39;auto_color_scale&#39;: {&#39;enabled&#39;: False,
+   &#39;cutoff_percentile&#39;: [0.5, 0.5],
+   &#39;color_over&#39;: &#39;#a1c4fc&#39;,
+   &#39;color_under&#39;: &#39;#017000&#39;}},
+ &#39;user&#39;: {&#39;scriptfolder&#39;: &#39;.&#39;, &#39;mainfolder&#39;: &#39;.&#39;},
+ &#39;station&#39;: {&#39;enable_forced_reconnect&#39;: False,
+  &#39;default_folder&#39;: &#39;.&#39;,
+  &#39;default_file&#39;: None,
+  &#39;use_monitor&#39;: False},
+ &#39;GUID_components&#39;: {&#39;location&#39;: 0, &#39;work_station&#39;: 0, &#39;sample&#39;: 0},
+ &#39;dataset&#39;: {&#39;write_in_background&#39;: False,
+  &#39;write_period&#39;: 5.0,
+  &#39;use_threads&#39;: False,
+  &#39;dond_plot&#39;: False,
+  &#39;dond_show_progress&#39;: False,
+  &#39;export_automatic&#39;: False,
+  &#39;export_type&#39;: None,
+  &#39;export_prefix&#39;: &#39;qcodes_&#39;,
+  &#39;export_path&#39;: &#39;~&#39;,
+  &#39;export_name_elements&#39;: [&#39;captured_run_id&#39;, &#39;guid&#39;]},
+ &#39;telemetry&#39;: {&#39;enabled&#39;: False,
+  &#39;instrumentation_key&#39;: &#39;00000000-0000-0000-0000-000000000000&#39;}}
+</pre></div></div>
+</div>
+</section>
+<section id="Saving-changes">
+<h2>Saving changes<a class="headerlink" href="#Saving-changes" title="Permalink to this headline"></a></h2>
+<p>All the changes made to the defaults are stored, and one can then decide to save them to the desired location.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">help</span><span class="p">(</span><span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">save_to_cwd</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on method save_to_cwd in module qcodes.configuration.config:
+
+save_to_cwd() -&gt; None method of qcodes.configuration.config.Config instance
+    Save config and schema to files in current working dir
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">help</span><span class="p">(</span><span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">save_to_env</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on method save_to_env in module qcodes.configuration.config:
+
+save_to_env() -&gt; None method of qcodes.configuration.config.Config instance
+    Save config and schema to files in path specified in env variable
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">help</span><span class="p">(</span><span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">save_to_home</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on method save_to_home in module qcodes.configuration.config:
+
+save_to_home() -&gt; None method of qcodes.configuration.config.Config instance
+    Save config and schema to files in home dir
+
+</pre></div></div>
+</div>
+<section id="Using-a-custom-configured-variable-in-your-experiment:">
+<h3>Using a custom configured variable in your experiment:<a class="headerlink" href="#Using-a-custom-configured-variable-in-your-experiment:" title="Permalink to this headline"></a></h3>
+<p>Simply get the value you have set before with dot notation. For example:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;base_location&quot;</span><span class="p">,</span> <span class="s2">&quot;/dev/random&quot;</span><span class="p">,</span> <span class="n">value_type</span><span class="o">=</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Location of data&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;/dev/random&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">loc_provider</span> <span class="o">=</span> <span class="n">qc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">FormatLocation</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">base_location</span><span class="p">)</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">data_set</span><span class="o">.</span><span class="n">DataSet</span><span class="o">.</span><span class="n">location_provider</span><span class="o">=</span><span class="n">loc_provider</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">AttributeError</span>                            Traceback (most recent call last)
+<span class="ansi-green-fg">/tmp/ipykernel_2965/2350555311.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> loc_provider <span class="ansi-blue-fg">=</span> qc<span class="ansi-blue-fg">.</span>data<span class="ansi-blue-fg">.</span>location<span class="ansi-blue-fg">.</span>FormatLocation<span class="ansi-blue-fg">(</span>fmt<span class="ansi-blue-fg">=</span>qc<span class="ansi-blue-fg">.</span>config<span class="ansi-blue-fg">.</span>user<span class="ansi-blue-fg">.</span>base_location<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">----&gt; 2</span><span class="ansi-red-fg"> </span>qc<span class="ansi-blue-fg">.</span>data<span class="ansi-blue-fg">.</span>data_set<span class="ansi-blue-fg">.</span>DataSet<span class="ansi-blue-fg">.</span>location_provider<span class="ansi-blue-fg">=</span>loc_provider
+
+<span class="ansi-red-fg">AttributeError</span>: module &#39;qcodes.data&#39; has no attribute &#39;data_set&#39;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">user</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;scriptfolder&#39;: &#39;.&#39;, &#39;mainfolder&#39;: &#39;.&#39;, &#39;base_location&#39;: &#39;/dev/random&#39;}
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Changing-core">
+<h2>Changing core<a class="headerlink" href="#Changing-core" title="Permalink to this headline"></a></h2>
+<p>One can change the core values at runtime, but there is no guarantee that they are going to be valid. Since user configuration shadows the default one that comes with QCoDeS, apply care when changing the values under <code class="docutils literal notranslate"><span class="pre">core</span></code> section. This section is, primarily, meant for the settings that are determined by QCoDeS core developers.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">current_config</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">loglevel</span> <span class="o">=</span> <span class="s1">&#39;INFO&#39;</span>
+</pre></div>
+</div>
+</div>
+<p>But one can maunually validate via</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>Which will raise an exception in case of bad inputs</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">current_config</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">loglevel</span> <span class="o">=</span> <span class="s1">&#39;YOLO&#39;</span>
+<span class="n">qc</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+<span class="c1"># NOTE that you how have a broken config!</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ValidationError</span>                           Traceback (most recent call last)
+<span class="ansi-green-fg">/tmp/ipykernel_2965/2764489439.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> qc<span class="ansi-blue-fg">.</span>config<span class="ansi-blue-fg">.</span>current_config<span class="ansi-blue-fg">.</span>core<span class="ansi-blue-fg">.</span>loglevel <span class="ansi-blue-fg">=</span> <span class="ansi-blue-fg">&#39;YOLO&#39;</span>
+<span class="ansi-green-fg">----&gt; 2</span><span class="ansi-red-fg"> </span>qc<span class="ansi-blue-fg">.</span>config<span class="ansi-blue-fg">.</span>validate<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      3</span> <span class="ansi-red-fg"># NOTE that you how have a broken config!</span>
+
+<span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.9.9/x64/lib/python3.9/site-packages/qcodes/configuration/config.py</span> in <span class="ansi-cyan-fg">validate</span><span class="ansi-blue-fg">(self, json_config, schema, extra_schema_path)</span>
+<span class="ansi-green-intense-fg ansi-bold">    211</span>         <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    212</span>             <span class="ansi-green-fg">if</span> json_config <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">None</span> <span class="ansi-green-fg">and</span> schema <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 213</span><span class="ansi-red-fg">                 </span>jsonschema<span class="ansi-blue-fg">.</span>validate<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>current_config<span class="ansi-blue-fg">,</span> self<span class="ansi-blue-fg">.</span>current_schema<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    214</span>             <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    215</span>                 jsonschema<span class="ansi-blue-fg">.</span>validate<span class="ansi-blue-fg">(</span>json_config<span class="ansi-blue-fg">,</span> schema<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">/opt/hostedtoolcache/Python/3.9.9/x64/lib/python3.9/site-packages/jsonschema/validators.py</span> in <span class="ansi-cyan-fg">validate</span><span class="ansi-blue-fg">(instance, schema, cls, *args, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1011</span>     error <span class="ansi-blue-fg">=</span> exceptions<span class="ansi-blue-fg">.</span>best_match<span class="ansi-blue-fg">(</span>validator<span class="ansi-blue-fg">.</span>iter_errors<span class="ansi-blue-fg">(</span>instance<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1012</span>     <span class="ansi-green-fg">if</span> error <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 1013</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">raise</span> error
+<span class="ansi-green-intense-fg ansi-bold">   1014</span>
+<span class="ansi-green-intense-fg ansi-bold">   1015</span>
+
+<span class="ansi-red-fg">ValidationError</span>: &#39;YOLO&#39; is not one of [&#39;CRITICAL&#39;, &#39;ERROR&#39;, &#39;WARNING&#39;, &#39;INFO&#39;, &#39;DEBUG&#39;]
+
+Failed validating &#39;enum&#39; in schema[&#39;properties&#39;][&#39;core&#39;][&#39;properties&#39;][&#39;loglevel&#39;]:
+    {&#39;default&#39;: &#39;DEBUG&#39;,
+     &#39;description&#39;: &#39;deprecated - use logger.console_level&#39;,
+     &#39;enum&#39;: [&#39;CRITICAL&#39;, &#39;ERROR&#39;, &#39;WARNING&#39;, &#39;INFO&#39;, &#39;DEBUG&#39;],
+     &#39;type&#39;: &#39;string&#39;}
+
+On instance[&#39;core&#39;][&#39;loglevel&#39;]:
+    &#39;YOLO&#39;
+</pre></div></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Examples of using QCoDeS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Main.html" class="btn btn-neutral float-right" title="QCoDeS Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

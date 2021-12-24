@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.instrument_drivers.Keysight.keysightb1500.constants &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <link href="../../../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.instrument_drivers.Keysight.keysightb1500.constants</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.instrument_drivers.Keysight.keysightb1500.constants</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">IntEnum</span><span class="p">,</span> <span class="n">IntFlag</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Sequence</span>
+
+
+<div class="viewcode-block" id="StrEnum"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.StrEnum">[docs]</a><span class="k">class</span> <span class="nc">StrEnum</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="ChannelName"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ChannelName">[docs]</a><span class="k">class</span> <span class="nc">ChannelName</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="s1">&#39;CH1&#39;</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="s1">&#39;CH2&#39;</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="s1">&#39;CH3&#39;</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="s1">&#39;CH4&#39;</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="s1">&#39;CH5&#39;</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="s1">&#39;CH6&#39;</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="s1">&#39;CH7&#39;</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="s1">&#39;CH8&#39;</span>
+    <span class="n">I</span> <span class="o">=</span> <span class="s1">&#39;CH9&#39;</span>
+    <span class="n">J</span> <span class="o">=</span> <span class="s1">&#39;CH10&#39;</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="s1">&#39;XDATA&#39;</span></div>
+
+
+<div class="viewcode-block" id="MeasurementError"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.MeasurementError">[docs]</a><span class="k">class</span> <span class="nc">MeasurementError</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The list below enumerates all possible compliance errors and assigns</span>
+<span class="sd">    integer 0 or 1 to them. Assigning integer 1 means the data is compliant</span>
+<span class="sd">    and assigning 0 means it not compliant. As seen from the list, all cases</span>
+<span class="sd">    except when the output is N are non-compliant. To know the reason for</span>
+<span class="sd">    Non compliance in the individual case one may refer to</span>
+<span class="sd">    :class:`.MeasurementStatus`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">U</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="MeasurementStatus"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.MeasurementStatus">[docs]</a><span class="k">class</span> <span class="nc">MeasurementStatus</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Contains the meanings of possible compliance errors. One may look at</span>
+<span class="sd">    this list to figure out the reason for the non-compliant data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="s1">&#39;Reached compliance limit.&#39;</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="s1">&#39;No status error occurred.&#39;</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="s1">&#39;Another channel reached compliance limit.&#39;</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="s1">&#39;Measurement data is over the measurement range.&#39;</span> \
+        <span class="s1">&#39; Or the sweep measurement was aborted by the automatic&#39;</span> \
+        <span class="s1">&#39; stop function or power compliance.&#39;</span> \
+        <span class="s1">&#39; D will be 199.999E+99 (no meaning).&#39;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="s1">&#39;One or more channels are oscillating. &#39;</span> \
+        <span class="s1">&#39;Or source output did not settle before measurement.&#39;</span>
+    <span class="n">U</span> <span class="o">=</span> <span class="s1">&#39;CMU is in the NULL loop unbalance condition.&#39;</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="s1">&#39;CMU is in the IV amplifier saturation condition.&#39;</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="s1">&#39;For linear or binary search measurement, &#39;</span> \
+        <span class="s1">&#39;the target value was not found within the search range.&#39;</span> \
+        <span class="s1">&#39; Returns the source output value. &#39;</span> \
+        <span class="s1">&#39;For quasi-pulsed spot measurement, &#39;</span> \
+        <span class="s1">&#39;the detection time was over the limit &#39;</span> \
+        <span class="s1">&#39;(3 s for Short mode, 12 s for Long mode).&#39;</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="s1">&#39;For linear or binary search measurement, &#39;</span> \
+        <span class="s1">&#39;the search measurement was stopped. &#39;</span> \
+        <span class="s1">&#39;Returns the source output value. &#39;</span> \
+        <span class="s1">&#39;See status of Data_sense.&#39;</span> \
+        <span class="s1">&#39;For quasi-pulsed spot measurement, &#39;</span> \
+        <span class="s1">&#39;output slew rate was too slow to perform the settling detection.&#39;</span> \
+        <span class="s1">&#39;Or quasi-pulsed source channel reached the current compliance&#39;</span> \
+        <span class="s1">&#39; before the source output voltage changed 10 V from the start voltage.&#39;</span></div>
+
+
+<div class="viewcode-block" id="ModuleKind"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ModuleKind">[docs]</a><span class="k">class</span> <span class="nc">ModuleKind</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This enumeration is internal to this driver, and is meant to classify</span>
+<span class="sd">    difference B1500 modules, as well as provide a default naming scheme for</span>
+<span class="sd">    them (hence the `StrEnum`).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SMU</span> <span class="o">=</span> <span class="s1">&#39;SMU&#39;</span>  <span class="c1"># Source/Monitor Unit</span>
+    <span class="n">CMU</span> <span class="o">=</span> <span class="s1">&#39;CMU&#39;</span>  <span class="c1"># Capacitance Measurement Unit</span>
+    <span class="n">WGFMU</span> <span class="o">=</span> <span class="s1">&#39;WGFMU&#39;</span>  <span class="c1"># Waveform Generator/Fast Measurement Unit</span></div>
+
+
+<div class="viewcode-block" id="SlotNr"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SlotNr">[docs]</a><span class="k">class</span> <span class="nc">SlotNr</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">ALL</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">MAINFRAME</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">SLOT01</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">SLOT02</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">SLOT03</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">SLOT04</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">SLOT05</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">SLOT06</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">SLOT07</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">SLOT08</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">SLOT09</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">SLOT10</span> <span class="o">=</span> <span class="mi">10</span></div>
+
+
+<div class="viewcode-block" id="ChNr"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ChNr">[docs]</a><span class="k">class</span> <span class="nc">ChNr</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">SLOT_01_CH1</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">SLOT_02_CH1</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">SLOT_03_CH1</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">SLOT_04_CH1</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">SLOT_05_CH1</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">SLOT_06_CH1</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">SLOT_07_CH1</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">SLOT_08_CH1</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">SLOT_09_CH1</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">SLOT_10_CH1</span> <span class="o">=</span> <span class="mi">10</span>
+
+    <span class="n">SLOT_01_CH2</span> <span class="o">=</span> <span class="mi">102</span>
+    <span class="n">SLOT_02_CH2</span> <span class="o">=</span> <span class="mi">202</span>
+    <span class="n">SLOT_03_CH2</span> <span class="o">=</span> <span class="mi">302</span>
+    <span class="n">SLOT_04_CH2</span> <span class="o">=</span> <span class="mi">402</span>
+    <span class="n">SLOT_05_CH2</span> <span class="o">=</span> <span class="mi">502</span>
+    <span class="n">SLOT_06_CH2</span> <span class="o">=</span> <span class="mi">602</span>
+    <span class="n">SLOT_07_CH2</span> <span class="o">=</span> <span class="mi">702</span>
+    <span class="n">SLOT_08_CH2</span> <span class="o">=</span> <span class="mi">802</span>
+    <span class="n">SLOT_09_CH2</span> <span class="o">=</span> <span class="mi">902</span>
+    <span class="n">SLOT_10_CH2</span> <span class="o">=</span> <span class="mi">1002</span></div>
+
+
+<span class="n">ChannelList</span> <span class="o">=</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ChNr</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span>
+
+
+<div class="viewcode-block" id="Abort"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.Abort">[docs]</a><span class="k">class</span> <span class="nc">Abort</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">DISABLED</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">ENABLED</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="TriggerPort"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TriggerPort">[docs]</a><span class="k">class</span> <span class="nc">TriggerPort</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">EXT_TRIG_IN</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">EXT_TRIG_OUT</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+    <span class="n">DIO_1</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">DIO_2</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">DIO_3</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">DIO_4</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">DIO_5</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">DIO_6</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">DIO_7</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">DIO_8</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">DIO_9</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">DIO_10</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">DIO_11</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">DIO_12</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">DIO_13</span> <span class="o">=</span> <span class="mi">13</span>
+    <span class="n">DIO_14</span> <span class="o">=</span> <span class="mi">14</span>
+    <span class="n">DIO_15</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="n">DIO_16</span> <span class="o">=</span> <span class="mi">16</span></div>
+
+
+<div class="viewcode-block" id="SweepMode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SweepMode">[docs]</a><span class="k">class</span> <span class="nc">SweepMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">LINEAR</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">LOG</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">LINEAR_TWO_WAY</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">LOG_TWO_WAY</span> <span class="o">=</span> <span class="mi">4</span></div>
+
+
+<div class="viewcode-block" id="LinearSweepMode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.LinearSweepMode">[docs]</a><span class="k">class</span> <span class="nc">LinearSweepMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">LINEAR</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">LINEAR_TWO_WAY</span> <span class="o">=</span> <span class="mi">3</span></div>
+
+
+<div class="viewcode-block" id="APIVersion"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.APIVersion">[docs]</a><span class="k">class</span> <span class="nc">APIVersion</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">B1500</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">CLASSIC</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="VOutputRange"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.VOutputRange">[docs]</a><span class="k">class</span> <span class="nc">VOutputRange</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">AUTO</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">MIN_0V2</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">MIN_0V5</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">MIN_2V</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">MIN_5V</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="n">MIN_20V</span> <span class="o">=</span> <span class="mi">200</span>
+    <span class="n">MIN_40V</span> <span class="o">=</span> <span class="mi">400</span>
+    <span class="n">MIN_100V</span> <span class="o">=</span> <span class="mi">1000</span>
+    <span class="n">MIN_200V</span> <span class="o">=</span> <span class="mi">2000</span>
+    <span class="n">MIN_500V</span> <span class="o">=</span> <span class="mi">5000</span>
+    <span class="n">MIN_1500V</span> <span class="o">=</span> <span class="mi">15000</span>
+    <span class="n">MIN_3000V</span> <span class="o">=</span> <span class="mi">30000</span>
+    <span class="n">MIN_10000V</span> <span class="o">=</span> <span class="mi">103</span></div>
+
+
+<div class="viewcode-block" id="VMeasRange"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.VMeasRange">[docs]</a><span class="k">class</span> <span class="nc">VMeasRange</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">AUTO</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">MIN_0V2</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">MIN_0V5</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">MIN_2V</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">MIN_5V</span> <span class="o">=</span> <span class="mi">50</span>
+    <span class="n">MIN_20V</span> <span class="o">=</span> <span class="mi">200</span>
+    <span class="n">MIN_40V</span> <span class="o">=</span> <span class="mi">400</span>
+    <span class="n">MIN_100V</span> <span class="o">=</span> <span class="mi">1000</span>
+    <span class="n">MIN_200V</span> <span class="o">=</span> <span class="mi">2000</span>
+    <span class="n">MIN_500V</span> <span class="o">=</span> <span class="mi">5000</span>
+    <span class="n">MIN_1500V</span> <span class="o">=</span> <span class="mi">15000</span>
+    <span class="n">MIN_3000V</span> <span class="o">=</span> <span class="mi">30000</span>
+    <span class="n">MIN_10000V</span> <span class="o">=</span> <span class="mi">103</span>
+
+    <span class="n">FIX_0V2</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+    <span class="n">FIX_0V5</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span>
+    <span class="n">FIX_2V</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20</span>
+    <span class="n">FIX_5V</span> <span class="o">=</span> <span class="o">-</span><span class="mi">50</span>
+    <span class="n">FIX_20V</span> <span class="o">=</span> <span class="o">-</span><span class="mi">200</span>
+    <span class="n">FIX_40V</span> <span class="o">=</span> <span class="o">-</span><span class="mi">400</span>
+    <span class="n">FIX_100V</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1000</span>
+    <span class="n">FIX_200V</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2000</span>
+    <span class="n">FIX_500V</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5000</span>
+    <span class="n">FIX_1500V</span> <span class="o">=</span> <span class="o">-</span><span class="mi">15000</span>
+    <span class="n">FIX_3000V</span> <span class="o">=</span> <span class="o">-</span><span class="mi">30000</span>
+    <span class="n">FIX_10000V</span> <span class="o">=</span> <span class="o">-</span><span class="mi">103</span></div>
+
+
+<div class="viewcode-block" id="IOutputRange"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.IOutputRange">[docs]</a><span class="k">class</span> <span class="nc">IOutputRange</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">AUTO</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">MIN_1pA</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">MIN_10pA</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">MIN_100pA</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">MIN_1nA</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">MIN_10nA</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">MIN_100nA</span> <span class="o">=</span> <span class="mi">13</span>
+    <span class="n">MIN_1uA</span> <span class="o">=</span> <span class="mi">14</span>
+    <span class="n">MIN_10uA</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="n">MIN_100uA</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="n">MIN_1mA</span> <span class="o">=</span> <span class="mi">17</span>
+    <span class="n">MIN_10mA</span> <span class="o">=</span> <span class="mi">18</span>
+    <span class="n">MIN_100mA</span> <span class="o">=</span> <span class="mi">19</span>
+    <span class="n">MIN_1A</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">MIN_2A</span> <span class="o">=</span> <span class="mi">21</span>
+    <span class="n">MIN_20A</span> <span class="o">=</span> <span class="mi">22</span>
+    <span class="n">MIN_40A</span> <span class="o">=</span> <span class="mi">23</span>
+
+    <span class="n">FIX_500A</span> <span class="o">=</span> <span class="mi">26</span>
+    <span class="n">FIX_2000A</span> <span class="o">=</span> <span class="mi">28</span></div>
+
+
+<div class="viewcode-block" id="IMeasRange"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.IMeasRange">[docs]</a><span class="k">class</span> <span class="nc">IMeasRange</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">AUTO</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">MIN_1pA</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">MIN_10pA</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">MIN_100pA</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">MIN_1nA</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">MIN_10nA</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">MIN_100nA</span> <span class="o">=</span> <span class="mi">13</span>
+    <span class="n">MIN_1uA</span> <span class="o">=</span> <span class="mi">14</span>
+    <span class="n">MIN_10uA</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="n">MIN_100uA</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="n">MIN_1mA</span> <span class="o">=</span> <span class="mi">17</span>
+    <span class="n">MIN_10mA</span> <span class="o">=</span> <span class="mi">18</span>
+    <span class="n">MIN_100mA</span> <span class="o">=</span> <span class="mi">19</span>
+    <span class="n">MIN_1A</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">MIN_2A</span> <span class="o">=</span> <span class="mi">21</span>
+    <span class="n">MIN_20A</span> <span class="o">=</span> <span class="mi">22</span>
+    <span class="n">MIN_40A</span> <span class="o">=</span> <span class="mi">23</span>
+
+    <span class="n">MIN_500A</span> <span class="o">=</span> <span class="mi">26</span>
+    <span class="n">MIN_2000A</span> <span class="o">=</span> <span class="mi">28</span>
+
+    <span class="n">FIX_1pA</span> <span class="o">=</span> <span class="o">-</span><span class="mi">8</span>
+    <span class="n">FIX_10pA</span> <span class="o">=</span> <span class="o">-</span><span class="mi">9</span>
+    <span class="n">FIX_100pA</span> <span class="o">=</span> <span class="o">-</span><span class="mi">10</span>
+    <span class="n">FIX_1nA</span> <span class="o">=</span> <span class="o">-</span><span class="mi">11</span>
+    <span class="n">FIX_10nA</span> <span class="o">=</span> <span class="o">-</span><span class="mi">12</span>
+    <span class="n">FIX_100nA</span> <span class="o">=</span> <span class="o">-</span><span class="mi">13</span>
+    <span class="n">FIX_1uA</span> <span class="o">=</span> <span class="o">-</span><span class="mi">14</span>
+    <span class="n">FIX_10uA</span> <span class="o">=</span> <span class="o">-</span><span class="mi">15</span>
+    <span class="n">FIX_100uA</span> <span class="o">=</span> <span class="o">-</span><span class="mi">16</span>
+    <span class="n">FIX_1mA</span> <span class="o">=</span> <span class="o">-</span><span class="mi">17</span>
+    <span class="n">FIX_10mA</span> <span class="o">=</span> <span class="o">-</span><span class="mi">18</span>
+    <span class="n">FIX_100mA</span> <span class="o">=</span> <span class="o">-</span><span class="mi">19</span>
+    <span class="n">FIX_1A</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20</span>
+    <span class="n">FIX_2A</span> <span class="o">=</span> <span class="o">-</span><span class="mi">21</span>
+    <span class="n">FIX_20A</span> <span class="o">=</span> <span class="o">-</span><span class="mi">22</span>
+    <span class="n">FIX_40A</span> <span class="o">=</span> <span class="o">-</span><span class="mi">23</span>
+
+    <span class="n">FIX_500A</span> <span class="o">=</span> <span class="o">-</span><span class="mi">26</span>
+    <span class="n">FIX_2000A</span> <span class="o">=</span> <span class="o">-</span><span class="mi">28</span></div>
+
+
+<span class="n">OutputRange</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">VOutputRange</span><span class="p">,</span> <span class="n">IOutputRange</span><span class="p">]</span>
+
+<span class="n">MeasureRange</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">VMeasRange</span><span class="p">,</span> <span class="n">IMeasRange</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="RangingMode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.RangingMode">[docs]</a><span class="k">class</span> <span class="nc">RangingMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">AUTO</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">FIXED</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="CompliancePolarityMode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.CompliancePolarityMode">[docs]</a><span class="k">class</span> <span class="nc">CompliancePolarityMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">AUTO</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">MANUAL</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="LinearSearchMode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.LinearSearchMode">[docs]</a><span class="k">class</span> <span class="nc">LinearSearchMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">VALUE_LEQ_TARGET</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">VALUE_GEQ_TARGET</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="BinarySearchMode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.BinarySearchMode">[docs]</a><span class="k">class</span> <span class="nc">BinarySearchMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">LIMIT</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">REPEAT_COUNT</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="Polarity"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.Polarity">[docs]</a><span class="k">class</span> <span class="nc">Polarity</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">NEGATIVE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">POSITIVE</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="CalibrationType"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.CalibrationType">[docs]</a><span class="k">class</span> <span class="nc">CalibrationType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">OPEN</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">SHORT</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">LOAD</span> <span class="o">=</span> <span class="mi">3</span></div>
+
+
+<div class="viewcode-block" id="AutoPeriod"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.AutoPeriod">[docs]</a><span class="k">class</span> <span class="nc">AutoPeriod</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+    <span class="n">AUTO_EFFECTIVE_MINIMUM</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">AUTO_LONGEST</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span></div>
+
+
+<span class="c1">#: Command specific Enums</span>
+
+<div class="viewcode-block" id="AAD"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.AAD">[docs]</a><span class="k">class</span> <span class="nc">AAD</span><span class="p">:</span>
+<div class="viewcode-block" id="AAD.Type"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.AAD.Type">[docs]</a>    <span class="k">class</span> <span class="nc">Type</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">HIGH_SPEED</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">HIGH_RESOLUTION</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">HIGH_SPEED_PULSED</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="ACT"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ACT">[docs]</a><span class="k">class</span> <span class="nc">ACT</span><span class="p">:</span>
+<div class="viewcode-block" id="ACT.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ACT.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">AUTO</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">PLC</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="ADJ"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ADJ">[docs]</a><span class="k">class</span> <span class="nc">ADJ</span><span class="p">:</span>
+<div class="viewcode-block" id="ADJ.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ADJ.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">AUTO</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">MANUAL</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">LOAD_ADAPTIVE</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="ADJQuery"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ADJQuery">[docs]</a><span class="k">class</span> <span class="nc">ADJQuery</span><span class="p">:</span>
+<div class="viewcode-block" id="ADJQuery.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ADJQuery.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">USE_LAST</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">MEASURE</span> <span class="o">=</span> <span class="mi">1</span></div>
+<div class="viewcode-block" id="ADJQuery.Response"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ADJQuery.Response">[docs]</a>    <span class="k">class</span> <span class="nc">Response</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">PASSED</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">FAILED</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">ABORTED</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">NOT_PERFORMED</span> <span class="o">=</span> <span class="mi">3</span></div></div>
+
+
+<div class="viewcode-block" id="AIT"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.AIT">[docs]</a><span class="k">class</span> <span class="nc">AIT</span><span class="p">:</span>
+<div class="viewcode-block" id="AIT.Type"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.AIT.Type">[docs]</a>    <span class="k">class</span> <span class="nc">Type</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">HIGH_SPEED</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">HIGH_RESOLUTION</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">HIGH_SPEED_PULSED</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+<div class="viewcode-block" id="AIT.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.AIT.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">AUTO</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">MANUAL</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">NPLC</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">MEAS_TIME_MODE</span> <span class="o">=</span> <span class="mi">3</span></div></div>
+
+
+<div class="viewcode-block" id="AV"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.AV">[docs]</a><span class="k">class</span> <span class="nc">AV</span><span class="p">:</span>
+<div class="viewcode-block" id="AV.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.AV.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">AUTO</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">MANUAL</span> <span class="o">=</span> <span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="BDM"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.BDM">[docs]</a><span class="k">class</span> <span class="nc">BDM</span><span class="p">:</span>
+<div class="viewcode-block" id="BDM.Interval"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.BDM.Interval">[docs]</a>    <span class="k">class</span> <span class="nc">Interval</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">SHORT</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">LONG</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="BDM.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.BDM.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">VOLTAGE</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">CURRENT</span> <span class="o">=</span> <span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="BSM"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.BSM">[docs]</a><span class="k">class</span> <span class="nc">BSM</span><span class="p">:</span>
+<div class="viewcode-block" id="BSM.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.BSM.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">NORMAL</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">CAUTIOUS</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="BSM.Post"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.BSM.Post">[docs]</a>    <span class="k">class</span> <span class="nc">Post</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">START_VAL</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">STOP_VAL</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">OUTPUT_AT_SEARCH_TARGET</span> <span class="o">=</span> <span class="mi">3</span></div></div>
+
+
+<div class="viewcode-block" id="BSVM"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.BSVM">[docs]</a><span class="k">class</span> <span class="nc">BSVM</span><span class="p">:</span>
+<div class="viewcode-block" id="BSVM.DataOutputMode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.BSVM.DataOutputMode">[docs]</a>    <span class="k">class</span> <span class="nc">DataOutputMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">SEARCH</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">SEARCH_AND_SENSE</span> <span class="o">=</span> <span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="CALResponse"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.CALResponse">[docs]</a><span class="k">class</span> <span class="nc">CALResponse</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
+    <span class="n">PASSED</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">SLOT_1_FAILED</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">SLOT_2_FAILED</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">SLOT_3_FAILED</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">SLOT_4_FAILED</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">SLOT_5_FAILED</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="n">SLOT_6_FAILED</span> <span class="o">=</span> <span class="mi">32</span>
+    <span class="n">SLOT_7_FAILED</span> <span class="o">=</span> <span class="mi">64</span>
+    <span class="n">SLOT_8_FAILED</span> <span class="o">=</span> <span class="mi">128</span>
+    <span class="n">SLOT_9_FAILED</span> <span class="o">=</span> <span class="mi">256</span>
+    <span class="n">SLOT_10_FAILED</span> <span class="o">=</span> <span class="mi">512</span>
+    <span class="n">MAINFRAME_FAILED</span> <span class="o">=</span> <span class="mi">1024</span></div>
+
+
+<div class="viewcode-block" id="CORR"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.CORR">[docs]</a><span class="k">class</span> <span class="nc">CORR</span><span class="p">:</span>
+<div class="viewcode-block" id="CORR.Response"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.CORR.Response">[docs]</a>    <span class="k">class</span> <span class="nc">Response</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">SUCCESSFUL</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">FAILED</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">ABORTED</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="CORRST"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.CORRST">[docs]</a><span class="k">class</span> <span class="nc">CORRST</span><span class="p">:</span>
+<div class="viewcode-block" id="CORRST.Response"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.CORRST.Response">[docs]</a>    <span class="k">class</span> <span class="nc">Response</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">OFF</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ON</span> <span class="o">=</span> <span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="CLCORR"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.CLCORR">[docs]</a><span class="k">class</span> <span class="nc">CLCORR</span><span class="p">:</span>
+<div class="viewcode-block" id="CLCORR.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.CLCORR.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">CLEAR_ONLY</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">CLEAR_AND_SET_DEFAULT_FREQ</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="CMM"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.CMM">[docs]</a><span class="k">class</span> <span class="nc">CMM</span><span class="p">:</span>
+<div class="viewcode-block" id="CMM.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.CMM.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">COMPLIANCE_SIDE</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">FORCE_SIDE</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">CURRENT</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">VOLTAGE</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">CURRENT_AND_VOLTAGE</span> <span class="o">=</span> <span class="mi">4</span></div></div>
+
+
+<div class="viewcode-block" id="DCORR"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.DCORR">[docs]</a><span class="k">class</span> <span class="nc">DCORR</span><span class="p">:</span>
+<div class="viewcode-block" id="DCORR.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.DCORR.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">Cp_G</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="n">Ls_Rs</span> <span class="o">=</span> <span class="mi">400</span></div></div>
+
+
+<div class="viewcode-block" id="DIAG"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.DIAG">[docs]</a><span class="k">class</span> <span class="nc">DIAG</span><span class="p">:</span>
+<div class="viewcode-block" id="DIAG.Item"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.DIAG.Item">[docs]</a>    <span class="k">class</span> <span class="nc">Item</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">TRIGGER_IO</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">HIGH_VOLTAGE_LED</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">DIGITAL_IO</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">INTERLOCK_OPEN</span> <span class="o">=</span> <span class="mi">6</span>
+        <span class="n">INTERLOCK_CLOSE</span> <span class="o">=</span> <span class="mi">7</span></div></div>
+
+
+<div class="viewcode-block" id="ERCMAGRD"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERCMAGRD">[docs]</a><span class="k">class</span> <span class="nc">ERCMAGRD</span><span class="p">:</span>
+<div class="viewcode-block" id="ERCMAGRD.Guard"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERCMAGRD.Guard">[docs]</a>    <span class="k">class</span> <span class="nc">Guard</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">COMMON_AC</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">FLOATING</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="ERHPP"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERHPP">[docs]</a><span class="k">class</span> <span class="nc">ERHPP</span><span class="p">:</span>
+<div class="viewcode-block" id="ERHPP.Path"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERHPP.Path">[docs]</a>    <span class="k">class</span> <span class="nc">Path</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">OPEN</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">HVSMU</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">HCSMU</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">HPSMU</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">HVSMU_WITH_R_SERIES</span> <span class="o">=</span> <span class="mi">4</span></div></div>
+
+
+<div class="viewcode-block" id="ERHPQG"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERHPQG">[docs]</a><span class="k">class</span> <span class="nc">ERHPQG</span><span class="p">:</span>
+<div class="viewcode-block" id="ERHPQG.State"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERHPQG.State">[docs]</a>    <span class="k">class</span> <span class="nc">State</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">OPEN</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">GATE_CHARGE</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">IV</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="ERHVP"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERHVP">[docs]</a><span class="k">class</span> <span class="nc">ERHVP</span><span class="p">:</span>
+<div class="viewcode-block" id="ERHVP.State"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERHVP.State">[docs]</a>    <span class="k">class</span> <span class="nc">State</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">OPEN</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">HVSMU</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">HVMCU</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="ERHVPV"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERHVPV">[docs]</a><span class="k">class</span> <span class="nc">ERHVPV</span><span class="p">:</span>
+<div class="viewcode-block" id="ERHVPV.State"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERHVPV.State">[docs]</a>    <span class="k">class</span> <span class="nc">State</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">OPEN</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">HVMCU_DC</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">CAPACITANCE_CHARGE</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="ERMOD"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERMOD">[docs]</a><span class="k">class</span> <span class="nc">ERMOD</span><span class="p">:</span>
+<div class="viewcode-block" id="ERMOD.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERMOD.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">GENERAL_PURPOSE</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">SMU_PGU_SELECTOR_16440A</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">N1258A_N1259A</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">N1265A</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">N1266A</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="n">N1268A</span> <span class="o">=</span> <span class="mi">16</span>
+        <span class="n">N1272A</span> <span class="o">=</span> <span class="mi">32</span></div></div>
+
+
+<div class="viewcode-block" id="ERPFDP"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERPFDP">[docs]</a><span class="k">class</span> <span class="nc">ERPFDP</span><span class="p">:</span>
+<div class="viewcode-block" id="ERPFDP.State"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERPFDP.State">[docs]</a>    <span class="k">class</span> <span class="nc">State</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">OPEN</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">UHCUL_AND_UHCUH</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">GNDU_AND_HVSMU_HVMCU</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">GNDU_AND_MP_HPSMU</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">GNDU_AND_OPEN</span> <span class="o">=</span> <span class="mi">4</span></div></div>
+
+
+<div class="viewcode-block" id="ERPFGP"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERPFGP">[docs]</a><span class="k">class</span> <span class="nc">ERPFGP</span><span class="p">:</span>
+<div class="viewcode-block" id="ERPFGP.State"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERPFGP.State">[docs]</a>    <span class="k">class</span> <span class="nc">State</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">OPEN</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">CONNECTED</span> <span class="o">=</span> <span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="ERPFGR"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERPFGR">[docs]</a><span class="k">class</span> <span class="nc">ERPFGR</span><span class="p">:</span>
+<div class="viewcode-block" id="ERPFGR.State"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERPFGR.State">[docs]</a>    <span class="k">class</span> <span class="nc">State</span><span class="p">:</span>
+        <span class="n">R_0</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">R_10</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">R_100</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="n">R_1000</span> <span class="o">=</span> <span class="mi">1000</span></div></div>
+
+
+<div class="viewcode-block" id="ERR"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERR">[docs]</a><span class="k">class</span> <span class="nc">ERR</span><span class="p">:</span>
+<div class="viewcode-block" id="ERR.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERR.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">READ_ALL</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">READ_ONE</span> <span class="o">=</span> <span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="ERRX"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERRX">[docs]</a><span class="k">class</span> <span class="nc">ERRX</span><span class="p">:</span>
+<div class="viewcode-block" id="ERRX.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERRX.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">CODE_AND_MESSAGE</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">CODE_ONLY</span> <span class="o">=</span> <span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="ERSSP"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERSSP">[docs]</a><span class="k">class</span> <span class="nc">ERSSP</span><span class="p">:</span>
+<div class="viewcode-block" id="ERSSP.Port"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERSSP.Port">[docs]</a>    <span class="k">class</span> <span class="nc">Port</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">SELECTOR_1_OUT_1</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">SELECTOR_1_OUT_2</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">SELECTOR_2_OUT_1</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">SELECTOR_2_OUT_2</span> <span class="o">=</span> <span class="mi">3</span></div>
+
+<div class="viewcode-block" id="ERSSP.Status"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ERSSP.Status">[docs]</a>    <span class="k">class</span> <span class="nc">Status</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">ALL_OPEN</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">SMU_ON</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">PGU_ON</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">PGU_OPEN</span> <span class="o">=</span> <span class="mi">3</span></div></div>
+
+
+<div class="viewcode-block" id="FMT"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.FMT">[docs]</a><span class="k">class</span> <span class="nc">FMT</span><span class="p">:</span>
+<div class="viewcode-block" id="FMT.Format"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.FMT.Format">[docs]</a>    <span class="k">class</span> <span class="nc">Format</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">ASCII_12_DIGITS_WITH_HEADER_CRLF_EOI</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">ASCII_12_DIGITS_NO_HEADER_CRLF_EOI</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">BINARY_4_BYTE_CRLF_EOI</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">BINARY_4_BYTE_EOI</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">ASCII_12_DIGITS_WITH_HEADER_COMMA</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">ASCII_13_DIGITS_WITH_HEADER_CRLF_EOI</span> <span class="o">=</span> <span class="mi">11</span>
+        <span class="n">ASCII_13_DIGITS_NO_HEADER_CRLF_EOI</span> <span class="o">=</span> <span class="mi">12</span>
+        <span class="n">BINARY_8_BYTE_CRLF_EOI</span> <span class="o">=</span> <span class="mi">13</span>
+        <span class="n">BINARY_8_BYTE_EOI</span> <span class="o">=</span> <span class="mi">14</span>
+        <span class="n">ASCII_13_DIGITS_WITH_HEADER_COMMA</span> <span class="o">=</span> <span class="mi">15</span>
+        <span class="n">ASCII_13_DIGITS_WITH_HEADER_CRLF_EOI_4155_4156_COMPATIBLE</span> <span class="o">=</span> <span class="mi">21</span>
+        <span class="n">ASCII_13_DIGITS_NO_HEADER_CRLF_EOI_4155_4156_COMPATIBLE</span> <span class="o">=</span> <span class="mi">22</span>
+        <span class="n">ASCII_13_DIGITS_WITH_HEADER_COMMA_4155_4156_COMPATIBLE</span> <span class="o">=</span> <span class="mi">25</span></div>
+
+<div class="viewcode-block" id="FMT.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.FMT.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">ONLY_MEASUREMENT_DATA</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">PRIMARY_SOURCE_OUTPUT_DATA</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">SYNCHRONOUS_SWEEP_SOURCE_OUTPUT_DATA</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">SWEEP_SOURCE_1</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">SWEEP_SOURCE_2</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">SWEEP_SOURCE_3</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">SWEEP_SOURCE_4</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">SWEEP_SOURCE_5</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">SWEEP_SOURCE_6</span> <span class="o">=</span> <span class="mi">6</span>
+        <span class="n">SWEEP_SOURCE_7</span> <span class="o">=</span> <span class="mi">7</span>
+        <span class="n">SWEEP_SOURCE_8</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="n">SWEEP_SOURCE_9</span> <span class="o">=</span> <span class="mi">9</span>
+        <span class="n">SWEEP_SOURCE_10</span> <span class="o">=</span> <span class="mi">10</span></div></div>
+
+
+<div class="viewcode-block" id="HVSMUOP"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.HVSMUOP">[docs]</a><span class="k">class</span> <span class="nc">HVSMUOP</span><span class="p">:</span>
+<div class="viewcode-block" id="HVSMUOP.SourceRange"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.HVSMUOP.SourceRange">[docs]</a>    <span class="k">class</span> <span class="nc">SourceRange</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">SINGLE_CH</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">PLUSMINUS_1500V</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">PLUS_3000V</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">MINUS_3000V</span> <span class="o">=</span> <span class="mi">4</span></div></div>
+
+
+<div class="viewcode-block" id="IMP"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.IMP">[docs]</a><span class="k">class</span> <span class="nc">IMP</span><span class="p">:</span>
+<div class="viewcode-block" id="IMP.MeasurementMode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.IMP.MeasurementMode">[docs]</a>    <span class="k">class</span> <span class="nc">MeasurementMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">R_X</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">G_X</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">Z_THETA_RAD</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">Z_THETA_DEG</span> <span class="o">=</span> <span class="mi">11</span>
+        <span class="n">Y_THETA_RAD</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="n">Y_THETA_DEG</span> <span class="o">=</span> <span class="mi">21</span>
+        <span class="n">Cp_G</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="n">Cp_D</span> <span class="o">=</span> <span class="mi">101</span>
+        <span class="n">Cp_Q</span> <span class="o">=</span> <span class="mi">102</span>
+        <span class="n">Cp_Rp</span> <span class="o">=</span> <span class="mi">103</span>
+        <span class="n">Cs_Rs</span> <span class="o">=</span> <span class="mi">200</span>
+        <span class="n">Cs_D</span> <span class="o">=</span> <span class="mi">201</span>
+        <span class="n">Cs_Q</span> <span class="o">=</span> <span class="mi">202</span>
+        <span class="n">Lp_G</span> <span class="o">=</span> <span class="mi">300</span>
+        <span class="n">Lp_D</span> <span class="o">=</span> <span class="mi">301</span>
+        <span class="n">Lp_Q</span> <span class="o">=</span> <span class="mi">302</span>
+        <span class="n">Lp_Rp</span> <span class="o">=</span> <span class="mi">303</span>
+        <span class="n">Ls_Rs</span> <span class="o">=</span> <span class="mi">400</span>
+        <span class="n">Ls_D</span> <span class="o">=</span> <span class="mi">401</span>
+        <span class="n">Ls_Q</span> <span class="o">=</span> <span class="mi">402</span></div>
+
+<div class="viewcode-block" id="IMP.Name"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.IMP.Name">[docs]</a>    <span class="k">class</span> <span class="nc">Name</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="s1">&#39;Resistance&#39;</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="s1">&#39;Conductance&#39;</span>
+        <span class="n">Z</span> <span class="o">=</span> <span class="s1">&#39;Impedance&#39;</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="s1">&#39;Admittance&#39;</span>
+        <span class="n">Cp</span> <span class="o">=</span> <span class="s1">&#39;Parallel Capacitance&#39;</span>
+        <span class="n">Cs</span> <span class="o">=</span> <span class="s1">&#39;Series Capacitance&#39;</span>
+        <span class="n">Lp</span> <span class="o">=</span> <span class="s1">&#39;Parallel Inductance&#39;</span>
+        <span class="n">Ls</span> <span class="o">=</span> <span class="s1">&#39;Series Inductance&#39;</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="s1">&#39;Reactance&#39;</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="s1">&#39;Susceptance&#39;</span>
+        <span class="n">THETA_RAD</span> <span class="o">=</span> <span class="s1">&#39;Phase&#39;</span>
+        <span class="n">THETA_DEG</span> <span class="o">=</span> <span class="s1">&#39;Phase&#39;</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="s1">&#39;Dissipation Factor&#39;</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="s1">&#39;Quality Factor&#39;</span>
+        <span class="n">Rp</span> <span class="o">=</span> <span class="s1">&#39;Parallel Resistance&#39;</span>
+        <span class="n">Rs</span> <span class="o">=</span> <span class="s1">&#39;Series Resistance&#39;</span></div>
+
+<div class="viewcode-block" id="IMP.Unit"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.IMP.Unit">[docs]</a>    <span class="k">class</span> <span class="nc">Unit</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="s1">&#39;ohms&#39;</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="s1">&#39;S&#39;</span>
+        <span class="n">Z</span> <span class="o">=</span> <span class="s1">&#39;ohms&#39;</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="s1">&#39;S&#39;</span>
+        <span class="n">Cp</span> <span class="o">=</span> <span class="s1">&#39;F&#39;</span>
+        <span class="n">Cs</span> <span class="o">=</span> <span class="s1">&#39;F&#39;</span>
+        <span class="n">Lp</span> <span class="o">=</span> <span class="s1">&#39;H&#39;</span>
+        <span class="n">Ls</span> <span class="o">=</span> <span class="s1">&#39;H&#39;</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="s1">&#39;ohms&#39;</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="s1">&#39;S&#39;</span>
+        <span class="n">THETA_RAD</span> <span class="o">=</span> <span class="s1">&#39;radian&#39;</span>
+        <span class="n">THETA_DEG</span> <span class="o">=</span> <span class="s1">&#39;degree&#39;</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">Rp</span> <span class="o">=</span> <span class="s1">&#39;ohms&#39;</span>
+        <span class="n">Rs</span> <span class="o">=</span> <span class="s1">&#39;ohms&#39;</span></div></div>
+
+
+<div class="viewcode-block" id="LIM"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.LIM">[docs]</a><span class="k">class</span> <span class="nc">LIM</span><span class="p">:</span>
+<div class="viewcode-block" id="LIM.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.LIM.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">VOLTAGE</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">CURRENT</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="LRN"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.LRN">[docs]</a><span class="k">class</span> <span class="nc">LRN</span><span class="p">:</span>
+<div class="viewcode-block" id="LRN.Type"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.LRN.Type">[docs]</a>    <span class="k">class</span> <span class="nc">Type</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">OUTPUT_SWITCH</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">SLOT1_STATUS</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">SLOT2_STATUS</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">SLOT3_STATUS</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">SLOT4_STATUS</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">SLOT5_STATUS</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">SLOT6_STATUS</span> <span class="o">=</span> <span class="mi">6</span>
+        <span class="n">SLOT7_STATUS</span> <span class="o">=</span> <span class="mi">7</span>
+        <span class="n">SLOT8_STATUS</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="n">SLOT9_STATUS</span> <span class="o">=</span> <span class="mi">9</span>
+        <span class="n">SLOT10_STATUS</span> <span class="o">=</span> <span class="mi">10</span>
+
+        <span class="n">FILTER</span> <span class="o">=</span> <span class="mi">30</span>
+
+        <span class="n">TM_AV_CM_FMT_MM_SETTINGS</span> <span class="o">=</span> <span class="mi">31</span>
+
+        <span class="n">MEASUREMENT_RANGING_STATUS</span> <span class="o">=</span> <span class="mi">32</span>
+
+        <span class="n">STAIRCASE_SWEEP_MEASUREMENT_SETTINGS</span> <span class="o">=</span> <span class="mi">33</span>
+
+        <span class="n">PULSED_SOURCE_SETTINGS</span> <span class="o">=</span> <span class="mi">34</span>
+
+        <span class="n">QUASI_PULSED_SOURCE_SETTINGS</span> <span class="o">=</span> <span class="mi">37</span>
+
+        <span class="n">DIGITAL_IO_SETTINGS</span> <span class="o">=</span> <span class="mi">38</span>
+
+        <span class="n">CHANNEL_MAPPING</span> <span class="o">=</span> <span class="mi">40</span>
+
+        <span class="n">SMU_MEASUREMENT_OPERATION</span> <span class="o">=</span> <span class="mi">46</span>
+
+        <span class="n">SAMPLING_MEASUREMENT_SETTINGS</span> <span class="o">=</span> <span class="mi">47</span>
+
+        <span class="n">QUASI_STATIC_CV_MEASUREMENT_SETTINGS</span> <span class="o">=</span> <span class="mi">49</span>
+
+        <span class="n">LINEAR_SEARCH_MEASUREMENT_SETTINGS</span> <span class="o">=</span> <span class="mi">50</span>
+
+        <span class="n">BINARY_SEARCH_MEASUREMENT_SETTINGS</span> <span class="o">=</span> <span class="mi">51</span>
+
+        <span class="n">SMU_RESISTOR_STATUS</span> <span class="o">=</span> <span class="mi">53</span>
+
+        <span class="n">AUTOR_RANGING_MODE</span> <span class="o">=</span> <span class="mi">54</span>
+
+        <span class="n">ADC_SETTINGS</span> <span class="o">=</span> <span class="mi">55</span>
+
+        <span class="n">ADC_AVERAGING_INTEGRATION_TIME_SETTINGS</span> <span class="o">=</span> <span class="mi">56</span>
+
+        <span class="n">SOURCE_MEASURE_WAIT_TIME</span> <span class="o">=</span> <span class="mi">57</span>
+
+        <span class="n">TRIGGER_SETTINGS</span> <span class="o">=</span> <span class="mi">58</span>
+
+        <span class="n">MULTI_CHANNEL_SWEEP_SOURCE_SETTINGS</span> <span class="o">=</span> <span class="mi">59</span>
+
+        <span class="n">TIMESTAMP_SETTING</span> <span class="o">=</span> <span class="mi">60</span>
+
+        <span class="n">DISPLAY_SETTING</span> <span class="o">=</span> <span class="mi">61</span>
+
+        <span class="n">ASU_CONNECTION_PATH</span> <span class="o">=</span> <span class="mi">62</span>
+
+        <span class="n">PICOAMPERE_RANGING_MODE</span> <span class="o">=</span> <span class="mi">63</span>
+
+        <span class="n">ASU_CONNECTION_STATUS_INDICATOR</span> <span class="o">=</span> <span class="mi">64</span>
+
+        <span class="n">MFCMU_MEASUREMENT_MODE</span> <span class="o">=</span> <span class="mi">70</span>
+
+        <span class="n">MFCMU_DATA_OUTPUT_MODE</span> <span class="o">=</span> <span class="mi">71</span>
+
+        <span class="n">MFCMU_ADC_SETTING</span> <span class="o">=</span> <span class="mi">72</span>
+
+        <span class="n">MFCMU_MEASUREMENT_RANGE</span> <span class="o">=</span> <span class="mi">73</span>
+
+        <span class="n">SCUU_CONNECTION_STATUS_INDICATOR</span> <span class="o">=</span> <span class="mi">80</span>
+
+        <span class="n">SCUU_CONNECTION_PATH</span> <span class="o">=</span> <span class="mi">81</span>
+
+        <span class="n">MFCMU_ADJUSTMENT_MODE</span> <span class="o">=</span> <span class="mi">90</span>
+
+        <span class="n">CV_DC_BIAS_SWEEP_MEASUREMENT_SETTINGS</span> <span class="o">=</span> <span class="mi">100</span>
+
+        <span class="n">PULSED_SPOT_C_CV_MEASUREMENT_SETTINGS</span> <span class="o">=</span> <span class="mi">101</span>
+
+        <span class="n">C_F_SWEEP_MEASUREMENT_SETTINGS</span> <span class="o">=</span> <span class="mi">102</span>
+
+        <span class="n">CV_AC_LEVEL_SWEEP_MEASUREMENT_SETTINGS</span> <span class="o">=</span> <span class="mi">103</span>
+
+        <span class="n">C_T_SAMPLING_MEASUREMENT_SETTINGS</span> <span class="o">=</span> <span class="mi">104</span>
+
+        <span class="n">MULTI_CHANNEL_PULSED_SPOT_MEASUREMENT_SETTINGS</span> <span class="o">=</span> <span class="mi">105</span>
+
+        <span class="n">MULTI_CHANNEL_PULSED_SWEEP_MEASUREMENT_SETTINGS</span> <span class="o">=</span> <span class="mi">106</span>
+
+        <span class="n">PARALLEL_MEASUREMENT_MODE_SETTING</span> <span class="o">=</span> <span class="mi">110</span></div></div>
+
+
+<div class="viewcode-block" id="LSM"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.LSM">[docs]</a><span class="k">class</span> <span class="nc">LSM</span><span class="p">:</span>
+<div class="viewcode-block" id="LSM.Post"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.LSM.Post">[docs]</a>    <span class="k">class</span> <span class="nc">Post</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">START_VAL</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">STOP_VAL</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">OUTPUT_AT_SEARCH_TARGET</span> <span class="o">=</span> <span class="mi">3</span></div></div>
+
+
+<div class="viewcode-block" id="LSVM"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.LSVM">[docs]</a><span class="k">class</span> <span class="nc">LSVM</span><span class="p">(</span><span class="n">BSVM</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="MCPNX"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.MCPNX">[docs]</a><span class="k">class</span> <span class="nc">MCPNX</span><span class="p">:</span>
+<div class="viewcode-block" id="MCPNX.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.MCPNX.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">VOLTAGE</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">CURRENT</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="MCPWNX"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.MCPWNX">[docs]</a><span class="k">class</span> <span class="nc">MCPWNX</span><span class="p">:</span>
+<div class="viewcode-block" id="MCPWNX.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.MCPWNX.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">VOLTAGE</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">CURRENT</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="ML"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ML">[docs]</a><span class="k">class</span> <span class="nc">ML</span><span class="p">:</span>
+<div class="viewcode-block" id="ML.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ML.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">LINEAR</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">LOG_10_PER_DECADE</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">LOG_25_PER_DECADE</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">LOG_50_PER_DECADE</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">LOG_100_PER_DECADE</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">LOG_250_PER_DECADE</span> <span class="o">=</span> <span class="mi">6</span>
+        <span class="n">LOG_500_PER_DECADE</span> <span class="o">=</span> <span class="mi">7</span></div></div>
+
+
+<div class="viewcode-block" id="MM"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.MM">[docs]</a><span class="k">class</span> <span class="nc">MM</span><span class="p">:</span>
+<div class="viewcode-block" id="MM.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.MM.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">SPOT</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">STAIRCASE_SWEEP</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">PULSED_SPOT</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">PULSED_SWEEP</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">STAIRCASE_SWEEP_WITH_PULSED_BIAS</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">QUASI_PULSED_SPOT</span> <span class="o">=</span> <span class="mi">9</span>
+        <span class="n">SAMPLING</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">QUASI_STATIC_CV</span> <span class="o">=</span> <span class="mi">13</span>
+        <span class="n">LINEAR_SEARCH</span> <span class="o">=</span> <span class="mi">14</span>
+        <span class="n">BINARY_SEARCH</span> <span class="o">=</span> <span class="mi">15</span>
+        <span class="n">MULTI_CHANNEL_SWEEP</span> <span class="o">=</span> <span class="mi">16</span>
+        <span class="n">SPOT_C</span> <span class="o">=</span> <span class="mi">17</span>
+        <span class="n">CV_DC_SWEEP</span> <span class="o">=</span> <span class="mi">18</span>
+        <span class="n">PULSED_SPOT_C</span> <span class="o">=</span> <span class="mi">19</span>
+        <span class="n">PULSED_SWEEP_CV</span> <span class="o">=</span> <span class="mi">20</span>
+        <span class="n">CF_SWEEP</span> <span class="o">=</span> <span class="mi">22</span>
+        <span class="n">CV_AC_SWEEP</span> <span class="o">=</span> <span class="mi">23</span>
+        <span class="n">CT_SAMPLING</span> <span class="o">=</span> <span class="mi">26</span>
+        <span class="n">MULTI_CHANNEL_PULSED_SPOT</span> <span class="o">=</span> <span class="mi">27</span>
+        <span class="n">MULTI_CHANNEL_PULSED_SWEEP</span> <span class="o">=</span> <span class="mi">28</span></div></div>
+
+
+<div class="viewcode-block" id="MSC"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.MSC">[docs]</a><span class="k">class</span> <span class="nc">MSC</span><span class="p">:</span>
+<div class="viewcode-block" id="MSC.Post"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.MSC.Post">[docs]</a>    <span class="k">class</span> <span class="nc">Post</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">BASE_VALUE</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">BIAS_VALUE</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="ODSW"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ODSW">[docs]</a><span class="k">class</span> <span class="nc">ODSW</span><span class="p">:</span>
+<div class="viewcode-block" id="ODSW.SwitchNormalState"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.ODSW.SwitchNormalState">[docs]</a>    <span class="k">class</span> <span class="nc">SwitchNormalState</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">NORMALLY_OPEN</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">NORMALLY_CLOSED</span> <span class="o">=</span> <span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="OSX"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.OSX">[docs]</a><span class="k">class</span> <span class="nc">OSX</span><span class="p">:</span>
+<div class="viewcode-block" id="OSX.Level"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.OSX.Level">[docs]</a>    <span class="k">class</span> <span class="nc">Level</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">LOW</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">HIGH</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">EDGE</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="QSM"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.QSM">[docs]</a><span class="k">class</span> <span class="nc">QSM</span><span class="p">:</span>
+<div class="viewcode-block" id="QSM.Post"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.QSM.Post">[docs]</a>    <span class="k">class</span> <span class="nc">Post</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">START</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">STOP</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="QSZ"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.QSZ">[docs]</a><span class="k">class</span> <span class="nc">QSZ</span><span class="p">:</span>
+<div class="viewcode-block" id="QSZ.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.QSZ.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">DISABLE</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ENABLE</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">PERFORM_MEASUREMENT</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="RM"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.RM">[docs]</a><span class="k">class</span> <span class="nc">RM</span><span class="p">:</span>
+<div class="viewcode-block" id="RM.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.RM.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">DEFAULT</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">AUTO_UP</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">AUTO_UP_DOWN</span> <span class="o">=</span> <span class="mi">3</span></div></div>
+
+
+<div class="viewcode-block" id="SAP"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SAP">[docs]</a><span class="k">class</span> <span class="nc">SAP</span><span class="p">:</span>
+<div class="viewcode-block" id="SAP.Path"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SAP.Path">[docs]</a>    <span class="k">class</span> <span class="nc">Path</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">SMU</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">AUX</span> <span class="o">=</span> <span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="SIM"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SIM">[docs]</a><span class="k">class</span> <span class="nc">SIM</span><span class="p">:</span>
+<div class="viewcode-block" id="SIM.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SIM.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">PULSE_GEN</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ARB_WAVE_GEN</span> <span class="o">=</span> <span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="SPM"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SPM">[docs]</a><span class="k">class</span> <span class="nc">SPM</span><span class="p">:</span>
+<div class="viewcode-block" id="SPM.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SPM.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">DC_VOLTAGE</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">TWO_LEVEL_PULSE_SOURCE_1</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">TWO_LEVEL_PULSE_SOURCE_2</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">THREE_LEVEL_PULSE_SOURCE_1_AND_2</span> <span class="o">=</span> <span class="mi">3</span></div></div>
+
+
+<div class="viewcode-block" id="SPRM"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SPRM">[docs]</a><span class="k">class</span> <span class="nc">SPRM</span><span class="p">:</span>
+<div class="viewcode-block" id="SPRM.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SPRM.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">FREE_RUN</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">COUNT</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">DURATION</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="SPT"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SPT">[docs]</a><span class="k">class</span> <span class="nc">SPT</span><span class="p">:</span>
+<div class="viewcode-block" id="SPT.Src"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SPT.Src">[docs]</a>    <span class="k">class</span> <span class="nc">Src</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">PULSE_SRC_1</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">PULSE_SRC_2</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="SPV"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SPV">[docs]</a><span class="k">class</span> <span class="nc">SPV</span><span class="p">:</span>
+<div class="viewcode-block" id="SPV.Src"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SPV.Src">[docs]</a>    <span class="k">class</span> <span class="nc">Src</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">DC_BIAS_SRC</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">PULSE_SRC_1</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">PULSE_SRC_2</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="SRE"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SRE">[docs]</a><span class="k">class</span> <span class="nc">SRE</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
+    <span class="n">DATA_READY</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">WAIT</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">INTERLOCK_OPEN</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">SET_READY</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="n">ERROR</span> <span class="o">=</span> <span class="mi">32</span>
+    <span class="n">RQS</span> <span class="o">=</span> <span class="mi">64</span></div>
+
+
+<div class="viewcode-block" id="SSP"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SSP">[docs]</a><span class="k">class</span> <span class="nc">SSP</span><span class="p">:</span>
+<div class="viewcode-block" id="SSP.Path"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.SSP.Path">[docs]</a>    <span class="k">class</span> <span class="nc">Path</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">FORCE1SENSE1_OPEN</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">OPEN_FORCE2SENSE2</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">FORCE1SENSE1_FORCE2SENSE2</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">CMUH_CMUL</span> <span class="o">=</span> <span class="mi">4</span></div></div>
+
+
+<div class="viewcode-block" id="STGP"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.STGP">[docs]</a><span class="k">class</span> <span class="nc">STGP</span><span class="p">:</span>
+<div class="viewcode-block" id="STGP.TriggerTiming"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.STGP.TriggerTiming">[docs]</a>    <span class="k">class</span> <span class="nc">TriggerTiming</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">DISABLE_TRIGGER</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">SYNC_TO_PG_PULSE_OR_START_OF_ALWG_SEQUENCE</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">ALWG_PATTERN_CHANGE_OR_START_OF_FIRST_PATTERN</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">START_OF_EVERY_ALWG_PATTERN</span> <span class="o">=</span> <span class="mi">3</span></div></div>
+
+
+<div class="viewcode-block" id="TGMO"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TGMO">[docs]</a><span class="k">class</span> <span class="nc">TGMO</span><span class="p">:</span>
+<div class="viewcode-block" id="TGMO.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TGMO.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">EDGE</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">GATE</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="TGP"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TGP">[docs]</a><span class="k">class</span> <span class="nc">TGP</span><span class="p">:</span>
+<div class="viewcode-block" id="TGP.TerminalType"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TGP.TerminalType">[docs]</a>    <span class="k">class</span> <span class="nc">TerminalType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">INPUT</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">OUTPUT</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+<div class="viewcode-block" id="TGP.Polarity"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TGP.Polarity">[docs]</a>    <span class="k">class</span> <span class="nc">Polarity</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">POSITIVE</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">NEGATIVE</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+<div class="viewcode-block" id="TGP.TriggerType"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TGP.TriggerType">[docs]</a>    <span class="k">class</span> <span class="nc">TriggerType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The meaning of the Trigger Type value depends on the value of</span>
+<span class="sd">        TerminalType</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ZERO</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ONE</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">TWO</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">THREE</span> <span class="o">=</span> <span class="mi">3</span></div></div>
+
+
+<div class="viewcode-block" id="TGSI"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TGSI">[docs]</a><span class="k">class</span> <span class="nc">TGSI</span><span class="p">:</span>
+<div class="viewcode-block" id="TGSI.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TGSI.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">CASE1</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">CASE2</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="TGSO"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TGSO">[docs]</a><span class="k">class</span> <span class="nc">TGSO</span><span class="p">:</span>
+<div class="viewcode-block" id="TGSO.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TGSO.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">EDGE</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">GATE</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="TGXO"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TGXO">[docs]</a><span class="k">class</span> <span class="nc">TGXO</span><span class="p">:</span>
+<div class="viewcode-block" id="TGXO.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TGXO.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">EDGE</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">GATE</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="TM"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TM">[docs]</a><span class="k">class</span> <span class="nc">TM</span><span class="p">:</span>
+<div class="viewcode-block" id="TM.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TM.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">XE_CMD_AND_GPIB_GET</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">XE_CMD</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">XE_CMD_AND_EXT_TRIGGER</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">XE_CMD_AND_MM_CMD</span> <span class="o">=</span> <span class="mi">4</span></div></div>
+
+
+<div class="viewcode-block" id="TMACV"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TMACV">[docs]</a><span class="k">class</span> <span class="nc">TMACV</span><span class="p">:</span>
+<div class="viewcode-block" id="TMACV.Range"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TMACV.Range">[docs]</a>    <span class="k">class</span> <span class="nc">Range</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+        <span class="n">MAX_0V016</span> <span class="o">=</span> <span class="s1">&#39;0.016&#39;</span>
+        <span class="n">MAX_0V032</span> <span class="o">=</span> <span class="s1">&#39;0.032&#39;</span>
+        <span class="n">MAX_0V064</span> <span class="o">=</span> <span class="s1">&#39;0.064&#39;</span>
+        <span class="n">MAX_0V125</span> <span class="o">=</span> <span class="s1">&#39;0.125&#39;</span>
+        <span class="n">MAX_0V250</span> <span class="o">=</span> <span class="s1">&#39;0.250&#39;</span></div></div>
+
+
+<div class="viewcode-block" id="TMDCV"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TMDCV">[docs]</a><span class="k">class</span> <span class="nc">TMDCV</span><span class="p">:</span>
+<div class="viewcode-block" id="TMDCV.Range"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TMDCV.Range">[docs]</a>    <span class="k">class</span> <span class="nc">Range</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">MFCMU_8V</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="n">MFCMU_12V</span> <span class="o">=</span> <span class="mi">12</span>
+        <span class="n">MFCMU_25V</span> <span class="o">=</span> <span class="mi">25</span>
+        <span class="n">SMU_100V</span> <span class="o">=</span> <span class="mi">100</span></div></div>
+
+
+<div class="viewcode-block" id="TST"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TST">[docs]</a><span class="k">class</span> <span class="nc">TST</span><span class="p">:</span>
+<div class="viewcode-block" id="TST.Option"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TST.Option">[docs]</a>    <span class="k">class</span> <span class="nc">Option</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">RETURN_PASS_FAIL</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">PERFORM_TEST_AND_RETURN_PASS_FAIL</span> <span class="o">=</span> <span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="TTC"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TTC">[docs]</a><span class="k">class</span> <span class="nc">TTC</span><span class="p">:</span>
+<div class="viewcode-block" id="TTC.Range"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.TTC.Range">[docs]</a>    <span class="k">class</span> <span class="nc">Range</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">MAX_100OHM</span> <span class="o">=</span> <span class="mi">50</span>
+        <span class="n">MAX_300OHM</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="n">MAX_1KOHM</span> <span class="o">=</span> <span class="mi">300</span>
+        <span class="n">MAX_3KOHM</span> <span class="o">=</span> <span class="mi">1000</span>
+        <span class="n">MAX_10KOHM</span> <span class="o">=</span> <span class="mi">3000</span>
+        <span class="n">MAX_30KOHM</span> <span class="o">=</span> <span class="mi">10000</span>
+        <span class="n">MAX_100KOHM</span> <span class="o">=</span> <span class="mi">30000</span>
+        <span class="n">MAX_300KOHM</span> <span class="o">=</span> <span class="mi">100000</span>
+        <span class="n">MAX</span> <span class="o">=</span> <span class="mi">300000</span></div></div>
+
+
+<div class="viewcode-block" id="UNT"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.UNT">[docs]</a><span class="k">class</span> <span class="nc">UNT</span><span class="p">:</span>
+<div class="viewcode-block" id="UNT.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.UNT.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">MODULE_INFO_ONLY</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">MODULE_AND_MAINFRAME_INFO</span> <span class="o">=</span> <span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="VAR"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.VAR">[docs]</a><span class="k">class</span> <span class="nc">VAR</span><span class="p">:</span>
+<div class="viewcode-block" id="VAR.Type"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.VAR.Type">[docs]</a>    <span class="k">class</span> <span class="nc">Type</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">INTEGER</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">FLOAT</span> <span class="o">=</span> <span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="WAT"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.WAT">[docs]</a><span class="k">class</span> <span class="nc">WAT</span><span class="p">:</span>
+<div class="viewcode-block" id="WAT.Type"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.WAT.Type">[docs]</a>    <span class="k">class</span> <span class="nc">Type</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">SMU_SOURCE_WAIT_TIME</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">SMU_MEASURE_WAIT_TIME</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">MFCMU_MEASUREMENT_WAIT_TIME</span> <span class="o">=</span> <span class="mi">3</span></div></div>
+
+
+<div class="viewcode-block" id="WM"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.WM">[docs]</a><span class="k">class</span> <span class="nc">WM</span><span class="p">:</span>
+<div class="viewcode-block" id="WM.Post"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.WM.Post">[docs]</a>    <span class="k">class</span> <span class="nc">Post</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">START</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">STOP</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="WMACV"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.WMACV">[docs]</a><span class="k">class</span> <span class="nc">WMACV</span><span class="p">:</span>
+<div class="viewcode-block" id="WMACV.Post"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.WMACV.Post">[docs]</a>    <span class="k">class</span> <span class="nc">Post</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">START</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">STOP</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="WMDCV"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.WMDCV">[docs]</a><span class="k">class</span> <span class="nc">WMDCV</span><span class="p">:</span>
+<div class="viewcode-block" id="WMDCV.Post"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.WMDCV.Post">[docs]</a>    <span class="k">class</span> <span class="nc">Post</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">START</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">STOP</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="WMFC"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.WMFC">[docs]</a><span class="k">class</span> <span class="nc">WMFC</span><span class="p">:</span>
+<div class="viewcode-block" id="WMFC.Post"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.WMFC.Post">[docs]</a>    <span class="k">class</span> <span class="nc">Post</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">START</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">STOP</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="WNX"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.WNX">[docs]</a><span class="k">class</span> <span class="nc">WNX</span><span class="p">:</span>
+<div class="viewcode-block" id="WNX.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.WNX.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">VOLTAGE</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">CURRENT</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="WS"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.WS">[docs]</a><span class="k">class</span> <span class="nc">WS</span><span class="p">:</span>
+<div class="viewcode-block" id="WS.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.WS.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">CONTINUE_IMMEDIATELY_IF_PENDING_TRIGGER</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">WAIT_IMMEDIATELY</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+
+
+<div class="viewcode-block" id="WSX"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.WSX">[docs]</a><span class="k">class</span> <span class="nc">WSX</span><span class="p">:</span>
+<div class="viewcode-block" id="WSX.Mode"><a class="viewcode-back" href="../../../../../api/generated/qcodes.instrument_drivers.Keysight.keysightb1500.html#qcodes.instrument_drivers.Keysight.keysightb1500.KeysightB1511B.WSX.Mode">[docs]</a>    <span class="k">class</span> <span class="nc">Mode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+        <span class="n">CONTINUE_IMMEDIATELY_IF_PENDING_TRIGGER</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">WAIT_IMMEDIATELY</span> <span class="o">=</span> <span class="mi">2</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

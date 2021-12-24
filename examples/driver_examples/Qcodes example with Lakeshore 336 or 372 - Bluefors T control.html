@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QCoDeS Example with the Lakeshore Model 372 to Control the Temperature of the Bluefors Fridge &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="QCoDeS Example with Minicircuits Switch Boxes Controlled via USB" href="Qcodes%20example%20with%20Minicircuits%20Switch%20boxes%20%28USB-XSPDT%29.html" />
+    <link rel="prev" title="QCoDeS Example with Lakeshore 325" href="Qcodes%20example%20with%20Lakeshore%20325.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Examples of using QCoDeS</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#basic-examples">Basic examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#dataset">DataSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#plotting">Plotting</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#drivers">Drivers</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="QCoDeS%20Example%20with%20Keysight%20E4980A%20LCR%20meter.html">QCoDeS Example with Keysight E4980A LCR meter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="QCoDeS%20Example%20with%20Yokogawa%20GS200%20and%20Keithley%207510.html">QCoDeS Example with Yokogawa GS200 and Keithley 7510 Multimeter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="QCoDeS%20example%20with%20Aim%20TTi%20PL601-P.html">QCoDeS example with Aim TTi PL601-P</a></li>
+<li class="toctree-l3"><a class="reference internal" href="QCoDeS%20example%20with%20DelegateInstrument.html">Qcodes example with DelegateInstrument driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="QCoDeS%20example%20with%20DelegateInstrument.html#Devices-with-channels">Devices with channels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="QCoDeS%20example%20with%20Galil%20DMC4133%20Controller.html">QCoDeS example with Galil DMC4133 Controller</a></li>
+<li class="toctree-l3"><a class="reference internal" href="QCoDeS%20example%20with%20Galil%20DMC4133%20Controller.html#Imports">Imports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="QCoDeS%20example%20with%20Galil%20DMC4133%20Controller.html#DMC4133-Controller">DMC4133 Controller</a></li>
+<li class="toctree-l3"><a class="reference internal" href="QCoDeS%20example%20with%20Galil%20DMC4133%20Controller.html#Arm-class">Arm class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="QCoDeS%20example%20with%20Galil%20DMC4133%20Controller.html#Calibration">Calibration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="QCoDeS%20example%20with%20Galil%20DMC4133%20Controller.html#Integration-with-measurement-process">Integration with measurement process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="QCoDeS%20example%20with%20InstrumentGroup%20and%20DelegateInstrument.html">Qcodes example with InstrumentGroup driver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="QCoDeS%20example%20with%20Keithley%203706A%20System%20Switch.html">QCoDeS example with Keithley 3706A System Switch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="QCodes%20example%20with%20Keithley%20S46.html">QCoDeS Example with Tektronix Keithley S46</a></li>
+<li class="toctree-l3"><a class="reference internal" href="QCodes%20example%20with%20QDevil_QDAC.html">QCoDeS Example with QDevil_QDAC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="QCodes%20example%20with%20Rigol%20DG1062.html">QCoDeS Example with the Rigol DG 1062 Instrument</a></li>
+<li class="toctree-l3"><a class="reference internal" href="QCodes%20example%20with%20Tektronix%20DPO%2072004C.html">QCoDeS example with Textronix DPO 7200xx scopes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20AMI430.html">QCoDeS Example with AMI430</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Agilent%2034400A.html">QCoDeS Example with Agilent 34400A</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Alazar%20ATS9360.html">QCoDeS Example with Alazar ATS 9360</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Basel%20SP983c%20Preamp.html">Qcodes example with Basel SP983c Preamp and its Remote SP983a</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20DynaCool%20PPMS.html">QCoDeS Example with DynaCool PPMS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20HP8753D.html">QCoDeS Example with HP8753D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Ithaco.html">QCoDeS Example with Itacho</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Keithley%202600.html">QCoDeS Example with with Keithley 2600</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Keithley%207510.html">QCoDeS Example with Tektronix Keithley 7510 Multimeter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Keysight%2033500B.html">QCoDeS Example with Keysight 33500B</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Keysight%20344xxA.html">QCoDeS Example with Keysight 344xxA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Keysight%2034980A%20Switch%20Mainframe%20and%20Modules.html">QCoDeS Example with Keysight 34980A Multifunction Switch / Measure Mainframe and Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Keysight%20B1500%20Parameter%20Analyzer.html">Qcodes example with Keysight B1500 Semiconductor Parameter Analyzer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Keysight%20B2200%20Series%20Femto%20Leakage%20Switch%20Matrix.html">QCoDeS Example with Keysight B2200 Series Femto Leakage Switch Matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Keysight%20Infiniium%20Oscilloscope.html">QCoDeS Example with Keysight Infiniium Oscilloscopes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Keysight%20N9030B.html">Qcodes example with Keysight N9030B</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Keysight%20Network%20Analyzer.html">QCoDeS Example with Keysight Network Analyzers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Lakeshore%20325.html">QCoDeS Example with Lakeshore 325</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">QCoDeS Example with the Lakeshore Model 372 to Control the Temperature of the Bluefors Fridge</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Driver-Setup">Driver Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Readout-Sensor-Channels">Readout Sensor Channels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Heating-and-feedback-loop">Heating and feedback loop</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Waiting-to-reach-setpoint">Waiting to reach setpoint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Automatically-selecting-a-heater-range-(based-on-temperature)">Automatically selecting a heater range (based on temperature)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Sweeping/blocking-paramameter">Sweeping/blocking paramameter</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Minicircuits%20Switch%20boxes%20%28USB-XSPDT%29.html">QCoDeS Example with Minicircuits Switch Boxes Controlled via USB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Newport%20AG-UC8.html">QCoDeS Example with Newport AG-UC8 Piezo Motion Controller</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Oxford%20Mercury%20iPS.html">QCoDeS Example with Mercury iPS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Oxford%20Triton.html">QCoDeS Example with Oxford Triton</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20QDac.html">QCoDeS Example with QDac</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20QDac_channels.html">QCoDeS Example with QDac_channels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Rigol%20DP832.html">QCoDeS Example with Rigol DP832 Power Supply</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Rigol%20DS1074Z.html">QCoDeS Example with the Rigol DS 1074 Z oscilloscope</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Rohde%20Schwarz%20HMC8043.html">QCoDeS Example with R&amp;S HMC 8043 Power Supply</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Rohde%20Schwarz%20RTO%201000%20series%20Oscilloscope.html">QCoDeS Example with Rohde Schwarz RTO 1000 Series Oscilloscope</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Rohde%20Schwarz%20SGS100A.html">QCoDeS Example with Rohde Schwarz SGS100A RF source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Rohde%20Schwarz%20ZNB.html">QCoDeS Example with Rohde Schwarz ZNB20/8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Stahl.html">QCoDeS Example with the Stahl Bias Sources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Stanford%20SR830.html">QCoDeS Example with Stanford SR830</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Stanford%20SR86x%20with%20buffered%20readout.html">QCoDeS Example with Standford Research SR86x Lock-in Amplifier with Buffered Readout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Tektronix%20AWG5014C.html">QCoDeS Example with Tektronix AWG5014</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Tektronix%20AWG70002A.html">QCoDeS Example with Tektronix AWG70002A</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Tektronix%20TPS2012.html">QCoDeS Example with Tektronix TPS2012</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20Yokogawa%20GS2xx.html">QCoDeS Example with Yokogawa GS200/GS210</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%20example%20with%20keithley%202450.html">QCoDeS Example with Tektronix Keithley 2450 Source Meter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes%2Bbroadbean%20example%20with%20Tektronix%20AWG5208.html">QCoDeS+Broadbean Example with Tektronix AWG5208</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes-example-with-Signal-Hound-USB-SA124B.html">QCoDeS Example with Signal Hound USB-SA124B</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Qcodes-example-with-Signal-Hound-USB-SA124B-ParameterWithSetpoints.html">QCoDeS Example with Signal Hound USB-SA124B ParameterWithSetpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#writing-drivers">Writing Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#logging">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../index.html#legacy-examples">Legacy examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Examples of using QCoDeS</a> &raquo;</li>
+      <li>QCoDeS Example with the Lakeshore Model 372 to Control the Temperature of the Bluefors Fridge</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/driver_examples/Qcodes example with Lakeshore 336 or 372 - Bluefors T control.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="admonition note">
+  <p>This page was generated from
+    <a class="reference external"
+    href="https://github.com/qcodes/qcodes/blob/master/docs/examples/driver_examples/Qcodes example with Lakeshore 336 or 372 - Bluefors T control.ipynb">docs/examples/driver_examples/Qcodes example with Lakeshore 336 or 372 - Bluefors T control.ipynb</a>.
+    Interactive online version:
+    <a href="https://mybinder.org/v2/gh/qcodes/qcodes/master?filepath=docs/examples/driver_examples/Qcodes example with Lakeshore 336 or 372 - Bluefors T control.ipynb"><img
+alt="Binder badge"
+    src="https://mybinder.org/badge_logo.svg"
+    style="vertical-align:text-bottom"></a>.
+  </p>
+  <script>
+    if (document.location.host) {
+      var p = document.currentScript.previousSibling.previousSibling;
+      var a = document.createElement('a');
+      a.innerHTML = 'View in <em>nbviewer</em>';
+      a.href = `https://nbviewer.jupyter.org/url${
+        (window.location.protocol == 'https:' ? 's/' : '/') +
+        window.location.host +
+        window.location.pathname.slice(0, -4) }ipynb`;
+      a.classList.add('reference');
+      a.classList.add('external');
+      p.appendChild(a);
+      p.appendChild(document.createTextNode('.'));
+    }
+  </script>
+</div><section id="QCoDeS-Example-with-the-Lakeshore-Model-372-to-Control-the-Temperature-of-the-Bluefors-Fridge">
+<h1>QCoDeS Example with the Lakeshore Model 372 to Control the Temperature of the Bluefors Fridge<a class="headerlink" href="#QCoDeS-Example-with-the-Lakeshore-Model-372-to-Control-the-Temperature-of-the-Bluefors-Fridge" title="Permalink to this headline"></a></h1>
+<p>The Lakeshore Temperature Controller Model 372 is used to control the temperature of the Bluefors fridges.</p>
+<p>To use it as such outside of the control software provided by Bluefors, one has to establish an addtional connection. Within the Bluefors system, the Lakeshore is connected via its usb port (through a USB hub along with the other devices) to the control Laptop (as part of the Bluefors setup). To control the temperature of the fridge via QCoDeS, it is the most convenient to connect the Lakeshore via its LAN port to the control computer (the one with QCoDeS, not the one from Bluefors). In order to
+reach the LAN port of the Lakeshore, the Bluefors rack has to be opened, and the PCB board that is fixed to the metal board has to be opened as well (it’s a door as well with magnetic clips on one side). Do NOT disconnect the USB! Then switch the operation mode (usually there is an Interface button on the instrument) from USB to LAB. When using a router, remember to set the IP address setting to DHCP. Finally, use the following address format for VISA address:
+<code class="docutils literal notranslate"><span class="pre">&quot;TCPIP::&lt;ip</span> <span class="pre">address&gt;::&lt;port&gt;::SOCKET&quot;</span></code>, where “port” is a known value from the manual (most probably, “7777”).</p>
+<p>As mentioned above, for using the Lakeshore with QCoDeS, the operation mode has to be switched from USB to LAN. When done with the measurements, please, switch back to USB, so that the logging of the Temperature provided by the Bluefors software continues. It is planned to implement a server that takes care of the logging, so that the switching to USB will no longer be necessary. For the time being, please, always remember to switch back!</p>
+<section id="Driver-Setup">
+<h2>Driver Setup<a class="headerlink" href="#Driver-Setup" title="Permalink to this headline"></a></h2>
+<p>This notebook is using a simulated version of the driver, so that it can be run and played with, without an actual instrument. When trying it out with a real Lakeshore, please set <code class="docutils literal notranslate"><span class="pre">simulation</span> <span class="pre">=</span> <span class="pre">False</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">simulation</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">if</span> <span class="n">simulation</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">qcodes.tests.drivers.test_lakeshore</span> <span class="kn">import</span> <span class="n">Model_372_Mock</span> <span class="k">as</span> <span class="n">Model_372</span>
+    <span class="kn">import</span> <span class="nn">qcodes.instrument.sims</span> <span class="k">as</span> <span class="nn">sims</span>
+    <span class="n">visalib</span> <span class="o">=</span> <span class="n">sims</span><span class="o">.</span><span class="vm">__file__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;__init__.py&#39;</span><span class="p">,</span>
+                                    <span class="s1">&#39;lakeshore_model372.yaml@sim&#39;</span><span class="p">)</span>
+    <span class="n">ls</span> <span class="o">=</span> <span class="n">Model_372</span><span class="p">(</span><span class="s1">&#39;lakeshore_372&#39;</span><span class="p">,</span> <span class="s1">&#39;GPIB::3::65535::INSTR&#39;</span><span class="p">,</span>
+                    <span class="n">visalib</span><span class="o">=</span><span class="n">visalib</span><span class="p">,</span> <span class="n">device_clear</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">qcodes.instrument_drivers.Lakeshore.Model_372</span> <span class="kn">import</span> <span class="n">Model_372</span>
+    <span class="c1">#                               put visa address here, see e.g. NI Max</span>
+    <span class="c1">#                               or look up the IP address on</span>
+    <span class="c1">#                               the instrument itself</span>
+    <span class="n">ls</span> <span class="o">=</span> <span class="n">Model_372</span><span class="p">(</span><span class="s1">&#39;lakeshore_372&#39;</span><span class="p">,</span> <span class="s1">&#39;TCPIP::192.168.0.160::7777::SOCKET&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Connected to: None lakeshore_372 (serial:None, firmware:None) in 0.19s
+</pre></div></div>
+</div>
+</section>
+<section id="Readout-Sensor-Channels">
+<h2>Readout Sensor Channels<a class="headerlink" href="#Readout-Sensor-Channels" title="Permalink to this headline"></a></h2>
+<p>The lakeshore has two types of <em>channels</em>: <em>Readout channels</em> and <em>heaters</em>. For reading the temperature we use the readout channels. There are sixteen channels, each of which has the following parameters:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ls</span><span class="o">.</span><span class="n">ch01</span><span class="o">.</span><span class="n">parameters</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;temperature&#39;: &lt;qcodes.instrument.parameter.Parameter: temperature at 1760079888168&gt;,
+ &#39;t_limit&#39;: &lt;qcodes.instrument.parameter.Parameter: t_limit at 1760079886432&gt;,
+ &#39;sensor_raw&#39;: &lt;qcodes.instrument.parameter.Parameter: sensor_raw at 1760079886152&gt;,
+ &#39;sensor_status&#39;: &lt;qcodes.instrument.parameter.Parameter: sensor_status at 1760079886544&gt;,
+ &#39;sensor_name&#39;: &lt;qcodes.instrument.parameter.Parameter: sensor_name at 1760079886936&gt;,
+ &#39;enabled&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: enabled at 1760079886768&gt;,
+ &#39;dwell&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: dwell at 1760079887888&gt;,
+ &#39;pause&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: pause at 1760079887160&gt;,
+ &#39;curve_number&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: curve_number at 1760079888112&gt;,
+ &#39;temperature_coefficient&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: temperature_coefficient at 1760079887496&gt;,
+ &#39;excitation_mode&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: excitation_mode at 1760079887440&gt;,
+ &#39;excitation_range_number&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: excitation_range_number at 1760079888000&gt;,
+ &#39;auto_range&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: auto_range at 1760079887608&gt;,
+ &#39;range&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: range at 1760079888056&gt;,
+ &#39;current_source_shunted&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: current_source_shunted at 1760080036752&gt;,
+ &#39;units&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: units at 1760080035912&gt;}
+</pre></div></div>
+</div>
+<p>All the parameters have docstrings, labels, and units, when applicable.</p>
+<p>Some of these parameters have been added just because other interesting parameters can only be set together with these (Lakeshore uses VISA commands with multiple inputs/outputs).</p>
+<p>Some parameters like <code class="docutils literal notranslate"><span class="pre">curve_number</span></code> should not be changed, unless the user knows what he’s doing.</p>
+<p>In order to read temperature values from all the sensors, we can do the following:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">ls</span><span class="o">.</span><span class="n">channels</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Temperature of </span><span class="si">{</span><span class="n">ch</span><span class="o">.</span><span class="n">short_name</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="s2">&quot;on&quot;</span> <span class="k">if</span> <span class="n">ch</span><span class="o">.</span><span class="n">enabled</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;off&quot;</span><span class="si">}</span><span class="s1">): </span><span class="si">{</span><span class="n">ch</span><span class="o">.</span><span class="n">temperature</span><span class="p">()</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">ch</span><span class="o">.</span><span class="n">units</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Temperature of ch01 (on): 4.0 kelvin
+Temperature of ch02 (on): 4.0 kelvin
+Temperature of ch03 (on): 4.0 kelvin
+Temperature of ch04 (on): 4.0 kelvin
+Temperature of ch05 (on): 4.0 kelvin
+Temperature of ch06 (on): 4.0 kelvin
+Temperature of ch07 (on): 4.0 kelvin
+Temperature of ch08 (on): 4.0 kelvin
+Temperature of ch09 (on): 4.0 kelvin
+Temperature of ch10 (on): 4.0 kelvin
+Temperature of ch11 (on): 4.0 kelvin
+Temperature of ch12 (on): 4.0 kelvin
+Temperature of ch13 (on): 4.0 kelvin
+Temperature of ch14 (on): 4.0 kelvin
+Temperature of ch15 (on): 4.0 kelvin
+Temperature of ch16 (on): 4.0 kelvin
+</pre></div></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">enabled</span></code> parameter of the sensor channel is very important because Lakeshore gets readings from the enabled channels in sequence. This means that if you have 3 channels enabled, while you are contantly requesting the temperature reading from only the first one, the array of readings will have parts when the value is constant. This is because within those parts Lakeshore was busy with reading temperature from the other two channels.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">units</span></code> parameter is also of big importance. As it will be explained below, it defines the units from the <code class="docutils literal notranslate"><span class="pre">setpoint</span></code> value of the heater that is used in a <code class="docutils literal notranslate"><span class="pre">closed_loop</span></code> mode.</p>
+</section>
+<section id="Heating-and-feedback-loop">
+<h2>Heating and feedback loop<a class="headerlink" href="#Heating-and-feedback-loop" title="Permalink to this headline"></a></h2>
+<p>To set a certain temperature one needs to start a feedback loop that reads the temperature from a sensor channel, and feeds it back to the sample through a heater. The Lakeshore 372 has three heaters: <code class="docutils literal notranslate"><span class="pre">sample_heater</span></code>, <code class="docutils literal notranslate"><span class="pre">warmup_heater</span></code>, and <code class="docutils literal notranslate"><span class="pre">analog_heater</span></code>.</p>
+<p>Here the <code class="docutils literal notranslate"><span class="pre">sample_heater</span></code> will be used. It has the following parameters:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">h</span> <span class="o">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">sample_heater</span>
+<span class="n">h</span><span class="o">.</span><span class="n">parameters</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;mode&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: mode at 1760081208600&gt;,
+ &#39;input_channel&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: input_channel at 1760081208768&gt;,
+ &#39;powerup_enable&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: powerup_enable at 1760081208992&gt;,
+ &#39;P&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: P at 1760081209496&gt;,
+ &#39;I&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: I at 1760081209776&gt;,
+ &#39;D&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: D at 1760081210056&gt;,
+ &#39;output_range&#39;: &lt;qcodes.instrument.parameter.Parameter: output_range at 1760081210392&gt;,
+ &#39;setpoint&#39;: &lt;qcodes.instrument.parameter.Parameter: setpoint at 1760081210616&gt;,
+ &#39;range_limits&#39;: &lt;qcodes.instrument.parameter.Parameter: range_limits at 1760081211176&gt;,
+ &#39;wait_cycle_time&#39;: &lt;qcodes.instrument.parameter.Parameter: wait_cycle_time at 1760081211232&gt;,
+ &#39;wait_tolerance&#39;: &lt;qcodes.instrument.parameter.Parameter: wait_tolerance at 1760081285416&gt;,
+ &#39;wait_equilibration_time&#39;: &lt;qcodes.instrument.parameter.Parameter: wait_equilibration_time at 1760081285640&gt;,
+ &#39;blocking_t&#39;: &lt;qcodes.instrument.parameter.Parameter: blocking_t at 1760081285864&gt;,
+ &#39;polarity&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: polarity at 1760081286032&gt;,
+ &#39;use_filter&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: use_filter at 1760081286256&gt;,
+ &#39;delay&#39;: &lt;qcodes.instrument.group_parameter.GroupParameter: delay at 1760081286704&gt;}
+</pre></div></div>
+</div>
+<p>The allowed modes, polarities, and ranges are defined in:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">h</span><span class="o">.</span><span class="n">MODES</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;off&#39;: 0,
+ &#39;monitor_out&#39;: 1,
+ &#39;open_loop&#39;: 2,
+ &#39;zone&#39;: 3,
+ &#39;still&#39;: 4,
+ &#39;closed_loop&#39;: 5,
+ &#39;warm_up&#39;: 6}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">h</span><span class="o">.</span><span class="n">RANGES</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;off&#39;: 0,
+ &#39;31.6μA&#39;: 1,
+ &#39;100μA&#39;: 2,
+ &#39;316μA&#39;: 3,
+ &#39;1mA&#39;: 4,
+ &#39;3.16mA&#39;: 5,
+ &#39;10mA&#39;: 6,
+ &#39;31.6mA&#39;: 7,
+ &#39;100mA&#39;: 8}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">h</span><span class="o">.</span><span class="n">POLARITIES</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;unipolar&#39;: 0, &#39;bipolar&#39;: 1}
+</pre></div></div>
+</div>
+<section id="Working-with-closed-loop-control">
+<h3>Working with closed loop control<a class="headerlink" href="#Working-with-closed-loop-control" title="Permalink to this headline"></a></h3>
+<p>To use a closed loop control, we need to set the <code class="docutils literal notranslate"><span class="pre">P</span></code>, <code class="docutils literal notranslate"><span class="pre">I</span></code>, <code class="docutils literal notranslate"><span class="pre">D</span></code> values, choose an <code class="docutils literal notranslate"><span class="pre">input_channel</span></code> that will be read within the closed loop, set the range of the heater (<code class="docutils literal notranslate"><span class="pre">output_range</span></code>), set the <code class="docutils literal notranslate"><span class="pre">setpoint</span></code> value (e.g. the target temperature), and start the operation by setting <code class="docutils literal notranslate"><span class="pre">mode</span></code> to <code class="docutils literal notranslate"><span class="pre">closed_loop</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">h</span><span class="o">.</span><span class="n">P</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">h</span><span class="o">.</span><span class="n">I</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">h</span><span class="o">.</span><span class="n">D</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">h</span><span class="o">.</span><span class="n">output_range</span><span class="p">(</span><span class="s1">&#39;31.6μA&#39;</span><span class="p">)</span>
+<span class="n">h</span><span class="o">.</span><span class="n">input_channel</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">h</span><span class="o">.</span><span class="n">setpoint</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">h</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s1">&#39;closed_loop&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<section id="Units-of-the-setpoint">
+<h4>Units of the setpoint<a class="headerlink" href="#Units-of-the-setpoint" title="Permalink to this headline"></a></h4>
+<p>Be careful when setting the value of the <code class="docutils literal notranslate"><span class="pre">setpoint</span></code> - Lakeshore uses “preferred units” for it which are determined by the <code class="docutils literal notranslate"><span class="pre">units</span></code> parameter of the chosen <code class="docutils literal notranslate"><span class="pre">input_channel</span></code>. Thanks to that, Lakeshore 372 supports setting <code class="docutils literal notranslate"><span class="pre">setpoint</span></code> in <code class="docutils literal notranslate"><span class="pre">ohms</span></code> and <code class="docutils literal notranslate"><span class="pre">kelvins</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ls</span><span class="o">.</span><span class="n">ch09</span><span class="o">.</span><span class="n">units</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;kelvin&#39;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">setpoint</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>  <span class="c1"># when working in Jupyter, just use `h.setpoint?` syntax</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The value of the setpoint in the preferred units of the control loop sensor (which is set via `input_channel` parameter)
+
+Parameter class:
+
+* `name` setpoint
+* `label` Setpoint value (in sensor units)
+* `unit`
+* `vals` &lt;Numbers 0&lt;=v&lt;=400&gt;
+</pre></div></div>
+</div>
+</section>
+<section id="Disable-unrelated-channels-for-continuos-readings">
+<h4>Disable unrelated channels for continuos readings<a class="headerlink" href="#Disable-unrelated-channels-for-continuos-readings" title="Permalink to this headline"></a></h4>
+<p>Note that in order to have Lakeshore constantly reading from the <code class="docutils literal notranslate"><span class="pre">input_channel</span></code>, you need to disable other channels. Otherwise, Lakeshore will be reading all the enabled channels one by one, which will slow down the convergence of the control loop.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ls</span><span class="o">.</span><span class="n">ch03</span><span class="o">.</span><span class="n">enabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Observe-control-loop-working">
+<h4>Observe control loop working<a class="headerlink" href="#Observe-control-loop-working" title="Permalink to this headline"></a></h4>
+<p>Now we can observe how the temperature gets steered towards the setpoint (This is not implemented in the simulated instrument)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;T = </span><span class="si">{</span><span class="n">ls</span><span class="o">.</span><span class="n">ch09</span><span class="o">.</span><span class="n">temperature</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+T = 4.0
+T = 4.0
+T = 4.0
+T = 4.0
+T = 4.0
+</pre></div></div>
+</div>
+<p>Textual representation is not very convenient, hence let’s do the same but now with plotting (This is not implemented in the simulated instrument):</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">matplotlib</span> notebook
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>
+<span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="kn">import</span> <span class="n">interact</span><span class="p">,</span> <span class="n">widgets</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="k">def</span> <span class="nf">live_plot_temperature_reading</span><span class="p">(</span><span class="n">channel_to_read</span><span class="p">,</span> <span class="n">read_period</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">n_reads</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Live plot the temperature reading from a Lakeshore sensor channel</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        channel_to_read</span>
+<span class="sd">            Lakeshore channel object to read the temperature from</span>
+<span class="sd">        read_period</span>
+<span class="sd">            time in seconds between two reads of the temperature</span>
+<span class="sd">        n_reads</span>
+<span class="sd">            total number of reads to perform</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Make a widget for a text display that is contantly being updated</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Text</span><span class="p">()</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">line</span><span class="p">,</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="p">[],</span> <span class="s1">&#39;*-&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time, s&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Temperature, </span><span class="si">{</span><span class="n">channel_to_read</span><span class="o">.</span><span class="n">units</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ion</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_reads</span><span class="p">):</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">read_period</span><span class="p">)</span>
+
+        <span class="c1"># Update the text field</span>
+        <span class="n">text</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;T = </span><span class="si">{</span><span class="n">channel_to_read</span><span class="o">.</span><span class="n">temperature</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="c1"># Add new point to the data that is being plotted</span>
+        <span class="n">line</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">(),</span> <span class="n">channel_to_read</span><span class="o">.</span><span class="n">temperature</span><span class="p">()))</span>
+        <span class="n">line</span><span class="o">.</span><span class="n">set_xdata</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()),</span> <span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">read_period</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="o">.</span><span class="n">relim</span><span class="p">()</span>  <span class="c1"># Recalculate limits</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">autoscale_view</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>  <span class="c1"># Autoscale</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>  <span class="c1"># Redraw</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">live_plot_temperature_reading</span><span class="p">(</span><span class="n">channel_to_read</span><span class="o">=</span><span class="n">ls</span><span class="o">.</span><span class="n">ch09</span><span class="p">,</span> <span class="n">read_period</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">n_reads</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "3521c6b254ee4bb8b954a6e101a06b5c", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="output_javascript"></div>
+<script type="text/javascript">
+var element = document.currentScript.previousSibling.previousSibling;
+/* Put everything inside the global mpl namespace */
+window.mpl = {};
+
+
+mpl.get_websocket_type = function() {
+    if (typeof(WebSocket) !== 'undefined') {
+        return WebSocket;
+    } else if (typeof(MozWebSocket) !== 'undefined') {
+        return MozWebSocket;
+    } else {
+        alert('Your browser does not have WebSocket support.' +
+              'Please try Chrome, Safari or Firefox ≥ 6. ' +
+              'Firefox 4 and 5 are also supported but you ' +
+              'have to enable WebSockets in about:config.');
+    };
+}
+
+mpl.figure = function(figure_id, websocket, ondownload, parent_element) {
+    this.id = figure_id;
+
+    this.ws = websocket;
+
+    this.supports_binary = (this.ws.binaryType != undefined);
+
+    if (!this.supports_binary) {
+        var warnings = document.getElementById("mpl-warnings");
+        if (warnings) {
+            warnings.style.display = 'block';
+            warnings.textContent = (
+                "This browser does not support binary websocket messages. " +
+                    "Performance may be slow.");
+        }
+    }
+
+    this.imageObj = new Image();
+
+    this.context = undefined;
+    this.message = undefined;
+    this.canvas = undefined;
+    this.rubberband_canvas = undefined;
+    this.rubberband_context = undefined;
+    this.format_dropdown = undefined;
+
+    this.image_mode = 'full';
+
+    this.root = $('<div/>');
+    this._root_extra_style(this.root)
+    this.root.attr('style', 'display: inline-block');
+
+    $(parent_element).append(this.root);
+
+    this._init_header(this);
+    this._init_canvas(this);
+    this._init_toolbar(this);
+
+    var fig = this;
+
+    this.waiting = false;
+
+    this.ws.onopen =  function () {
+            fig.send_message("supports_binary", {value: fig.supports_binary});
+            fig.send_message("send_image_mode", {});
+            if (mpl.ratio != 1) {
+                fig.send_message("set_dpi_ratio", {'dpi_ratio': mpl.ratio});
+            }
+            fig.send_message("refresh", {});
+        }
+
+    this.imageObj.onload = function() {
+            if (fig.image_mode == 'full') {
+                // Full images could contain transparency (where diff images
+                // almost always do), so we need to clear the canvas so that
+                // there is no ghosting.
+                fig.context.clearRect(0, 0, fig.canvas.width, fig.canvas.height);
+            }
+            fig.context.drawImage(fig.imageObj, 0, 0);
+        };
+
+    this.imageObj.onunload = function() {
+        this.ws.close();
+    }
+
+    this.ws.onmessage = this._make_on_message_function(this);
+
+    this.ondownload = ondownload;
+}
+
+mpl.figure.prototype._init_header = function() {
+    var titlebar = $(
+        '<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ' +
+        'ui-helper-clearfix"/>');
+    var titletext = $(
+        '<div class="ui-dialog-title" style="width: 100%; ' +
+        'text-align: center; padding: 3px;"/>');
+    titlebar.append(titletext)
+    this.root.append(titlebar);
+    this.header = titletext[0];
+}
+
+
+
+mpl.figure.prototype._canvas_extra_style = function(canvas_div) {
+
+}
+
+
+mpl.figure.prototype._root_extra_style = function(canvas_div) {
+
+}
+
+mpl.figure.prototype._init_canvas = function() {
+    var fig = this;
+
+    var canvas_div = $('<div/>');
+
+    canvas_div.attr('style', 'position: relative; clear: both; outline: 0');
+
+    function canvas_keyboard_event(event) {
+        return fig.key_event(event, event['data']);
+    }
+
+    canvas_div.keydown('key_press', canvas_keyboard_event);
+    canvas_div.keyup('key_release', canvas_keyboard_event);
+    this.canvas_div = canvas_div
+    this._canvas_extra_style(canvas_div)
+    this.root.append(canvas_div);
+
+    var canvas = $('<canvas/>');
+    canvas.addClass('mpl-canvas');
+    canvas.attr('style', "left: 0; top: 0; z-index: 0; outline: 0")
+
+    this.canvas = canvas[0];
+    this.context = canvas[0].getContext("2d");
+
+    var backingStore = this.context.backingStorePixelRatio ||
+    this.context.webkitBackingStorePixelRatio ||
+    this.context.mozBackingStorePixelRatio ||
+    this.context.msBackingStorePixelRatio ||
+    this.context.oBackingStorePixelRatio ||
+    this.context.backingStorePixelRatio || 1;
+
+    mpl.ratio = (window.devicePixelRatio || 1) / backingStore;
+
+    var rubberband = $('<canvas/>');
+    rubberband.attr('style', "position: absolute; left: 0; top: 0; z-index: 1;")
+
+    var pass_mouse_events = true;
+
+    canvas_div.resizable({
+        start: function(event, ui) {
+            pass_mouse_events = false;
+        },
+        resize: function(event, ui) {
+            fig.request_resize(ui.size.width, ui.size.height);
+        },
+        stop: function(event, ui) {
+            pass_mouse_events = true;
+            fig.request_resize(ui.size.width, ui.size.height);
+        },
+    });
+
+    function mouse_event_fn(event) {
+        if (pass_mouse_events)
+            return fig.mouse_event(event, event['data']);
+    }
+
+    rubberband.mousedown('button_press', mouse_event_fn);
+    rubberband.mouseup('button_release', mouse_event_fn);
+    // Throttle sequential mouse events to 1 every 20ms.
+    rubberband.mousemove('motion_notify', mouse_event_fn);
+
+    rubberband.mouseenter('figure_enter', mouse_event_fn);
+    rubberband.mouseleave('figure_leave', mouse_event_fn);
+
+    canvas_div.on("wheel", function (event) {
+        event = event.originalEvent;
+        event['data'] = 'scroll'
+        if (event.deltaY < 0) {
+            event.step = 1;
+        } else {
+            event.step = -1;
+        }
+        mouse_event_fn(event);
+    });
+
+    canvas_div.append(canvas);
+    canvas_div.append(rubberband);
+
+    this.rubberband = rubberband;
+    this.rubberband_canvas = rubberband[0];
+    this.rubberband_context = rubberband[0].getContext("2d");
+    this.rubberband_context.strokeStyle = "#000000";
+
+    this._resize_canvas = function(width, height) {
+        // Keep the size of the canvas, canvas container, and rubber band
+        // canvas in synch.
+        canvas_div.css('width', width)
+        canvas_div.css('height', height)
+
+        canvas.attr('width', width * mpl.ratio);
+        canvas.attr('height', height * mpl.ratio);
+        canvas.attr('style', 'width: ' + width + 'px; height: ' + height + 'px;');
+
+        rubberband.attr('width', width);
+        rubberband.attr('height', height);
+    }
+
+    // Set the figure to an initial 600x600px, this will subsequently be updated
+    // upon first draw.
+    this._resize_canvas(600, 600);
+
+    // Disable right mouse context menu.
+    $(this.rubberband_canvas).bind("contextmenu",function(e){
+        return false;
+    });
+
+    function set_focus () {
+        canvas.focus();
+        canvas_div.focus();
+    }
+
+    window.setTimeout(set_focus, 100);
+}
+
+mpl.figure.prototype._init_toolbar = function() {
+    var fig = this;
+
+    var nav_element = $('<div/>')
+    nav_element.attr('style', 'width: 100%');
+    this.root.append(nav_element);
+
+    // Define a callback function for later on.
+    function toolbar_event(event) {
+        return fig.toolbar_button_onclick(event['data']);
+    }
+    function toolbar_mouse_event(event) {
+        return fig.toolbar_button_onmouseover(event['data']);
+    }
+
+    for(var toolbar_ind in mpl.toolbar_items) {
+        var name = mpl.toolbar_items[toolbar_ind][0];
+        var tooltip = mpl.toolbar_items[toolbar_ind][1];
+        var image = mpl.toolbar_items[toolbar_ind][2];
+        var method_name = mpl.toolbar_items[toolbar_ind][3];
+
+        if (!name) {
+            // put a spacer in here.
+            continue;
+        }
+        var button = $('<button/>');
+        button.addClass('ui-button ui-widget ui-state-default ui-corner-all ' +
+                        'ui-button-icon-only');
+        button.attr('role', 'button');
+        button.attr('aria-disabled', 'false');
+        button.click(method_name, toolbar_event);
+        button.mouseover(tooltip, toolbar_mouse_event);
+
+        var icon_img = $('<span/>');
+        icon_img.addClass('ui-button-icon-primary ui-icon');
+        icon_img.addClass(image);
+        icon_img.addClass('ui-corner-all');
+
+        var tooltip_span = $('<span/>');
+        tooltip_span.addClass('ui-button-text');
+        tooltip_span.html(tooltip);
+
+        button.append(icon_img);
+        button.append(tooltip_span);
+
+        nav_element.append(button);
+    }
+
+    var fmt_picker_span = $('<span/>');
+
+    var fmt_picker = $('<select/>');
+    fmt_picker.addClass('mpl-toolbar-option ui-widget ui-widget-content');
+    fmt_picker_span.append(fmt_picker);
+    nav_element.append(fmt_picker_span);
+    this.format_dropdown = fmt_picker[0];
+
+    for (var ind in mpl.extensions) {
+        var fmt = mpl.extensions[ind];
+        var option = $(
+            '<option/>', {selected: fmt === mpl.default_extension}).html(fmt);
+        fmt_picker.append(option)
+    }
+
+    // Add hover states to the ui-buttons
+    $( ".ui-button" ).hover(
+        function() { $(this).addClass("ui-state-hover");},
+        function() { $(this).removeClass("ui-state-hover");}
+    );
+
+    var status_bar = $('<span class="mpl-message"/>');
+    nav_element.append(status_bar);
+    this.message = status_bar[0];
+}
+
+mpl.figure.prototype.request_resize = function(x_pixels, y_pixels) {
+    // Request matplotlib to resize the figure. Matplotlib will then trigger a resize in the client,
+    // which will in turn request a refresh of the image.
+    this.send_message('resize', {'width': x_pixels, 'height': y_pixels});
+}
+
+mpl.figure.prototype.send_message = function(type, properties) {
+    properties['type'] = type;
+    properties['figure_id'] = this.id;
+    this.ws.send(JSON.stringify(properties));
+}
+
+mpl.figure.prototype.send_draw_message = function() {
+    if (!this.waiting) {
+        this.waiting = true;
+        this.ws.send(JSON.stringify({type: "draw", figure_id: this.id}));
+    }
+}
+
+
+mpl.figure.prototype.handle_save = function(fig, msg) {
+    var format_dropdown = fig.format_dropdown;
+    var format = format_dropdown.options[format_dropdown.selectedIndex].value;
+    fig.ondownload(fig, format);
+}
+
+
+mpl.figure.prototype.handle_resize = function(fig, msg) {
+    var size = msg['size'];
+    if (size[0] != fig.canvas.width || size[1] != fig.canvas.height) {
+        fig._resize_canvas(size[0], size[1]);
+        fig.send_message("refresh", {});
+    };
+}
+
+mpl.figure.prototype.handle_rubberband = function(fig, msg) {
+    var x0 = msg['x0'] / mpl.ratio;
+    var y0 = (fig.canvas.height - msg['y0']) / mpl.ratio;
+    var x1 = msg['x1'] / mpl.ratio;
+    var y1 = (fig.canvas.height - msg['y1']) / mpl.ratio;
+    x0 = Math.floor(x0) + 0.5;
+    y0 = Math.floor(y0) + 0.5;
+    x1 = Math.floor(x1) + 0.5;
+    y1 = Math.floor(y1) + 0.5;
+    var min_x = Math.min(x0, x1);
+    var min_y = Math.min(y0, y1);
+    var width = Math.abs(x1 - x0);
+    var height = Math.abs(y1 - y0);
+
+    fig.rubberband_context.clearRect(
+        0, 0, fig.canvas.width, fig.canvas.height);
+
+    fig.rubberband_context.strokeRect(min_x, min_y, width, height);
+}
+
+mpl.figure.prototype.handle_figure_label = function(fig, msg) {
+    // Updates the figure title.
+    fig.header.textContent = msg['label'];
+}
+
+mpl.figure.prototype.handle_cursor = function(fig, msg) {
+    var cursor = msg['cursor'];
+    switch(cursor)
+    {
+    case 0:
+        cursor = 'pointer';
+        break;
+    case 1:
+        cursor = 'default';
+        break;
+    case 2:
+        cursor = 'crosshair';
+        break;
+    case 3:
+        cursor = 'move';
+        break;
+    }
+    fig.rubberband_canvas.style.cursor = cursor;
+}
+
+mpl.figure.prototype.handle_message = function(fig, msg) {
+    fig.message.textContent = msg['message'];
+}
+
+mpl.figure.prototype.handle_draw = function(fig, msg) {
+    // Request the server to send over a new figure.
+    fig.send_draw_message();
+}
+
+mpl.figure.prototype.handle_image_mode = function(fig, msg) {
+    fig.image_mode = msg['mode'];
+}
+
+mpl.figure.prototype.updated_canvas_event = function() {
+    // Called whenever the canvas gets updated.
+    this.send_message("ack", {});
+}
+
+// A function to construct a web socket function for onmessage handling.
+// Called in the figure constructor.
+mpl.figure.prototype._make_on_message_function = function(fig) {
+    return function socket_on_message(evt) {
+        if (evt.data instanceof Blob) {
+            /* FIXME: We get "Resource interpreted as Image but
+             * transferred with MIME type text/plain:" errors on
+             * Chrome.  But how to set the MIME type?  It doesn't seem
+             * to be part of the websocket stream */
+            evt.data.type = "image/png";
+
+            /* Free the memory for the previous frames */
+            if (fig.imageObj.src) {
+                (window.URL || window.webkitURL).revokeObjectURL(
+                    fig.imageObj.src);
+            }
+
+            fig.imageObj.src = (window.URL || window.webkitURL).createObjectURL(
+                evt.data);
+            fig.updated_canvas_event();
+            fig.waiting = false;
+            return;
+        }
+        else if (typeof evt.data === 'string' && evt.data.slice(0, 21) == "data:image/png;base64") {
+            fig.imageObj.src = evt.data;
+            fig.updated_canvas_event();
+            fig.waiting = false;
+            return;
+        }
+
+        var msg = JSON.parse(evt.data);
+        var msg_type = msg['type'];
+
+        // Call the  "handle_{type}" callback, which takes
+        // the figure and JSON message as its only arguments.
+        try {
+            var callback = fig["handle_" + msg_type];
+        } catch (e) {
+            console.log("No handler for the '" + msg_type + "' message type: ", msg);
+            return;
+        }
+
+        if (callback) {
+            try {
+                // console.log("Handling '" + msg_type + "' message: ", msg);
+                callback(fig, msg);
+            } catch (e) {
+                console.log("Exception inside the 'handler_" + msg_type + "' callback:", e, e.stack, msg);
+            }
+        }
+    };
+}
+
+// from http://stackoverflow.com/questions/1114465/getting-mouse-location-in-canvas
+mpl.findpos = function(e) {
+    //this section is from http://www.quirksmode.org/js/events_properties.html
+    var targ;
+    if (!e)
+        e = window.event;
+    if (e.target)
+        targ = e.target;
+    else if (e.srcElement)
+        targ = e.srcElement;
+    if (targ.nodeType == 3) // defeat Safari bug
+        targ = targ.parentNode;
+
+    // jQuery normalizes the pageX and pageY
+    // pageX,Y are the mouse positions relative to the document
+    // offset() returns the position of the element relative to the document
+    var x = e.pageX - $(targ).offset().left;
+    var y = e.pageY - $(targ).offset().top;
+
+    return {"x": x, "y": y};
+};
+
+/*
+ * return a copy of an object with only non-object keys
+ * we need this to avoid circular references
+ * http://stackoverflow.com/a/24161582/3208463
+ */
+function simpleKeys (original) {
+  return Object.keys(original).reduce(function (obj, key) {
+    if (typeof original[key] !== 'object')
+        obj[key] = original[key]
+    return obj;
+  }, {});
+}
+
+mpl.figure.prototype.mouse_event = function(event, name) {
+    var canvas_pos = mpl.findpos(event)
+
+    if (name === 'button_press')
+    {
+        this.canvas.focus();
+        this.canvas_div.focus();
+    }
+
+    var x = canvas_pos.x * mpl.ratio;
+    var y = canvas_pos.y * mpl.ratio;
+
+    this.send_message(name, {x: x, y: y, button: event.button,
+                             step: event.step,
+                             guiEvent: simpleKeys(event)});
+
+    /* This prevents the web browser from automatically changing to
+     * the text insertion cursor when the button is pressed.  We want
+     * to control all of the cursor setting manually through the
+     * 'cursor' event from matplotlib */
+    event.preventDefault();
+    return false;
+}
+
+mpl.figure.prototype._key_event_extra = function(event, name) {
+    // Handle any extra behaviour associated with a key event
+}
+
+mpl.figure.prototype.key_event = function(event, name) {
+
+    // Prevent repeat events
+    if (name == 'key_press')
+    {
+        if (event.which === this._key)
+            return;
+        else
+            this._key = event.which;
+    }
+    if (name == 'key_release')
+        this._key = null;
+
+    var value = '';
+    if (event.ctrlKey && event.which != 17)
+        value += "ctrl+";
+    if (event.altKey && event.which != 18)
+        value += "alt+";
+    if (event.shiftKey && event.which != 16)
+        value += "shift+";
+
+    value += 'k';
+    value += event.which.toString();
+
+    this._key_event_extra(event, name);
+
+    this.send_message(name, {key: value,
+                             guiEvent: simpleKeys(event)});
+    return false;
+}
+
+mpl.figure.prototype.toolbar_button_onclick = function(name) {
+    if (name == 'download') {
+        this.handle_save(this, null);
+    } else {
+        this.send_message("toolbar_button", {name: name});
+    }
+};
+
+mpl.figure.prototype.toolbar_button_onmouseover = function(tooltip) {
+    this.message.textContent = tooltip;
+};
+mpl.toolbar_items = [["Home", "Reset original view", "fa fa-home icon-home", "home"], ["Back", "Back to  previous view", "fa fa-arrow-left icon-arrow-left", "back"], ["Forward", "Forward to next view", "fa fa-arrow-right icon-arrow-right", "forward"], ["", "", "", ""], ["Pan", "Pan axes with left mouse, zoom with right", "fa fa-arrows icon-move", "pan"], ["Zoom", "Zoom to rectangle", "fa fa-square-o icon-check-empty", "zoom"], ["", "", "", ""], ["Download", "Download plot", "fa fa-floppy-o icon-save", "download"]];
+
+mpl.extensions = ["eps", "pdf", "png", "ps", "raw", "svg"];
+
+mpl.default_extension = "png";var comm_websocket_adapter = function(comm) {
+    // Create a "websocket"-like object which calls the given IPython comm
+    // object with the appropriate methods. Currently this is a non binary
+    // socket, so there is still some room for performance tuning.
+    var ws = {};
+
+    ws.close = function() {
+        comm.close()
+    };
+    ws.send = function(m) {
+        //console.log('sending', m);
+        comm.send(m);
+    };
+    // Register the callback with on_msg.
+    comm.on_msg(function(msg) {
+        //console.log('receiving', msg['content']['data'], msg);
+        // Pass the mpl event to the overriden (by mpl) onmessage function.
+        ws.onmessage(msg['content']['data'])
+    });
+    return ws;
+}
+
+mpl.mpl_figure_comm = function(comm, msg) {
+    // This is the function which gets called when the mpl process
+    // starts-up an IPython Comm through the "matplotlib" channel.
+
+    var id = msg.content.data.id;
+    // Get hold of the div created by the display call when the Comm
+    // socket was opened in Python.
+    var element = $("#" + id);
+    var ws_proxy = comm_websocket_adapter(comm)
+
+    function ondownload(figure, format) {
+        window.open(figure.imageObj.src);
+    }
+
+    var fig = new mpl.figure(id, ws_proxy,
+                           ondownload,
+                           element.get(0));
+
+    // Call onopen now - mpl needs it, as it is assuming we've passed it a real
+    // web socket which is closed, not our websocket->open comm proxy.
+    ws_proxy.onopen();
+
+    fig.parent_element = element.get(0);
+    fig.cell_info = mpl.find_output_cell("<div id='" + id + "'></div>");
+    if (!fig.cell_info) {
+        console.error("Failed to find cell for figure", id, fig);
+        return;
+    }
+
+    var output_index = fig.cell_info[2]
+    var cell = fig.cell_info[0];
+
+};
+
+mpl.figure.prototype.handle_close = function(fig, msg) {
+    var width = fig.canvas.width/mpl.ratio
+    fig.root.unbind('remove')
+
+    // Update the output cell to use the data from the current canvas.
+    fig.push_to_output();
+    var dataURL = fig.canvas.toDataURL();
+    // Re-enable the keyboard manager in IPython - without this line, in FF,
+    // the notebook keyboard shortcuts fail.
+    IPython.keyboard_manager.enable()
+    $(fig.parent_element).html('<img src="' + dataURL + '" width="' + width + '">');
+    fig.close_ws(fig, msg);
+}
+
+mpl.figure.prototype.close_ws = function(fig, msg){
+    fig.send_message('closing', msg);
+    // fig.ws.close()
+}
+
+mpl.figure.prototype.push_to_output = function(remove_interactive) {
+    // Turn the data on the canvas into data in the output cell.
+    var width = this.canvas.width/mpl.ratio
+    var dataURL = this.canvas.toDataURL();
+    this.cell_info[1]['text/html'] = '<img src="' + dataURL + '" width="' + width + '">';
+}
+
+mpl.figure.prototype.updated_canvas_event = function() {
+    // Tell IPython that the notebook contents must change.
+    IPython.notebook.set_dirty(true);
+    this.send_message("ack", {});
+    var fig = this;
+    // Wait a second, then push the new image to the DOM so
+    // that it is saved nicely (might be nice to debounce this).
+    setTimeout(function () { fig.push_to_output() }, 1000);
+}
+
+mpl.figure.prototype._init_toolbar = function() {
+    var fig = this;
+
+    var nav_element = $('<div/>')
+    nav_element.attr('style', 'width: 100%');
+    this.root.append(nav_element);
+
+    // Define a callback function for later on.
+    function toolbar_event(event) {
+        return fig.toolbar_button_onclick(event['data']);
+    }
+    function toolbar_mouse_event(event) {
+        return fig.toolbar_button_onmouseover(event['data']);
+    }
+
+    for(var toolbar_ind in mpl.toolbar_items){
+        var name = mpl.toolbar_items[toolbar_ind][0];
+        var tooltip = mpl.toolbar_items[toolbar_ind][1];
+        var image = mpl.toolbar_items[toolbar_ind][2];
+        var method_name = mpl.toolbar_items[toolbar_ind][3];
+
+        if (!name) { continue; };
+
+        var button = $('<button class="btn btn-default" href="#" title="' + name + '"><i class="fa ' + image + ' fa-lg"></i></button>');
+        button.click(method_name, toolbar_event);
+        button.mouseover(tooltip, toolbar_mouse_event);
+        nav_element.append(button);
+    }
+
+    // Add the status bar.
+    var status_bar = $('<span class="mpl-message" style="text-align:right; float: right;"/>');
+    nav_element.append(status_bar);
+    this.message = status_bar[0];
+
+    // Add the close button to the window.
+    var buttongrp = $('<div class="btn-group inline pull-right"></div>');
+    var button = $('<button class="btn btn-mini btn-primary" href="#" title="Stop Interaction"><i class="fa fa-power-off icon-remove icon-large"></i></button>');
+    button.click(function (evt) { fig.handle_close(fig, {}); } );
+    button.mouseover('Stop Interaction', toolbar_mouse_event);
+    buttongrp.append(button);
+    var titlebar = this.root.find($('.ui-dialog-titlebar'));
+    titlebar.prepend(buttongrp);
+}
+
+mpl.figure.prototype._root_extra_style = function(el){
+    var fig = this
+    el.on("remove", function(){
+    fig.close_ws(fig, {});
+    });
+}
+
+mpl.figure.prototype._canvas_extra_style = function(el){
+    // this is important to make the div 'focusable
+    el.attr('tabindex', 0)
+    // reach out to IPython and tell the keyboard manager to turn it's self
+    // off when our div gets focus
+
+    // location in version 3
+    if (IPython.notebook.keyboard_manager) {
+        IPython.notebook.keyboard_manager.register_events(el);
+    }
+    else {
+        // location in version 2
+        IPython.keyboard_manager.register_events(el);
+    }
+
+}
+
+mpl.figure.prototype._key_event_extra = function(event, name) {
+    var manager = IPython.notebook.keyboard_manager;
+    if (!manager)
+        manager = IPython.keyboard_manager;
+
+    // Check for shift+enter
+    if (event.shiftKey && event.which == 13) {
+        this.canvas_div.blur();
+        // select the cell after this one
+        var index = IPython.notebook.find_cell_index(this.cell_info[0]);
+        IPython.notebook.select(index + 1);
+    }
+}
+
+mpl.figure.prototype.handle_save = function(fig, msg) {
+    fig.ondownload(fig, null);
+}
+
+
+mpl.find_output_cell = function(html_output) {
+    // Return the cell and output element which can be found *uniquely* in the notebook.
+    // Note - this is a bit hacky, but it is done because the "notebook_saving.Notebook"
+    // IPython event is triggered only after the cells have been serialised, which for
+    // our purposes (turning an active figure into a static one), is too late.
+    var cells = IPython.notebook.get_cells();
+    var ncells = cells.length;
+    for (var i=0; i<ncells; i++) {
+        var cell = cells[i];
+        if (cell.cell_type === 'code'){
+            for (var j=0; j<cell.output_area.outputs.length; j++) {
+                var data = cell.output_area.outputs[j];
+                if (data.data) {
+                    // IPython >= 3 moved mimebundle to data attribute of output
+                    data = data.data;
+                }
+                if (data['text/html'] == html_output) {
+                    return [cell, data, j];
+                }
+            }
+        }
+    }
+}
+
+// Register the function which deals with the matplotlib target/channel.
+// The kernel may be null if the page has been refreshed.
+if (IPython.notebook.kernel != null) {
+    IPython.notebook.kernel.comm_manager.register_target('matplotlib', mpl.mpl_figure_comm);
+}
+
+</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABLAAAAOECAYAAACxbcj6AAAgAElEQVR4XuzdCbQuVXkn/L+AgANXHBIDiKImouI8JaJRuzVOiQbjPLXoUlSMacgXh4vaEExQbMek85lgO4BxTNJOUew2RqJxwCgOjTMqCEgrUbmAc+B+a/vV6fXmcM7hfe8+tU9Vvb9a6y7wntq19/N76hy8/1u136vEQYAAAQIECBAgQIAAAQIECBAgQGDAAlcZ8NosjQABAgQIECBAgAABAgQIECBAgEAEWG4CAgQIECBAgAABAgQIECBAgACBQQsIsAbdHosjQIAAAQIECBAgQIAAAQIECBAQYLkHCBAgQIAAAQIECBAgQIAAAQIEBi0gwBp0eyyOAAECBAgQIECAAAECBAgQIEBAgOUeIECAAAECBAgQIECAAAECBAgQGLSAAGvQ7bE4AgQIECBAgAABAgQIECBAgAABAZZ7gAABAgQIECBAgAABAgQIECBAYNACAqxBt8fiCBAgQIAAAQIECBAgQIAAAQIEBFjuAQIECBAgQIAAAQIECBAgQIAAgUELCLAG3R6LI0CAAAECBAgQIECAAAECBAgQEGC5BwgQIECAAAECBAgQIECAAAECBAYtIMAadHssjgABAgQIECBAgAABAgQIECBAQIDlHiBAgAABAgQIECBAgAABAgQIEBi0gABr0O2xOAIECBAgQIAAAQIECBAgQIAAAQGWe4AAAQIECBAgQIAAAQIECBAgQGDQAgKsQbfH4ggQIECAAAECBAgQIECAAAECBARY7gECBAgQIECAAAECBAgQIECAAIFBCwiwBt0eiyNAgAABAgQIECBAgAABAgQIEBBguQcIECBAgAABAgQIECBAgAABAgQGLSDAGnR7LI4AAQIECBAgQIAAAQIECBAgQECA5R4gQIAAAQIECBAgQIAAAQIECBAYtIAAa9DtsTgCBAgQIECAAAECBAgQIECAAAEBlnuAAAECBAgQIECAAAECBAgQIEBg0AICrEG3x+IIECBAgAABAgQIECBAgAABAgQEWO4BAgQIECBAgAABAgQIECBAgACBQQsIsAbdHosjQIAAAQIECBAgQIAAAQIECBAQYLkHCBAgQIAAAQIECBAgQIAAAQIEBi0gwBp0eyyOAAECBAgQIECAAAECBAgQIEBAgOUeIECAAAECBAgQIECAAAECBAgQGLSAAGvQ7bE4AgQIECBAgAABAgQIECBAgAABAZZ7gAABAgQIECBAgAABAgQIECBAYNACAqxBt8fiCBAgQIAAAQIECBAgQIAAAQIEBFjuAQIECBAgQIAAAQIECBAgQIAAgUELCLAG3R6LI0CAAAECBAgQIECAAAECBAgQEGC5BwgQIECAAAECBAgQIECAAAECBAYtIMAadHssjgABAgQIECBAgAABAgQIECBAQIDlHiBAgAABAgQIECBAgAABAgQIEBi0gABr0O2xOAIECBAgQIAAAQIECBAgQIAAAQGWe4AAAQIECBAgQIAAAQIECBAgQGDQAgKsQbfH4ggQIECAAAECBAgQIECAAAECBARY7gECBAgQIECAAAECBAgQIECAAIFBCwiwBt0eiyNAgAABAgQIECBAgAABAgQIEBBguQcIECBAgAABAgQIECBAgAABAgQGLSDAGnR7LI4AAQIECBAgQIAAAQIECBAgQECA5R4gQIAAAQIECBAgQIAAAQIECBAYtIAAa9DtsTgCBAgQIECAAAECBAgQIECAAAEBlnuAAAECBAgQIECAAAECBAgQIEBg0AICrEG3x+IIECBAgAABAgQIECBAgAABAgQEWO4BAgQIECBAgAABAgQIECBAgACBQQsIsAbdHosjQIAAAQIECBAgQIAAAQIECBAQYLkHCBAgQIAAAQIECBAgQIAAAQIEBi0gwBp0eyyOAAECBAgQIECAAAECBAgQIEBAgOUeIECAAAECBAgQIECAAAECBAgQGLSAAGvQ7bE4AgQIECBAgAABAgQIECBAgAABAZZ7gAABAgQIECBAgAABAgQIECBAYNACAqy69hS//ZNcUncZowkQIECAAIHGAvsk+XaSnY3nNR0BAgQIECBAgMAuCAiwdgFtZsgBSc6ru4TRBAgQIECAwBYJ3CDJ+Vs0t2kJECBAgAABAgQWEBBgLYC1xqnbkuw499xzs21b+VcHAQIECBAgMHSBiy++OAceeGBZ5rWSXDz09VofAQIECBAgQIBAIsCquwt+EWDt2LFDgFXnaDQBAgQIEGgmUAKsa12rZFcCrGboJiJAgAABAgQIVAoIsOoABVh1fkYTIECAAIHmAgKs5uQmJECAAAECBAhUCwiw6ggFWHV+RhMgQIAAgeYCAqzm5CYkQIAAAQIECFQLCLDqCAVYdX5GEyBAgACB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XpDki/PzRYC1AJZTCRAgQIDAEAQEWEPogjUQIECAAAECBBYTGGuAtViV/Z0twOrP1pUJECBAgEAvAgKsXlhdlAABAgQIECDQq4AAq45XgFXnZzQBAgQIEGguIMBqTm5CAgQIECBAgEC1gACrjlCAVednNAECBAgQaC4gwGpObkICBAgQIECAQLWAAKuOUIBV52c0AQIECBBoLiDAak5uQgIECBAgQIBAtYAAq45QgFXnZzQBAgQIEGguIMBqTm5CAgQIECBAgEC1gACrjlCAVednNAECBAgQaC4gwGpObkICBAgQIECAQLWAAKuOUIBV52c0AQIECBBoLiDAak5uQgIECBAgQIBAtYAAq45QgFXnZzQBAgQIEGguIMBqTm5CAgQIECBAgEC1gACrjlCAVednNAECBAgQaC4gwGpObkICBAgQIECAQLWAAKuOUIBV52c0AQIECBBoLiDAak5uQgIECBAgQIBAtYAAq45QgFXnZzQBAgQIEGguIMBqTm5CAgQIECBAgEC1gACrjlCAVednNAECBAgQaC4gwGpObkICBAgQIECAQLWAAKuOUIBV52c0AQIECBBoLiDAak5uQgIECBAgQIBAtYAAq45QgFXnZzQBAgQIEGguIMBqTm5CAgQIECBAgEC1gACrjlCAVednNAECBAgQaC4gwGpObkICBAgQIECAQLWAAKuOUIBV52c0AQIECBBoLiDAak5uQgIECBAgQIBAtYAAq45QgFXnZzQBAgQIEGguIMBqTm5CAgQIECBAgEC1gACrjlCAVednNAECBAgQaC4gwGpObkICBAgQIECAQLWAAKuOUIBV52c0AQIECBBoLiDAak5uQgIECBAgQIBAtYAAq45QgFXnZzQBAgQIEGguIMBqTm5CAgQIECBAgEC1gACrjlCAVednNAECBAgQaC4gwGpObkICBAgQIECAQLWAAKuOUIBV52c0AQIECBBoLiDAak5uQgIECBAgQIBAtYAAq45QgFXnZzQBAgQIEGguIMBqTm5CAgQIECBAgEC1gACrjlCAVednNAECBAgQaC4gwGpObkICBAgQIECAQLWAAKuOUIBV52c0AQIECBBoLiDAak5uQgIECBAgQIBAtYAAq45QgFXnZzQBAgQIEGguIMBqTm5CAgQIECBAgEC1gACrjlCAVednNAECBAgQaC4gwGpObkICBAgQ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AAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkPVfCQAAAgAElEQVQCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBKtvra4AAAeFSURBVAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFoBAav1tEaAAAECBAgQIECAAAECBAgQIBALCFgxqDkCBAgQIECAAAECBAgQIECAAIFWQMBqPa0RIECAAAECBAgQIECAAAECBAjEAgJWDGqOAAECBAgQIECAAAECBAgQIECgFRCwWk9rBAgQIECAAAECBAgQIECAAAECsYCAFYOaI0CAAAECBAgQIECAAAECBAgQaAUErNbTGgECBAgQIECAAAECBAgQIECAQCwgYMWg5ggQIECAAAECBAgQIECAAAECBFqB/wXPGibesKegGQAAAABJRU5ErkJggg==" width="640"></div>
+</div>
+</section>
+</section>
+</section>
+<section id="Waiting-to-reach-setpoint">
+<h2>Waiting to reach setpoint<a class="headerlink" href="#Waiting-to-reach-setpoint" title="Permalink to this headline"></a></h2>
+<p>As we have seen, the call of the parameter <code class="docutils literal notranslate"><span class="pre">setpoint</span></code> is non-blocking. That means the function returns imediately without waiting for the setpoint to be reached. In many use-cases it is desirable to wait until a certain temperature regime has been reached. This can be achieved with <code class="docutils literal notranslate"><span class="pre">wait_until_set_point_reached</span></code> method. There are also three parameters which allow to tune the behavior of this method.</p>
+<p>See below:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># time before reading the next temperature value</span>
+<span class="c1"># in other words, wait half a second, then read the temperature and compare to setpoint</span>
+<span class="n">h</span><span class="o">.</span><span class="n">wait_cycle_time</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="c1"># wait until temperature within 5% of the setpoint</span>
+<span class="c1"># the tolerance is defined as: |t_reading-t_setpoint|/t_reading</span>
+<span class="n">h</span><span class="o">.</span><span class="n">wait_tolerance</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+
+<span class="c1"># wait until temperature has been within the tolerance zone</span>
+<span class="c1"># for `wait_equilibration_time` seconds</span>
+<span class="n">h</span><span class="o">.</span><span class="n">wait_equilibration_time</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># do the waiting:</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">simulation</span><span class="p">:</span>  <span class="c1"># does not work with simulated instrument!</span>
+    <span class="n">h</span><span class="o">.</span><span class="n">wait_until_set_point_reached</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>For the simulation purposes, we can fake the heating of the sample by calling the <code class="docutils literal notranslate"><span class="pre">start_heating</span></code> method which only exists for the simulated instrument.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">if</span> <span class="n">simulation</span><span class="p">:</span>
+    <span class="n">ls</span><span class="o">.</span><span class="n">sample_heater</span><span class="o">.</span><span class="n">setpoint</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">ls</span><span class="o">.</span><span class="n">start_heating</span><span class="p">()</span>  <span class="c1"># starts from 7K and goes down to the setpoint of 4K</span>
+    <span class="n">ls</span><span class="o">.</span><span class="n">sample_heater</span><span class="o">.</span><span class="n">wait_until_set_point_reached</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Automatically-selecting-a-heater-range-(based-on-temperature)">
+<h2>Automatically selecting a heater range (based on temperature)<a class="headerlink" href="#Automatically-selecting-a-heater-range-(based-on-temperature)" title="Permalink to this headline"></a></h2>
+<p>To automatically select a heater range, one can define temperature limits for the individual heater ranges:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># all limits in K, 8 limits starting with limit for 31.6μA range</span>
+<span class="n">h</span><span class="o">.</span><span class="n">range_limits</span><span class="p">([</span><span class="mf">0.021</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">list</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">RANGES</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;off&#39;, &#39;31.6μA&#39;, &#39;100μA&#39;, &#39;316μA&#39;, &#39;1mA&#39;, &#39;3.16mA&#39;, &#39;10mA&#39;, &#39;31.6mA&#39;, &#39;100mA&#39;]
+</pre></div></div>
+</div>
+<p>This means: from <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">K</span></code> to <code class="docutils literal notranslate"><span class="pre">0.021</span> <span class="pre">K</span></code> use <code class="docutils literal notranslate"><span class="pre">31.6μA</span></code>, from <code class="docutils literal notranslate"><span class="pre">0.021</span> <span class="pre">K</span></code> to <code class="docutils literal notranslate"><span class="pre">0.1</span> <span class="pre">K</span></code> use <code class="docutils literal notranslate"><span class="pre">100μA</span></code>, and so on.</p>
+<p>We can now set the range by giving a temperature using the <code class="docutils literal notranslate"><span class="pre">set_range_from_temperature</span></code> method:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">h</span><span class="o">.</span><span class="n">set_range_from_temperature</span><span class="p">(</span><span class="mf">0.15</span><span class="p">)</span>
+<span class="n">h</span><span class="o">.</span><span class="n">output_range</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;316μA&#39;
+</pre></div></div>
+</div>
+</section>
+<section id="Sweeping/blocking-paramameter">
+<h2>Sweeping/blocking paramameter<a class="headerlink" href="#Sweeping/blocking-paramameter" title="Permalink to this headline"></a></h2>
+<p>For compatibility with the legacy Loop construct, the Lakeshore driver exposes a blocking temperature parameter: <code class="docutils literal notranslate"><span class="pre">blocking_t</span></code>. The setter for this parameter simply does:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_set_blocking_t</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">set_range_from_temperature</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">setpoint</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">wait_until_set_point_reached</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This parameter can be used in a <code class="docutils literal notranslate"><span class="pre">doNd</span></code>-like loop.</p>
+<p>Note that the range only gets set at the beginning of the sweep, i.e. according to the setpoint not according to the temperature reading.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Qcodes%20example%20with%20Lakeshore%20325.html" class="btn btn-neutral float-left" title="QCoDeS Example with Lakeshore 325" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Qcodes%20example%20with%20Minicircuits%20Switch%20boxes%20%28USB-XSPDT%29.html" class="btn btn-neutral float-right" title="QCoDeS Example with Minicircuits Switch Boxes Controlled via USB" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

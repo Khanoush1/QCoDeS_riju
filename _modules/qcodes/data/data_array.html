@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.data.data_array &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.data.data_array</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.data.data_array</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+
+<span class="kn">from</span> <span class="nn">qcodes.utils.helpers</span> <span class="kn">import</span> <span class="n">DelegateAttributes</span><span class="p">,</span> <span class="n">full_class</span><span class="p">,</span> <span class="n">warn_units</span>
+
+
+<div class="viewcode-block" id="DataArray"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.DataArray">[docs]</a><span class="k">class</span> <span class="nc">DataArray</span><span class="p">(</span><span class="n">DelegateAttributes</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A container for one parameter in a measurement loop.</span>
+
+<span class="sd">    If this is a measured parameter, This object doesn&#39;t contain</span>
+<span class="sd">    the data of the setpoints it was measured at, but it references</span>
+<span class="sd">    the DataArray objects of these parameters. Those objects only have</span>
+<span class="sd">    the dimensionality at which they were set - ie the inner loop setpoint</span>
+<span class="sd">    the same dimensionality as the measured parameter, but the outer</span>
+<span class="sd">    loop setpoint(s) have lower dimensionality</span>
+
+<span class="sd">    When it&#39;s first created, a DataArray has no dimensionality, you must call</span>
+<span class="sd">    .nest for each dimension.</span>
+
+<span class="sd">    If preset_data is provided it is used to initialize the data, and the array</span>
+<span class="sd">    can still be nested around it (making many copies of the data).</span>
+<span class="sd">    Otherwise it is an error to nest an array that already has data.</span>
+
+<span class="sd">    Once the array is initialized, a DataArray acts a lot like a numpy array,</span>
+<span class="sd">    because we delegate attributes through to the numpy array</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        parameter (Optional[Parameter]): The parameter whose values will</span>
+<span class="sd">            populate this array, if any. Will copy ``name``, ``full_name``,</span>
+<span class="sd">            ``label``, ``unit``, and ``snapshot`` from here unless you</span>
+<span class="sd">            provide them explicitly.</span>
+
+<span class="sd">        name (Optional[str]): The short name of this array.</span>
+<span class="sd">            TODO: use full_name as name, and get rid of short name</span>
+
+<span class="sd">        full_name (Optional[str]): The complete name of this array. If the</span>
+<span class="sd">            array is based on a parameter linked to an instrument, this is</span>
+<span class="sd">            typically &#39;&lt;instrument_name&gt;_&lt;param_name&gt;&#39;</span>
+
+<span class="sd">        label (Optional[str]): A description of the values in this array to</span>
+<span class="sd">            use for axis and colorbar labels on plots.</span>
+
+<span class="sd">        snapshot (Optional[dict]): Metadata snapshot to save with this array.</span>
+
+<span class="sd">        array_id (Optional[str]): A name for this array that&#39;s unique within</span>
+<span class="sd">            its ``DataSet``. Typically the full_name, but when the ``DataSet``</span>
+<span class="sd">            is constructed we will append &#39;_&lt;i&gt;&#39; (``i`` is an integer starting</span>
+<span class="sd">            from 1) if necessary to differentiate arrays with the same id.</span>
+<span class="sd">            TODO: this only happens for arrays provided to the DataSet</span>
+<span class="sd">            constructor, not those added with add_array. Fix this!</span>
+<span class="sd">            Also, do we really need array_id *and* full_name (let alone name</span>
+<span class="sd">            but I&#39;ve already said we should remove this)?</span>
+
+<span class="sd">        set_arrays (Optional[Tuple[DataArray]]): If this array is being</span>
+<span class="sd">            created with shape already, you can provide one setpoint array</span>
+<span class="sd">            per dimension. The first should have one dimension, the second</span>
+<span class="sd">            two dimensions, etc.</span>
+
+<span class="sd">        shape (Optional[Tuple[int]]): The shape (as in numpy) of the array.</span>
+<span class="sd">            Will be prepended with new dimensions by any calls to ``nest``.</span>
+
+<span class="sd">        action_indices (Optional[Tuple[int]]): If used within a ``Loop``,</span>
+<span class="sd">            these are the indices at each level of nesting within the</span>
+<span class="sd">            ``Loop`` of the loop action that&#39;s populating this array.</span>
+<span class="sd">            TODO: this shouldn&#39;t be in DataArray at all, the loop should</span>
+<span class="sd">            handle converting this to array_id internally (maybe it</span>
+<span class="sd">            already does?)</span>
+
+<span class="sd">        unit (Optional[str]): The unit of the values stored in this array.</span>
+
+<span class="sd">        units (Optional[str]): DEPRECATED, redirects to ``unit``.</span>
+
+<span class="sd">        is_setpoint (bool): True if this is a setpoint array, False if it</span>
+<span class="sd">            is measured. Default False.</span>
+
+<span class="sd">        preset_data (Optional[Union[numpy.ndarray, Sequence]]): Contents of the</span>
+<span class="sd">            array, if already known (for example if this is a setpoint</span>
+<span class="sd">            array). ``shape`` will be inferred from this array instead of</span>
+<span class="sd">            from the ``shape`` argument.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># attributes of self to include in the snapshot</span>
+    <span class="n">SNAP_ATTRS</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;array_id&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;shape&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;unit&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;label&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;action_indices&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;is_setpoint&#39;</span><span class="p">)</span>
+
+    <span class="c1"># attributes of the parameter (or keys in the incoming snapshot)</span>
+    <span class="c1"># to copy to DataArray attributes, if they aren&#39;t set some other way</span>
+    <span class="n">COPY_ATTRS_FROM_INPUT</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;label&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;unit&#39;</span><span class="p">)</span>
+
+    <span class="c1"># keys in the parameter snapshot to omit from our snapshot</span>
+    <span class="n">SNAP_OMIT_KEYS</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;ts&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;value&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;__class__&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;set_arrays&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;shape&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;array_id&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;action_indices&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">snapshot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">array_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_arrays</span><span class="o">=</span><span class="p">(),</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">action_indices</span><span class="o">=</span><span class="p">(),</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_setpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">preset_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_name</span> <span class="o">=</span> <span class="n">full_name</span> <span class="ow">or</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">shape</span>
+        <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warn_units</span><span class="p">(</span><span class="s1">&#39;DataArray&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">unit</span> <span class="o">=</span> <span class="n">units</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">unit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">array_id</span> <span class="o">=</span> <span class="n">array_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_setpoint</span> <span class="o">=</span> <span class="n">is_setpoint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_indices</span> <span class="o">=</span> <span class="n">action_indices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_arrays</span> <span class="o">=</span> <span class="n">set_arrays</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_preset</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># store a reference up to the containing DataSet</span>
+        <span class="c1"># this also lets us make sure a DataArray is only in one DataSet</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_set</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_saved_index</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">snapshot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">snapshot</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_snapshot_input</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">parameter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">param_full_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="s1">&#39;full_name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">param_full_name</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">full_name</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">full_name</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">full_name</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="s1">&#39;snapshot&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">snapshot</span><span class="p">:</span>
+                <span class="n">snapshot</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">snapshot</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># TODO: why is this in an else clause?</span>
+                <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">COPY_ATTRS_FROM_INPUT</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="ow">and</span>
+                            <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">parameter</span><span class="p">,</span> <span class="n">attr</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SNAP_OMIT_KEYS</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_snapshot_input</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">COPY_ATTRS_FROM_INPUT</span> <span class="ow">and</span>
+                        <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">if</span> <span class="n">preset_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_data</span><span class="p">(</span><span class="n">preset_data</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data_set</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The DataSet this array belongs to.</span>
+
+<span class="sd">        A DataArray can belong to at most one DataSet.</span>
+<span class="sd">        TODO: make this a weakref</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_set</span>
+
+    <span class="nd">@data_set</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_data_set</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_set</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+                <span class="n">new_data_set</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data_set</span> <span class="o">!=</span> <span class="n">new_data_set</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;A DataArray can only be part of one DataSet&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_set</span> <span class="o">=</span> <span class="n">new_data_set</span>
+
+<div class="viewcode-block" id="DataArray.nest"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.DataArray.nest">[docs]</a>    <span class="k">def</span> <span class="nf">nest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">action_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_array</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Nest this array inside a new outer loop.</span>
+
+<span class="sd">        You cannot call ``nest`` after ``init_data`` unless this is a</span>
+<span class="sd">        setpoint array.</span>
+<span class="sd">        TODO: is this restriction really useful? And should we maintain</span>
+<span class="sd">        a distinction between _preset and is_setpoint, or can wejust use</span>
+<span class="sd">        is_setpoint?</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            size (int): Length of the new loop.</span>
+
+<span class="sd">            action_index (Optional[int]): Within the outer loop at this</span>
+<span class="sd">                nesting level, which action does this array derive from?</span>
+
+<span class="sd">            set_array (Optional[DataArray]): The setpoints of the new outer</span>
+<span class="sd">                loop. If this DataArray *is* a setpoint array, you should</span>
+<span class="sd">                omit both ``action_index`` and ``set_array``, and it will</span>
+<span class="sd">                reference itself as the inner setpoint array.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataArray: self, in case you want to construct the array with</span>
+<span class="sd">                chained method calls.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preset</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Only preset arrays can be nested after data &#39;</span>
+                               <span class="s1">&#39;is initialized! </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">set_array</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_arrays</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;a setpoint array must be its own inner loop&#39;</span><span class="p">)</span>
+            <span class="n">set_array</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">if</span> <span class="n">action_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">action_indices</span> <span class="o">=</span> <span class="p">(</span><span class="n">action_index</span><span class="p">,</span> <span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_indices</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_arrays</span> <span class="o">=</span> <span class="p">(</span><span class="n">set_array</span><span class="p">,</span> <span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_arrays</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preset</span><span class="p">:</span>
+            <span class="n">inner_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="c1"># existing preset array copied to every index of the nested array.</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">inner_data</span>
+
+            <span class="c1"># update modified_range so the entire array still looks modified</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_index_bounds</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="DataArray.init_data"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.DataArray.init_data">[docs]</a>    <span class="k">def</span> <span class="nf">init_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the actual numpy array to hold data.</span>
+
+<span class="sd">        The array will be sized based on either ``self.shape`` or</span>
+<span class="sd">        data provided here.</span>
+
+<span class="sd">        Idempotent: will do nothing if the array already exists.</span>
+
+<span class="sd">        If data is provided, this array is marked as a preset</span>
+<span class="sd">        meaning it can still be nested around this data.</span>
+<span class="sd">        TODO: per above, perhaps remove this distinction entirely?</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (Optional[Union[numpy.ndarray, Sequence]]): If provided,</span>
+<span class="sd">                we fill the array with this data. Otherwise the new</span>
+<span class="sd">                array will be filled with NaN.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if ``self.shape`` does not match ``data.shape``</span>
+<span class="sd">            ValueError: if the array was already initialized with a</span>
+<span class="sd">                different shape than we&#39;re about to create</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterator</span><span class="p">):</span>
+                    <span class="c1"># faster than np.array(tuple(data)) (or via list)</span>
+                    <span class="c1"># but requires us to assume float</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+            <span class="k">elif</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;preset data must be a sequence &#39;</span>
+                                 <span class="s1">&#39;with shape matching the array shape&#39;</span><span class="p">,</span>
+                                 <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_preset</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># mark the entire array as modified</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;data has already been initialized, &#39;</span>
+                                 <span class="s1">&#39;but its shape doesn</span><span class="se">\&#39;</span><span class="s1">t match self.shape&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_index_bounds</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_index_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">]</span>
+
+<div class="viewcode-block" id="DataArray.clear"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.DataArray.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fill the (already existing) data array with nan.&quot;&quot;&quot;</span>
+        <span class="c1"># only floats can hold nan values. I guess we could</span>
+        <span class="c1"># also raise an error in this case? But generally float is</span>
+        <span class="c1"># what people want anyway.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="nb">float</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="DataArray.__setitem__"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.DataArray.__setitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop_indices</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set data values.</span>
+
+<span class="sd">        Follows numpy syntax, allowing indices of lower dimensionality than</span>
+<span class="sd">        the array, if value makes up the extra dimension(s)</span>
+
+<span class="sd">        Also update the record of modifications to the array. If you don&#39;t</span>
+<span class="sd">        want this overhead, you can access ``self.ndarray`` directly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">loop_indices</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+            <span class="n">min_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">loop_indices</span><span class="p">)</span>
+            <span class="n">max_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">loop_indices</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">min_indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">loop_indices</span><span class="p">]</span>
+            <span class="n">max_indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">loop_indices</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">min_indices</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+                <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">min_indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">start</span>
+                <span class="n">max_indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="p">(</span>
+                    <span class="p">((</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="n">step</span><span class="p">)</span> <span class="o">*</span> <span class="n">step</span><span class="p">)</span>
+
+        <span class="n">min_li</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flat_index</span><span class="p">(</span><span class="n">min_indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_indices</span><span class="p">)</span>
+        <span class="n">max_li</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flat_index</span><span class="p">(</span><span class="n">max_indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_indices</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_modified_range</span><span class="p">(</span><span class="n">min_li</span><span class="p">,</span> <span class="n">max_li</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">loop_indices</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop_indices</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">loop_indices</span><span class="p">]</span>
+
+    <span class="n">delegate_attr_objects</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ndarray&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="DataArray.__len__"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.DataArray.__len__">[docs]</a>    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Array length.</span>
+
+<span class="sd">        Must be explicitly delegated, because len() will look for this</span>
+<span class="sd">        attribute to already exist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataArray.flat_index"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.DataArray.flat_index">[docs]</a>    <span class="k">def</span> <span class="nf">flat_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">index_fill</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate the raveled index for the given indices.</span>
+
+<span class="sd">        This is the index you would have if the array is reshaped to 1D,</span>
+<span class="sd">        looping over the indices from inner to outer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            indices (Sequence): indices of an element or slice of this array.</span>
+
+<span class="sd">            index_fill (Optional[Sequence]): extra indices to use if</span>
+<span class="sd">                ``indices`` has less dimensions than the array, ie it points</span>
+<span class="sd">                to a slice rather than a single element. Use zeros to get the</span>
+<span class="sd">                beginning of this slice, and [d - 1 for d in shape] to get the</span>
+<span class="sd">                end of the slice.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: the resulting flat index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">indices</span> <span class="o">+</span> <span class="n">index_fill</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">):]</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel_multi_index</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">indices</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">_update_modified_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span> <span class="o">=</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">low</span><span class="p">),</span>
+                                   <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">high</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DataArray.mark_saved"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.DataArray.mark_saved">[docs]</a>    <span class="k">def</span> <span class="nf">mark_saved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last_saved_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Mark certain outstanding modifications as saved.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            last_saved_index (int): The flat index of the last point</span>
+<span class="sd">                saved. If ``modified_range`` extends beyond this, the</span>
+<span class="sd">                data past ``last_saved_index`` will still be marked</span>
+<span class="sd">                modified, otherwise ``modified_range`` is cleared</span>
+<span class="sd">                entirely.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">last_saved_index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span> <span class="o">=</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                           <span class="n">last_saved_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_saved_index</span> <span class="o">=</span> <span class="n">last_saved_index</span></div>
+
+<div class="viewcode-block" id="DataArray.clear_save"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.DataArray.clear_save">[docs]</a>    <span class="k">def</span> <span class="nf">clear_save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make previously saved parts of this array look unsaved (modified).</span>
+
+<span class="sd">        This can be used to force overwrite or rewrite, like if we&#39;re</span>
+<span class="sd">        moving or copying the ``DataSet``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_saved_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_modified_range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_saved_index</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_saved_index</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="DataArray.get_synced_index"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.DataArray.get_synced_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_synced_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the last index which has been synced from the server.</span>
+
+<span class="sd">        Will also initialize the array if this hasn&#39;t happened already.</span>
+<span class="sd">        TODO: seems hacky to init_data here.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: the last flat index which has been synced from the server,</span>
+<span class="sd">                or -1 if no data has been synced.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;synced_index&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init_data</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">synced_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">synced_index</span></div>
+
+<div class="viewcode-block" id="DataArray.get_changes"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.DataArray.get_changes">[docs]</a>    <span class="k">def</span> <span class="nf">get_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">synced_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find changes since the last sync of this array.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            synced_index (int): The last flat index which has already</span>
+<span class="sd">                been synced.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Union[dict, None]: None if there is no new data. If there is,</span>
+<span class="sd">                returns a dict with keys:</span>
+<span class="sd">                    start (int): the flat index of the first returned value.</span>
+<span class="sd">                    stop (int): the flat index of the last returned value.</span>
+<span class="sd">                    vals (List[float]): the new values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">latest_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_saved_index</span>
+        <span class="k">if</span> <span class="n">latest_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">latest_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span><span class="p">:</span>
+            <span class="n">latest_index</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">latest_index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">vals</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">)]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">synced_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">latest_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">vals</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="n">synced_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s1">&#39;stop&#39;</span><span class="p">:</span> <span class="n">latest_index</span><span class="p">,</span>
+                <span class="s1">&#39;vals&#39;</span><span class="p">:</span> <span class="n">vals</span>
+            <span class="p">}</span></div>
+
+<div class="viewcode-block" id="DataArray.apply_changes"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.DataArray.apply_changes">[docs]</a>    <span class="k">def</span> <span class="nf">apply_changes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">vals</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Insert new synced values into the array.</span>
+
+<span class="sd">        To be be called in a ``PULL_FROM_SERVER`` ``DataSet`` using results</span>
+<span class="sd">        returned by ``get_changes`` from the ``DataServer``.</span>
+
+<span class="sd">        TODO: check that vals has the right length?</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            start (int): the flat index of the first new value.</span>
+<span class="sd">            stop (int): the flat index of the last new value.</span>
+<span class="sd">            vals (List[float]): the new values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vals</span><span class="p">):</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">synced_index</span> <span class="o">=</span> <span class="n">stop</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">array_id_or_none</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">array_id</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_id</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">[</span><span class="si">{}</span><span class="s1">]:</span><span class="si">{}</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                                      <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)),</span>
+                                      <span class="n">array_id_or_none</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span>
+
+<div class="viewcode-block" id="DataArray.snapshot"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.DataArray.snapshot">[docs]</a>    <span class="k">def</span> <span class="nf">snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;JSON representation of this DataArray.&quot;&quot;&quot;</span>
+        <span class="n">snap</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;__class__&#39;</span><span class="p">:</span> <span class="n">full_class</span><span class="p">(</span><span class="bp">self</span><span class="p">)}</span>
+
+        <span class="n">snap</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_snapshot_input</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">SNAP_ATTRS</span><span class="p">:</span>
+            <span class="n">snap</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">snap</span></div>
+
+<div class="viewcode-block" id="DataArray.fraction_complete"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.DataArray.fraction_complete">[docs]</a>    <span class="k">def</span> <span class="nf">fraction_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the fraction of this array which has data in it.</span>
+
+<span class="sd">        Or more specifically, the fraction of the latest point in the array</span>
+<span class="sd">        where we have touched it.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: fraction of array which is complete, from 0.0 to 1.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.0</span>
+
+        <span class="n">last_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_saved_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">last_index</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">last_index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_saved_index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">last_index</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">last_index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">modified_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;synced_index&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">last_index</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">last_index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">synced_index</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">last_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndarray</span><span class="o">.</span><span class="n">size</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">warn_units</span><span class="p">(</span><span class="s1">&#39;DataArray&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span>
+
+<div class="viewcode-block" id="DataArray.to_xarray"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.DataArray.to_xarray">[docs]</a>    <span class="k">def</span> <span class="nf">to_xarray</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Return this DataArray as an xarray dataarray</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataArray in xarray format</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xarray_dictionary</span> <span class="o">=</span> <span class="n">data_array_to_xarray_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">xarray_dataarray</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">xarray_dictionary</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">xarray_dataarray</span></div>
+
+<div class="viewcode-block" id="DataArray.from_xarray"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.DataArray.from_xarray">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_xarray</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">xarray_dataarray</span><span class="p">:</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">,</span> <span class="n">array_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DataArray&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Create a DataArray from an xarray DataArray</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            array_id: Array id for the new DataArray. If None, then use the first data variable from the argument</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Created xarray DataArray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xarray_dict</span> <span class="o">=</span> <span class="n">xarray_dataarray</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">array_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">array_id</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">xarray_dict</span><span class="p">[</span><span class="s1">&#39;dims&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">data_array</span> <span class="o">=</span> <span class="n">xarray_data_array_dictionary_to_data_array</span><span class="p">(</span><span class="n">array_id</span><span class="p">,</span> <span class="n">xarray_dict</span><span class="p">,</span> <span class="n">is_setpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data_array</span></div></div>
+
+
+<div class="viewcode-block" id="data_array_to_xarray_dictionary"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.data_array_to_xarray_dictionary">[docs]</a><span class="k">def</span> <span class="nf">data_array_to_xarray_dictionary</span><span class="p">(</span><span class="n">data_array</span><span class="p">:</span> <span class="n">DataArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Convert DataArray to a dictionary in xarray format.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data_array: The DataArray to convert.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary containing the data in xarray format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">key_mapping</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="s2">&quot;unit&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;label&quot;</span><span class="p">}</span>
+
+    <span class="n">data_dictionary</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">target_key</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">data_array</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">target_key</span> <span class="ow">in</span> <span class="n">key_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="n">data_dictionary</span><span class="p">[</span><span class="s1">&#39;long_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_array</span><span class="o">.</span><span class="n">name</span>
+    <span class="k">if</span> <span class="n">data_array</span><span class="o">.</span><span class="n">is_setpoint</span><span class="p">:</span>
+        <span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;dims&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">data_array</span><span class="o">.</span><span class="n">array_id</span><span class="p">])</span>
+        <span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;depends_on&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;dims&quot;</span><span class="p">]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data_array</span><span class="o">.</span><span class="n">ndarray</span>
+        <span class="c1"># flatten data, assumes setpoint is uniform as for a normal gridded dataset</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">data_array</span><span class="o">.</span><span class="n">set_arrays</span><span class="p">:</span>
+            <span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;dims&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">array_id</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">data_array</span><span class="o">.</span><span class="n">set_arrays</span><span class="p">)</span>
+            <span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;depends_on&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;dims&quot;</span><span class="p">]</span>
+        <span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_array</span><span class="o">.</span><span class="n">ndarray</span>
+
+    <span class="k">return</span> <span class="n">data_dictionary</span></div>
+
+
+<div class="viewcode-block" id="xarray_data_array_dictionary_to_data_array"><a class="viewcode-back" href="../../../api/data/data_array.html#qcodes.data.data_array.xarray_data_array_dictionary_to_data_array">[docs]</a><span class="k">def</span> <span class="nf">xarray_data_array_dictionary_to_data_array</span><span class="p">(</span>
+        <span class="n">array_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">array_dictionary</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">is_setpoint</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">preset_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert xarray dictionary to a DataArray</span>
+
+<span class="sd">    This conversion is for bith the data array and the the internal xarray structure, e.g. the datavars and coords.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        array_id: Create the new DataArray with this id</span>
+<span class="sd">        array_dictionary: Data to convert</span>
+<span class="sd">        is_setpoint: Passed to the DataArray constructor</span>
+<span class="sd">        preset_data: If None use the data from the dictionary, otherwise use the specified data.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary containing the data in xarray format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">preset_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">preset_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array_dictionary</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+    <span class="n">array_name</span> <span class="o">=</span> <span class="n">array_dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">array_id</span><span class="p">)</span>
+
+    <span class="n">array_full_name</span> <span class="o">=</span> <span class="n">array_dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;long_name&quot;</span><span class="p">,</span> <span class="n">array_name</span><span class="p">)</span>
+    <span class="n">data_array</span> <span class="o">=</span> <span class="n">DataArray</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">array_name</span><span class="p">,</span>
+        <span class="n">full_name</span><span class="o">=</span><span class="n">array_full_name</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="n">array_dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+        <span class="n">unit</span><span class="o">=</span><span class="n">array_dictionary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;unit&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="n">is_setpoint</span><span class="o">=</span><span class="n">is_setpoint</span><span class="p">,</span>
+        <span class="n">shape</span><span class="o">=</span><span class="n">preset_data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="n">array_id</span><span class="o">=</span><span class="n">array_id</span><span class="p">,</span>
+        <span class="n">preset_data</span><span class="o">=</span><span class="n">preset_data</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">data_array</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

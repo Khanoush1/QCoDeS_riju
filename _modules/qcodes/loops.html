@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.loops &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.loops</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.loops</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Data acquisition loops.</span>
+
+<span class="sd">The general scheme is:</span>
+
+<span class="sd">1. create a (potentially nested) Loop, which defines the sweep setpoints and</span>
+<span class="sd">delays</span>
+
+<span class="sd">2. activate the loop (which changes it to an ActiveLoop object),</span>
+
+<span class="sd">3. run it with the .run method, which creates a DataSet to hold the data,</span>
+<span class="sd">and defines how and where to save the data.</span>
+
+<span class="sd">Some examples:</span>
+
+<span class="sd">- 1D sweep, using the default measurement set</span>
+
+<span class="sd">&gt;&gt;&gt; Loop(sweep_values, delay).run()</span>
+
+<span class="sd">- 2D sweep, using the default measurement set sv1 is the outer loop, sv2 is the</span>
+<span class="sd">  inner.</span>
+
+<span class="sd">&gt;&gt;&gt; Loop(sv1, delay1).loop(sv2, delay2).run()</span>
+
+<span class="sd">- 1D sweep with specific measurements to take at each point</span>
+
+<span class="sd">&gt;&gt;&gt; Loop(sv, delay).each(param4, param5).run()</span>
+
+<span class="sd">- Multidimensional sweep: 1D measurement of param6 on the outer loop, and another</span>
+<span class="sd">  measurement in an inner loop.</span>
+
+<span class="sd">&gt;&gt;&gt; Loop(sv1, delay).each(param6, Loop(sv2, delay).each(sv3, delay)).run()</span>
+
+<span class="sd">Supported commands to .each are:</span>
+
+<span class="sd">    - Parameter: anything with a .get method and .name or .names see</span>
+<span class="sd">      parameter.py for options</span>
+<span class="sd">    - ActiveLoop</span>
+<span class="sd">    - Task: any callable that does not generate data</span>
+<span class="sd">    - Wait: a delay</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">qcodes.data.data_array</span> <span class="kn">import</span> <span class="n">DataArray</span>
+<span class="kn">from</span> <span class="nn">qcodes.data.data_set</span> <span class="kn">import</span> <span class="n">new_data</span>
+<span class="kn">from</span> <span class="nn">qcodes.station</span> <span class="kn">import</span> <span class="n">Station</span>
+<span class="kn">from</span> <span class="nn">qcodes.utils.helpers</span> <span class="kn">import</span> <span class="n">full_class</span><span class="p">,</span> <span class="n">tprint</span><span class="p">,</span> <span class="n">wait_secs</span>
+<span class="kn">from</span> <span class="nn">qcodes.utils.metadata</span> <span class="kn">import</span> <span class="n">Metadatable</span>
+
+<span class="kn">from</span> <span class="nn">.actions</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BreakIf</span><span class="p">,</span>
+    <span class="n">Task</span><span class="p">,</span>
+    <span class="n">Wait</span><span class="p">,</span>
+    <span class="n">_actions_snapshot</span><span class="p">,</span>
+    <span class="n">_Measure</span><span class="p">,</span>
+    <span class="n">_Nest</span><span class="p">,</span>
+    <span class="n">_QcodesBreak</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="active_loop"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.active_loop">[docs]</a><span class="k">def</span> <span class="nf">active_loop</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">ActiveLoop</span><span class="o">.</span><span class="n">active_loop</span></div>
+
+
+<div class="viewcode-block" id="active_data_set"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.active_data_set">[docs]</a><span class="k">def</span> <span class="nf">active_data_set</span><span class="p">():</span>
+    <span class="n">loop</span> <span class="o">=</span> <span class="n">active_loop</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">loop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">loop</span><span class="o">.</span><span class="n">data_set</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">loop</span><span class="o">.</span><span class="n">data_set</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="Loop"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.Loop">[docs]</a><span class="k">class</span> <span class="nc">Loop</span><span class="p">(</span><span class="n">Metadatable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The entry point for creating measurement loops</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        sweep_values: a SweepValues or compatible object describing what</span>
+<span class="sd">            parameter to set in the loop and over what values</span>
+<span class="sd">        delay: a number of seconds to wait after setting a value before</span>
+<span class="sd">            continuing. 0 (default) means no waiting and no warnings. &gt; 0</span>
+<span class="sd">            means to wait, potentially filling the delay time with monitoring,</span>
+<span class="sd">            and give an error if you wait longer than expected.</span>
+<span class="sd">        progress_interval: should progress of the loop every x seconds. Default</span>
+<span class="sd">            is None (no output)</span>
+
+<span class="sd">    After creating a Loop, you attach one or more ``actions`` to it, making an</span>
+<span class="sd">    ``ActiveLoop``</span>
+
+<span class="sd">    ``actions`` is a sequence of things to do at each ``Loop`` step: that can be</span>
+<span class="sd">    a ``Parameter`` to measure, a ``Task`` to do (any callable that does not</span>
+<span class="sd">    yield data), ``Wait`` times, or another ``ActiveLoop`` or ``Loop`` to nest</span>
+<span class="sd">    inside this one.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sweep_values</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">progress_interval</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">delay</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;delay must be &gt; 0, not </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span> <span class="o">=</span> <span class="n">sweep_values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delay</span> <span class="o">=</span> <span class="n">delay</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">station</span> <span class="o">=</span> <span class="n">station</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nested_loop</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actions</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">then_actions</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bg_task</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bg_final_task</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bg_min_delay</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress_interval</span> <span class="o">=</span> <span class="n">progress_interval</span>
+
+<div class="viewcode-block" id="Loop.__getitem__"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.Loop.__getitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves action with index `item`</span>
+<span class="sd">        Args:</span>
+<span class="sd">            item: actions index</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            loop.actions[item]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">[</span><span class="n">item</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Loop.loop"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.Loop.loop">[docs]</a>    <span class="k">def</span> <span class="nf">loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sweep_values</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Nest another loop inside this one.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            sweep_values:</span>
+<span class="sd">            delay (int):</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; Loop(sv1, d1).loop(sv2, d2).each(*a)</span>
+
+<span class="sd">            is equivalent to:</span>
+
+<span class="sd">            &gt;&gt;&gt; Loop(sv1, d1).each(Loop(sv2, d2).each(*a))</span>
+
+<span class="sd">        Returns: a new Loop object - the original is untouched</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">nested_loop</span><span class="p">:</span>
+            <span class="c1"># nest this new loop inside the deepest level</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">nested_loop</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">nested_loop</span><span class="o">.</span><span class="n">loop</span><span class="p">(</span><span class="n">sweep_values</span><span class="p">,</span> <span class="n">delay</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">nested_loop</span> <span class="o">=</span> <span class="n">Loop</span><span class="p">(</span><span class="n">sweep_values</span><span class="p">,</span> <span class="n">delay</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">out</span></div>
+
+    <span class="k">def</span> <span class="nf">_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">Loop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="p">,</span>
+                   <span class="n">progress_interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">progress_interval</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">nested_loop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nested_loop</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">then_actions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">then_actions</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">station</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">station</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+<div class="viewcode-block" id="Loop.each"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.Loop.each">[docs]</a>    <span class="k">def</span> <span class="nf">each</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">actions</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform a set of actions at each setting of this loop.</span>
+<span class="sd">        TODO(setting vs setpoints) ? better be verbose.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            *actions (Any): actions to perform at each setting of the loop</span>
+
+<span class="sd">        Each action can be:</span>
+
+<span class="sd">        - a Parameter to measure</span>
+<span class="sd">        - a Task to execute</span>
+<span class="sd">        - a Wait</span>
+<span class="sd">        - another Loop or ActiveLoop</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">actions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_actions</span><span class="p">(</span><span class="o">*</span><span class="n">actions</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nested_loop</span><span class="p">:</span>
+            <span class="c1"># recurse into the innermost loop and apply these actions there</span>
+            <span class="n">actions</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nested_loop</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="o">*</span><span class="n">actions</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">ActiveLoop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="p">,</span> <span class="o">*</span><span class="n">actions</span><span class="p">,</span>
+                          <span class="n">then_actions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">then_actions</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">station</span><span class="p">,</span>
+                          <span class="n">progress_interval</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">progress_interval</span><span class="p">,</span>
+                          <span class="n">bg_task</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bg_task</span><span class="p">,</span> <span class="n">bg_final_task</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bg_final_task</span><span class="p">,</span> <span class="n">bg_min_delay</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bg_min_delay</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Loop.with_bg_task"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.Loop.with_bg_task">[docs]</a>    <span class="k">def</span> <span class="nf">with_bg_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">bg_final_task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_delay</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Attaches a background task to this loop.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task: A callable object with no parameters. This object will be</span>
+<span class="sd">                invoked periodically during the measurement loop.</span>
+
+<span class="sd">            bg_final_task: A callable object with no parameters. This object will be</span>
+<span class="sd">                invoked to clean up after or otherwise finish the background</span>
+<span class="sd">                task work.</span>
+
+<span class="sd">            min_delay (int, float): The minimum number of seconds to wait</span>
+<span class="sd">                between task invocations. Defaults to 0.01 s.</span>
+<span class="sd">                Note that if a task is doing a lot of processing it is recommended</span>
+<span class="sd">                to increase min_delay.</span>
+<span class="sd">                Note that the actual time between task invocations may be much</span>
+<span class="sd">                longer than this, as the task is only run between passes</span>
+<span class="sd">                through the loop.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_attach_bg_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">bg_final_task</span><span class="p">,</span> <span class="n">min_delay</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Loop.validate_actions"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.Loop.validate_actions">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">validate_actions</span><span class="p">(</span><span class="o">*</span><span class="n">actions</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Whitelist acceptable actions, so we can give nice error messages</span>
+<span class="sd">        if an action is not recognized</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="p">(</span><span class="n">Task</span><span class="p">,</span> <span class="n">Wait</span><span class="p">,</span> <span class="n">BreakIf</span><span class="p">,</span> <span class="n">ActiveLoop</span><span class="p">)):</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;get&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">)</span> <span class="ow">or</span>
+                                           <span class="nb">hasattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;names&#39;</span><span class="p">)):</span>
+                <span class="k">continue</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Unrecognized action:&#39;</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span>
+                            <span class="s1">&#39;Allowed actions are: objects (parameters) with &#39;</span>
+                            <span class="s1">&#39;a `get` method and `name` or `names` attribute, &#39;</span>
+                            <span class="s1">&#39;and `Task`, `Wait`, `BreakIf`, and `ActiveLoop` &#39;</span>
+                            <span class="s1">&#39;objects. `Loop` objects are OK too, except in &#39;</span>
+                            <span class="s1">&#39;Station default measurements.&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Loop.then"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.Loop.then">[docs]</a>    <span class="k">def</span> <span class="nf">then</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">actions</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Attach actions to be performed after the loop completes.</span>
+
+<span class="sd">        These can only be ``Task`` and ``Wait`` actions, as they may not generate</span>
+<span class="sd">        any data.</span>
+
+<span class="sd">        returns a new Loop object - the original is untouched</span>
+
+<span class="sd">        This is more naturally done to an ActiveLoop (ie after .each())</span>
+<span class="sd">        and can also be done there, but it&#39;s allowed at this stage too so that</span>
+<span class="sd">        you can define final actions and share them among several ``Loops`` that</span>
+<span class="sd">        have different loop actions, or attach final actions to a Loop run</span>
+
+<span class="sd">        TODO:</span>
+<span class="sd">            examples of this ? with default actions.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            *actions: ``Task`` and ``Wait`` objects to execute in order</span>
+
+<span class="sd">            overwrite: (default False) whether subsequent .then() calls (including</span>
+<span class="sd">                calls in an ActiveLoop after .then() has already been called on</span>
+<span class="sd">                the Loop) will add to each other or overwrite the earlier ones.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            a new Loop object - the original is untouched</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_attach_then_actions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_copy</span><span class="p">(),</span> <span class="n">actions</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Loop.snapshot_base"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.Loop.snapshot_base">[docs]</a>    <span class="k">def</span> <span class="nf">snapshot_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                      <span class="n">params_to_skip_update</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        State of the loop as a JSON-compatible dict (everything that</span>
+<span class="sd">        the custom JSON encoder class :class:&#39;qcodes.utils.helpers.NumpyJSONEncoder&#39;</span>
+<span class="sd">        supports).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            update: If True, update the state by querying the underlying</span>
+<span class="sd">                sweep_values and actions. If None only update state if known</span>
+<span class="sd">                to be invalid. If False, just use the latest values</span>
+<span class="sd">                in memory.</span>
+<span class="sd">            params_to_skip_update: Unused in this implementation.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: base snapshot</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;__class__&#39;</span><span class="p">:</span> <span class="n">full_class</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+            <span class="s1">&#39;sweep_values&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span><span class="o">.</span><span class="n">snapshot</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">update</span><span class="p">),</span>
+            <span class="s1">&#39;delay&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="p">,</span>
+            <span class="s1">&#39;then_actions&#39;</span><span class="p">:</span> <span class="n">_actions_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">then_actions</span><span class="p">,</span> <span class="n">update</span><span class="p">)</span>
+        <span class="p">}</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">_attach_then_actions</span><span class="p">(</span><span class="n">loop</span><span class="p">,</span> <span class="n">actions</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Inner code for both Loop.then and ActiveLoop.then.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="p">(</span><span class="n">Task</span><span class="p">,</span> <span class="n">Wait</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Unrecognized action:&#39;</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span>
+                            <span class="s1">&#39;.then() allows only `Task` and `Wait` &#39;</span>
+                            <span class="s1">&#39;actions.&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+        <span class="n">loop</span><span class="o">.</span><span class="n">then_actions</span> <span class="o">=</span> <span class="n">actions</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">loop</span><span class="o">.</span><span class="n">then_actions</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">then_actions</span> <span class="o">+</span> <span class="n">actions</span>
+
+    <span class="k">return</span> <span class="n">loop</span>
+
+
+<span class="k">def</span> <span class="nf">_attach_bg_task</span><span class="p">(</span><span class="n">loop</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">bg_final_task</span><span class="p">,</span> <span class="n">min_delay</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Inner code for both Loop and ActiveLoop.bg_task&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">loop</span><span class="o">.</span><span class="n">bg_task</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">loop</span><span class="o">.</span><span class="n">bg_task</span> <span class="o">=</span> <span class="n">task</span>
+        <span class="n">loop</span><span class="o">.</span><span class="n">bg_min_delay</span> <span class="o">=</span> <span class="n">min_delay</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Only one background task is allowed per loop&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">bg_final_task</span><span class="p">:</span>
+        <span class="n">loop</span><span class="o">.</span><span class="n">bg_final_task</span> <span class="o">=</span> <span class="n">bg_final_task</span>
+
+    <span class="k">return</span> <span class="n">loop</span>
+
+
+<div class="viewcode-block" id="ActiveLoop"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.ActiveLoop">[docs]</a><span class="k">class</span> <span class="nc">ActiveLoop</span><span class="p">(</span><span class="n">Metadatable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Created by attaching ``actions`` to a ``Loop``, this is the object that</span>
+<span class="sd">    actually runs a measurement loop. An ``ActiveLoop`` can no longer be nested,</span>
+<span class="sd">    only run, or used as an action inside another ``Loop`` which will run the</span>
+<span class="sd">    whole thing.</span>
+
+<span class="sd">    The ``ActiveLoop`` determines what ``DataArrays`` it will need to hold the</span>
+<span class="sd">    data it collects, and it creates a ``DataSet`` holding these ``DataArrays``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Currently active loop, is set when calling loop.run(set_active=True)</span>
+    <span class="c1"># is reset to None when active measurement is finished</span>
+    <span class="n">active_loop</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sweep_values</span><span class="p">,</span> <span class="n">delay</span><span class="p">,</span> <span class="o">*</span><span class="n">actions</span><span class="p">,</span> <span class="n">then_actions</span><span class="o">=</span><span class="p">(),</span>
+                 <span class="n">station</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">progress_interval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bg_task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">bg_final_task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bg_min_delay</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span> <span class="o">=</span> <span class="n">sweep_values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delay</span> <span class="o">=</span> <span class="n">delay</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress_interval</span> <span class="o">=</span> <span class="n">progress_interval</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">then_actions</span> <span class="o">=</span> <span class="n">then_actions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">station</span> <span class="o">=</span> <span class="n">station</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bg_task</span> <span class="o">=</span> <span class="n">bg_task</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bg_final_task</span> <span class="o">=</span> <span class="n">bg_final_task</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bg_min_delay</span> <span class="o">=</span> <span class="n">bg_min_delay</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_set</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># if the first action is another loop, it changes how delays</span>
+        <span class="c1"># happen - the outer delay happens *after* the inner var gets</span>
+        <span class="c1"># set to its initial value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nest_first</span> <span class="o">=</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">actions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;containers&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ActiveLoop.__getitem__"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.ActiveLoop.__getitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves action with index `item`</span>
+<span class="sd">        Args:</span>
+<span class="sd">            item: actions index</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            loop.actions[item]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">[</span><span class="n">item</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ActiveLoop.then"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.ActiveLoop.then">[docs]</a>    <span class="k">def</span> <span class="nf">then</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">actions</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Attach actions to be performed after the loop completes.</span>
+
+<span class="sd">        These can only be ``Task`` and ``Wait`` actions, as they may not</span>
+<span class="sd">        generate any data.</span>
+
+<span class="sd">        returns a new ActiveLoop object - the original is untouched</span>
+
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            *actions: ``Task`` and ``Wait`` objects to execute in order</span>
+
+<span class="sd">            overwrite: (default False) whether subsequent .then() calls (including</span>
+<span class="sd">                calls in an ActiveLoop after .then() has already been called on</span>
+<span class="sd">                the Loop) will add to each other or overwrite the earlier ones.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="n">ActiveLoop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">,</span>
+                          <span class="n">then_actions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">then_actions</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">station</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_attach_then_actions</span><span class="p">(</span><span class="n">loop</span><span class="p">,</span> <span class="n">actions</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ActiveLoop.with_bg_task"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.ActiveLoop.with_bg_task">[docs]</a>    <span class="k">def</span> <span class="nf">with_bg_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">bg_final_task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_delay</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Attaches a background task to this loop.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task: A callable object with no parameters. This object will be</span>
+<span class="sd">                invoked periodically during the measurement loop.</span>
+
+<span class="sd">            bg_final_task: A callable object with no parameters. This object will be</span>
+<span class="sd">                invoked to clean up after or otherwise finish the background</span>
+<span class="sd">                task work.</span>
+
+<span class="sd">            min_delay (int, float): The minimum number of seconds to wait</span>
+<span class="sd">                between task invocations. Note that the actual time between</span>
+<span class="sd">                task invocations may be much longer than this, as the task is</span>
+<span class="sd">                only run between passes through the loop. Defaults to 0.01 s.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_attach_bg_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">bg_final_task</span><span class="p">,</span> <span class="n">min_delay</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ActiveLoop.snapshot_base"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.ActiveLoop.snapshot_base">[docs]</a>    <span class="k">def</span> <span class="nf">snapshot_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">params_to_skip_update</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Snapshot of this ActiveLoop&#39;s definition.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;__class__&#39;</span><span class="p">:</span> <span class="n">full_class</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+            <span class="s1">&#39;sweep_values&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span><span class="o">.</span><span class="n">snapshot</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">update</span><span class="p">),</span>
+            <span class="s1">&#39;delay&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="p">,</span>
+            <span class="s1">&#39;actions&#39;</span><span class="p">:</span> <span class="n">_actions_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">,</span> <span class="n">update</span><span class="p">),</span>
+            <span class="s1">&#39;then_actions&#39;</span><span class="p">:</span> <span class="n">_actions_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">then_actions</span><span class="p">,</span> <span class="n">update</span><span class="p">)</span>
+        <span class="p">}</span></div>
+
+<div class="viewcode-block" id="ActiveLoop.containers"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.ActiveLoop.containers">[docs]</a>    <span class="k">def</span> <span class="nf">containers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds the data arrays that will be created by the actions in this</span>
+<span class="sd">        loop, and nests them inside this level of the loop.</span>
+
+<span class="sd">        Recursively calls `.containers` on any enclosed actions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">loop_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span><span class="p">)</span>
+        <span class="n">data_arrays</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">loop_array</span> <span class="o">=</span> <span class="n">DataArray</span><span class="p">(</span><span class="n">parameter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span><span class="o">.</span><span class="n">parameter</span><span class="p">,</span>
+                               <span class="n">is_setpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">loop_array</span><span class="o">.</span><span class="n">nest</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">loop_size</span><span class="p">)</span>
+
+        <span class="n">data_arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">loop_array</span><span class="p">]</span>
+        <span class="c1"># hack set_data into actions</span>
+        <span class="n">new_actions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">[:]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span><span class="p">,</span> <span class="s2">&quot;parameters&quot;</span><span class="p">):</span> <span class="c1"># combined parameter</span>
+            <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+                <span class="n">new_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parameter</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">action</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new_actions</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;containers&#39;</span><span class="p">):</span>
+                <span class="n">action_arrays</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">containers</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;get&#39;</span><span class="p">):</span>
+                <span class="c1"># this action is a parameter to measure</span>
+                <span class="c1"># note that this supports lists (separate output arrays)</span>
+                <span class="c1"># and arrays (nested in one/each output array) of return values</span>
+                <span class="n">action_arrays</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter_arrays</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># this *is* covered but the report misses it because Python</span>
+                <span class="c1"># optimizes it away. See:</span>
+                <span class="c1"># https://bitbucket.org/ned/coveragepy/issues/198</span>
+                <span class="k">continue</span>  <span class="c1"># pragma: no cover</span>
+
+            <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">action_arrays</span><span class="p">:</span>
+                <span class="n">array</span><span class="o">.</span><span class="n">nest</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">loop_size</span><span class="p">,</span> <span class="n">action_index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span>
+                           <span class="n">set_array</span><span class="o">=</span><span class="n">loop_array</span><span class="p">)</span>
+            <span class="n">data_arrays</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">action_arrays</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data_arrays</span></div>
+
+    <span class="k">def</span> <span class="nf">_parameter_arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># first massage all the input parameters to the general multi-name form</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;names&#39;</span><span class="p">):</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">names</span>
+            <span class="n">full_names</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">full_names</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="n">names</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;must have equal number of names and labels&#39;</span><span class="p">)</span>
+            <span class="n">action_indices</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">i</span><span class="p">,)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)))</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">):</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="p">(</span><span class="n">action</span><span class="o">.</span><span class="n">name</span><span class="p">,)</span>
+            <span class="n">full_names</span> <span class="o">=</span> <span class="p">(</span><span class="n">action</span><span class="o">.</span><span class="n">full_name</span><span class="p">,)</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">.</span><span class="n">name</span><span class="p">),)</span>
+            <span class="n">action_indices</span> <span class="o">=</span> <span class="p">((),)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;a gettable parameter must have .name or .names&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;names&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">):</span>
+            <span class="n">units</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">units</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;unit&#39;</span><span class="p">):</span>
+            <span class="n">units</span> <span class="o">=</span> <span class="p">(</span><span class="n">action</span><span class="o">.</span><span class="n">unit</span><span class="p">,)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">units</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="s1">&#39;&#39;</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
+        <span class="n">num_arrays</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+        <span class="n">shapes</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;shapes&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">sp_vals</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;setpoints&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">sp_names</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;setpoint_names&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">sp_labels</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;setpoint_labels&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">sp_units</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;setpoint_units&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">shapes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">shapes</span> <span class="o">=</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="p">()),)</span> <span class="o">*</span> <span class="n">num_arrays</span>
+            <span class="n">sp_vals</span> <span class="o">=</span> <span class="p">(</span><span class="n">sp_vals</span><span class="p">,)</span> <span class="o">*</span> <span class="n">num_arrays</span>
+            <span class="n">sp_names</span> <span class="o">=</span> <span class="p">(</span><span class="n">sp_names</span><span class="p">,)</span> <span class="o">*</span> <span class="n">num_arrays</span>
+            <span class="n">sp_labels</span> <span class="o">=</span> <span class="p">(</span><span class="n">sp_labels</span><span class="p">,)</span> <span class="o">*</span> <span class="n">num_arrays</span>
+            <span class="n">sp_units</span> <span class="o">=</span> <span class="p">(</span><span class="n">sp_units</span><span class="p">,)</span> <span class="o">*</span> <span class="n">num_arrays</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sp_blank</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span> <span class="o">*</span> <span class="n">num_arrays</span>
+            <span class="c1"># _fill_blank both supplies defaults and tests length</span>
+            <span class="c1"># if values are supplied (for shapes it ONLY tests length)</span>
+            <span class="n">shapes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_blank</span><span class="p">(</span><span class="n">shapes</span><span class="p">,</span> <span class="n">sp_blank</span><span class="p">)</span>
+            <span class="n">sp_vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_blank</span><span class="p">(</span><span class="n">sp_vals</span><span class="p">,</span> <span class="n">sp_blank</span><span class="p">)</span>
+            <span class="n">sp_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_blank</span><span class="p">(</span><span class="n">sp_names</span><span class="p">,</span> <span class="n">sp_blank</span><span class="p">)</span>
+            <span class="n">sp_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_blank</span><span class="p">(</span><span class="n">sp_labels</span><span class="p">,</span> <span class="n">sp_blank</span><span class="p">)</span>
+            <span class="n">sp_units</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_blank</span><span class="p">(</span><span class="n">sp_units</span><span class="p">,</span> <span class="n">sp_blank</span><span class="p">)</span>
+
+        <span class="c1"># now loop through these all, to make the DataArrays</span>
+        <span class="c1"># record which setpoint arrays we&#39;ve made, so we don&#39;t duplicate</span>
+        <span class="n">all_setpoints</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">full_name</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">sp_vi</span><span class="p">,</span> <span class="n">sp_ni</span><span class="p">,</span> <span class="n">sp_li</span><span class="p">,</span> <span class="n">sp_ui</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="n">names</span><span class="p">,</span> <span class="n">full_names</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">shapes</span><span class="p">,</span> <span class="n">action_indices</span><span class="p">,</span>
+                <span class="n">sp_vals</span><span class="p">,</span> <span class="n">sp_names</span><span class="p">,</span> <span class="n">sp_labels</span><span class="p">,</span> <span class="n">sp_units</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
+                <span class="n">shape</span><span class="p">,</span> <span class="n">sp_vi</span><span class="p">,</span> <span class="n">sp_ni</span><span class="p">,</span> <span class="n">sp_li</span><span class="p">,</span> <span class="n">sp_ui</span><span class="o">=</span> <span class="p">(),</span> <span class="p">(),</span> <span class="p">(),</span> <span class="p">(),</span> <span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sp_blank</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+                <span class="n">sp_vi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_blank</span><span class="p">(</span><span class="n">sp_vi</span><span class="p">,</span> <span class="n">sp_blank</span><span class="p">)</span>
+                <span class="n">sp_ni</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_blank</span><span class="p">(</span><span class="n">sp_ni</span><span class="p">,</span> <span class="n">sp_blank</span><span class="p">)</span>
+                <span class="n">sp_li</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_blank</span><span class="p">(</span><span class="n">sp_li</span><span class="p">,</span> <span class="n">sp_blank</span><span class="p">)</span>
+                <span class="n">sp_ui</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_blank</span><span class="p">(</span><span class="n">sp_ui</span><span class="p">,</span> <span class="n">sp_blank</span><span class="p">)</span>
+
+            <span class="n">setpoints</span> <span class="o">=</span> <span class="p">()</span>
+            <span class="c1"># loop through dimensions of shape to make the setpoint arrays</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="p">(</span><span class="n">vij</span><span class="p">,</span> <span class="n">nij</span><span class="p">,</span> <span class="n">lij</span><span class="p">,</span> <span class="n">uij</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">sp_vi</span><span class="p">,</span> <span class="n">sp_ni</span><span class="p">,</span> <span class="n">sp_li</span><span class="p">,</span> <span class="n">sp_ui</span><span class="p">)):</span>
+                <span class="n">sp_def</span> <span class="o">=</span> <span class="p">(</span><span class="n">shape</span><span class="p">[:</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">j</span><span class="p">],</span> <span class="n">j</span><span class="p">,</span> <span class="n">setpoints</span><span class="p">,</span> <span class="n">vij</span><span class="p">,</span> <span class="n">nij</span><span class="p">,</span> <span class="n">lij</span><span class="p">,</span> <span class="n">uij</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">sp_def</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_setpoints</span><span class="p">:</span>
+                    <span class="n">all_setpoints</span><span class="p">[</span><span class="n">sp_def</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_setpoint_array</span><span class="p">(</span><span class="o">*</span><span class="n">sp_def</span><span class="p">)</span>
+                    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">all_setpoints</span><span class="p">[</span><span class="n">sp_def</span><span class="p">])</span>
+                <span class="n">setpoints</span> <span class="o">=</span> <span class="n">setpoints</span> <span class="o">+</span> <span class="p">(</span><span class="n">all_setpoints</span><span class="p">[</span><span class="n">sp_def</span><span class="p">],)</span>
+
+            <span class="c1"># finally, make the output data array with these setpoints</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DataArray</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">full_name</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
+                                 <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">action_indices</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span>
+                                 <span class="n">set_arrays</span><span class="o">=</span><span class="n">setpoints</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="n">action</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="k">def</span> <span class="nf">_fill_blank</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">blanks</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">blanks</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">blanks</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">inputs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong number of inputs supplied&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_make_setpoint_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">prev_setpoints</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span>
+                             <span class="n">label</span><span class="p">,</span> <span class="n">unit</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">vals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_setpoints</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">DataArray</span><span class="p">):</span>
+            <span class="c1"># can&#39;t simply use the DataArray, even though that&#39;s</span>
+            <span class="c1"># what we&#39;re going to return here, because it will</span>
+            <span class="c1"># get nested (don&#39;t want to alter the original)</span>
+            <span class="c1"># DataArrays do have the advantage though of already including</span>
+            <span class="c1"># name and label, so take these if they exist</span>
+            <span class="k">if</span> <span class="n">vals</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">vals</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">if</span> <span class="n">vals</span><span class="o">.</span><span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="n">vals</span><span class="o">.</span><span class="n">label</span>
+
+            <span class="c1"># extract a copy of the numpy array</span>
+            <span class="n">vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># turn any sequence into a (new) numpy array</span>
+            <span class="n">vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">vals</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;nth setpoint array should have shape matching &#39;</span>
+                             <span class="s1">&#39;the first n dimensions of shape.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;index</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="k">return</span> <span class="n">DataArray</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">set_arrays</span><span class="o">=</span><span class="n">prev_setpoints</span><span class="p">,</span>
+                         <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">preset_data</span><span class="o">=</span><span class="n">vals</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">,</span> <span class="n">is_setpoint</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_default_setpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">sp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">sp_inner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_setpoints</span><span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sp</span><span class="p">)):</span>
+            <span class="n">sp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp_inner</span>
+
+        <span class="k">return</span> <span class="n">sp</span>
+
+<div class="viewcode-block" id="ActiveLoop.set_common_attrs"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.ActiveLoop.set_common_attrs">[docs]</a>    <span class="k">def</span> <span class="nf">set_common_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_set</span><span class="p">,</span> <span class="n">use_threads</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set a couple of common attributes that the main and nested loops</span>
+<span class="sd">        all need to have:</span>
+<span class="sd">        - the DataSet collecting all our measurements</span>
+<span class="sd">        - a queue for communicating with the main process</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_set</span> <span class="o">=</span> <span class="n">data_set</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_threads</span> <span class="o">=</span> <span class="n">use_threads</span>
+        <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;set_common_attrs&#39;</span><span class="p">):</span>
+                <span class="n">action</span><span class="o">.</span><span class="n">set_common_attrs</span><span class="p">(</span><span class="n">data_set</span><span class="p">,</span> <span class="n">use_threads</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ActiveLoop.get_data_set"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.ActiveLoop.get_data_set">[docs]</a>    <span class="k">def</span> <span class="nf">get_data_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the data set for this loop.</span>
+
+<span class="sd">        If no data set has been created yet, a new one will be created and</span>
+<span class="sd">        returned. Note that all arguments can only be provided when the</span>
+<span class="sd">        `DataSet` is first created; giving these during `run` when</span>
+<span class="sd">        `get_data_set` has already been called on its own is an error.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_manager: a DataManager instance (omit to use default,</span>
+<span class="sd">                False to store locally)</span>
+
+<span class="sd">        kwargs are passed along to data_set.new_data. The key ones are:</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            location: the location of the DataSet, a string whose meaning</span>
+<span class="sd">                depends on formatter and io, or False to only keep in memory.</span>
+<span class="sd">                May be a callable to provide automatic locations. If omitted, will</span>
+<span class="sd">                use the default DataSet.location_provider</span>
+<span class="sd">            name: if location is default or another provider function, name is</span>
+<span class="sd">                a string to add to location to make it more readable/meaningful</span>
+<span class="sd">                to users</span>
+<span class="sd">            formatter: knows how to read and write the file format</span>
+<span class="sd">                default can be set in DataSet.default_formatter</span>
+<span class="sd">            io: knows how to connect to the storage (disk vs cloud etc)</span>
+<span class="sd">            write_period: how often to save to storage during the loop.</span>
+<span class="sd">                default 5 sec, use None to write only at the end</span>
+
+<span class="sd">        returns:</span>
+<span class="sd">            a DataSet object that we can use to plot</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data_set</span> <span class="o">=</span> <span class="n">new_data</span><span class="p">(</span><span class="n">arrays</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">containers</span><span class="p">(),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_set</span> <span class="o">=</span> <span class="n">data_set</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">has_args</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">has_args</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s1">&#39;The DataSet for this loop already exists. &#39;</span>
+                    <span class="s1">&#39;You can only provide DataSet attributes, such as &#39;</span>
+                    <span class="s1">&#39;data_manager, location, name, formatter, io, &#39;</span>
+                    <span class="s1">&#39;write_period, when the DataSet is first created.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_set</span></div>
+
+<div class="viewcode-block" id="ActiveLoop.run_temp"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.ActiveLoop.run_temp">[docs]</a>    <span class="k">def</span> <span class="nf">run_temp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        wrapper to run this loop in the foreground as a temporary data set,</span>
+<span class="sd">        especially for use in composite parameters that need to run a Loop</span>
+<span class="sd">        as part of their get method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ActiveLoop.run"><a class="viewcode-back" href="../../api/loops.html#qcodes.loops.ActiveLoop.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use_threads</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">progress_interval</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">set_active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute this loop.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            use_threads: (default False): whenever there are multiple `get` calls</span>
+<span class="sd">                back-to-back, execute them in separate threads so they run in</span>
+<span class="sd">                parallel (as long as they don&#39;t block each other)</span>
+<span class="sd">            quiet: (default False): set True to not print anything except errors</span>
+<span class="sd">            station: a Station instance for snapshots (omit to use a previously</span>
+<span class="sd">                provided Station, or the default Station)</span>
+<span class="sd">            progress_interval (int, float): show progress of the loop every x</span>
+<span class="sd">                seconds. If provided here, will override any interval provided</span>
+<span class="sd">                with the Loop definition. Defaults to None</span>
+
+<span class="sd">        kwargs are passed along to data_set.new_data. These can only be</span>
+<span class="sd">        provided when the `DataSet` is first created; giving these during `run`</span>
+<span class="sd">        when `get_data_set` has already been called on its own is an error.</span>
+<span class="sd">        The key ones are:</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            location: the location of the DataSet, a string whose meaning</span>
+<span class="sd">                depends on formatter and io, or False to only keep in memory.</span>
+<span class="sd">                May be a callable to provide automatic locations. If omitted, will</span>
+<span class="sd">                use the default DataSet.location_provider</span>
+<span class="sd">            name: if location is default or another provider function, name is</span>
+<span class="sd">                a string to add to location to make it more readable/meaningful</span>
+<span class="sd">                to users</span>
+<span class="sd">            formatter: knows how to read and write the file format</span>
+<span class="sd">                default can be set in DataSet.default_formatter</span>
+<span class="sd">            io: knows how to connect to the storage (disk vs cloud etc)</span>
+<span class="sd">                write_period: how often to save to storage during the loop.</span>
+<span class="sd">                default 5 sec, use None to write only at the end</span>
+
+
+<span class="sd">        returns:</span>
+<span class="sd">            a DataSet object that we can use to plot</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">progress_interval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">progress_interval</span> <span class="o">=</span> <span class="n">progress_interval</span>
+
+        <span class="n">data_set</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data_set</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_common_attrs</span><span class="p">(</span><span class="n">data_set</span><span class="o">=</span><span class="n">data_set</span><span class="p">,</span> <span class="n">use_threads</span><span class="o">=</span><span class="n">use_threads</span><span class="p">)</span>
+
+        <span class="n">station</span> <span class="o">=</span> <span class="n">station</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">station</span> <span class="ow">or</span> <span class="n">Station</span><span class="o">.</span><span class="n">default</span>
+        <span class="k">if</span> <span class="n">station</span><span class="p">:</span>
+            <span class="n">data_set</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">({</span><span class="s1">&#39;station&#39;</span><span class="p">:</span> <span class="n">station</span><span class="o">.</span><span class="n">snapshot</span><span class="p">()})</span>
+
+        <span class="c1"># information about the loop definition is in its snapshot</span>
+        <span class="n">data_set</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">({</span><span class="s1">&#39;loop&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">snapshot</span><span class="p">()})</span>
+        <span class="c1"># then add information about how and when it was run</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
+        <span class="n">data_set</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">({</span><span class="s1">&#39;loop&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;ts_start&#39;</span><span class="p">:</span> <span class="n">ts</span><span class="p">,</span>
+            <span class="s1">&#39;use_threads&#39;</span><span class="p">:</span> <span class="n">use_threads</span><span class="p">,</span>
+        <span class="p">}})</span>
+
+        <span class="n">data_set</span><span class="o">.</span><span class="n">save_metadata</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">set_active</span><span class="p">:</span>
+            <span class="n">ActiveLoop</span><span class="o">.</span><span class="n">active_loop</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;Started at %Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_run_wrapper</span><span class="p">()</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_set</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_set</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;Finished at %Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">))</span>
+
+            <span class="c1"># After normal loop execution we clear the data_set so we can run</span>
+            <span class="c1"># again. But also if something went wrong during the loop execution</span>
+            <span class="c1"># we want to clear the data_set attribute so we don&#39;t try to reuse</span>
+            <span class="c1"># this one later.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_set</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">set_active</span><span class="p">:</span>
+                <span class="n">ActiveLoop</span><span class="o">.</span><span class="n">active_loop</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">ds</span></div>
+
+    <span class="k">def</span> <span class="nf">_compile_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actions</span><span class="p">,</span> <span class="n">action_indices</span><span class="o">=</span><span class="p">()):</span>
+        <span class="n">callables</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">measurement_group</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">action</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">actions</span><span class="p">):</span>
+            <span class="n">new_action_indices</span> <span class="o">=</span> <span class="n">action_indices</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span><span class="p">,)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;get&#39;</span><span class="p">):</span>
+                <span class="n">measurement_group</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">action</span><span class="p">,</span> <span class="n">new_action_indices</span><span class="p">))</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="n">measurement_group</span><span class="p">:</span>
+                <span class="n">callables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_Measure</span><span class="p">(</span><span class="n">measurement_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_set</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">use_threads</span><span class="p">))</span>
+                <span class="n">measurement_group</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="n">callables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_compile_one</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">new_action_indices</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">measurement_group</span><span class="p">:</span>
+            <span class="n">callables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_Measure</span><span class="p">(</span><span class="n">measurement_group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_set</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">use_threads</span><span class="p">))</span>
+            <span class="n">measurement_group</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">return</span> <span class="n">callables</span>
+
+    <span class="k">def</span> <span class="nf">_compile_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">new_action_indices</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">Wait</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wait</span><span class="p">,</span> <span class="n">action</span><span class="o">.</span><span class="n">delay</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">ActiveLoop</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">_Nest</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">new_action_indices</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">action</span>
+
+    <span class="k">def</span> <span class="nf">_run_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_run_loop</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;data_set&#39;</span><span class="p">):</span>
+                <span class="c1"># TODO (giulioungaretti) WTF?</span>
+                <span class="c1"># somehow this does not show up in the data_set returned by</span>
+                <span class="c1"># run(), but it is saved to the metadata</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data_set</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">({</span><span class="s1">&#39;loop&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;ts_end&#39;</span><span class="p">:</span> <span class="n">ts</span><span class="p">}})</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data_set</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_run_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">first_delay</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">action_indices</span><span class="o">=</span><span class="p">(),</span>
+                  <span class="n">loop_indices</span><span class="o">=</span><span class="p">(),</span> <span class="n">current_values</span><span class="o">=</span><span class="p">(),</span>
+                  <span class="o">**</span><span class="n">ignore_kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        the routine that actually executes the loop, and can be called</span>
+<span class="sd">        from one loop to execute a nested loop</span>
+
+<span class="sd">        first_delay: any delay carried over from an outer loop</span>
+<span class="sd">        action_indices: where we are in any outer loop action arrays</span>
+<span class="sd">        loop_indices: setpoint indices in any outer loops</span>
+<span class="sd">        current_values: setpoint values in any outer loops</span>
+<span class="sd">        signal_queue: queue to communicate with main process directly</span>
+<span class="sd">        ignore_kwargs: for compatibility with other loop tasks</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># at the beginning of the loop, the time to wait after setting</span>
+        <span class="c1"># the loop parameter may be increased if an outer loop requested longer</span>
+        <span class="n">delay</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="p">,</span> <span class="n">first_delay</span><span class="p">)</span>
+
+        <span class="n">callables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compile_actions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actions</span><span class="p">,</span> <span class="n">action_indices</span><span class="p">)</span>
+        <span class="n">n_callables</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">callables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s1">&#39;param_ids&#39;</span><span class="p">):</span>
+                <span class="n">n_callables</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">param_ids</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">n_callables</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">last_task</span> <span class="o">=</span> <span class="n">t0</span>
+        <span class="n">imax</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_task_failed</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">progress_interval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">tprint</span><span class="p">(</span><span class="s1">&#39;loop </span><span class="si">%s</span><span class="s1">: </span><span class="si">%d</span><span class="s1">/</span><span class="si">%d</span><span class="s1"> (</span><span class="si">%.1f</span><span class="s1"> [s])&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">imax</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">),</span>
+                    <span class="n">dt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">progress_interval</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s1">&#39;outerloop&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">i</span><span class="p">:</span>
+                    <span class="n">tprint</span><span class="p">(</span><span class="s2">&quot;Estimated finish time: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                        <span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">t0</span> <span class="o">+</span> <span class="p">((</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span> <span class="o">*</span> <span class="n">imax</span> <span class="o">/</span> <span class="n">i</span><span class="p">)))),</span>
+                           <span class="n">dt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">progress_interval</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">&quot;finish&quot;</span><span class="p">)</span>
+
+            <span class="n">set_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+            <span class="n">new_indices</span> <span class="o">=</span> <span class="n">loop_indices</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span><span class="p">,)</span>
+            <span class="n">new_values</span> <span class="o">=</span> <span class="n">current_values</span> <span class="o">+</span> <span class="p">(</span><span class="n">value</span><span class="p">,)</span>
+            <span class="n">data_to_store</span> <span class="o">=</span> <span class="p">{}</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span><span class="p">,</span> <span class="s2">&quot;parameters&quot;</span><span class="p">):</span>  <span class="c1"># combined parameter</span>
+                <span class="n">set_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_set</span><span class="o">.</span><span class="n">action_id_map</span><span class="p">[</span><span class="n">action_indices</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span><span class="p">,</span> <span class="s1">&#39;aggregate&#39;</span><span class="p">):</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_values</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span><span class="o">*</span><span class="n">set_val</span><span class="p">)</span>
+                <span class="c1"># below is useful but too verbose even at debug</span>
+                <span class="c1"># log.debug(&#39;Calling .store method of DataSet because &#39;</span>
+                <span class="c1">#           &#39;sweep_values.parameters exist&#39;)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data_set</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">new_indices</span><span class="p">,</span> <span class="p">{</span><span class="n">set_name</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+                <span class="c1"># set_val list of values to set [param1_setpoint, param2_setpoint ..]</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">set_val</span><span class="p">):</span>
+                    <span class="n">set_index</span> <span class="o">=</span> <span class="n">action_indices</span> <span class="o">+</span> <span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="n">n_callables</span><span class="p">,</span> <span class="p">)</span>
+                    <span class="n">set_name</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_set</span><span class="o">.</span><span class="n">action_id_map</span><span class="p">[</span><span class="n">set_index</span><span class="p">])</span>
+                    <span class="n">data_to_store</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">set_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_set</span><span class="o">.</span><span class="n">action_id_map</span><span class="p">[</span><span class="n">action_indices</span><span class="p">]</span>
+                <span class="n">data_to_store</span><span class="p">[</span><span class="n">set_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="c1"># below is useful but too verbose even at debug</span>
+            <span class="c1"># log.debug(&#39;Calling .store method of DataSet because a sweep step&#39;</span>
+            <span class="c1">#           &#39; was taken&#39;)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_set</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">new_indices</span><span class="p">,</span> <span class="n">data_to_store</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nest_first</span><span class="p">:</span>
+                <span class="c1"># only wait the delay time if an inner loop will not inherit it</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_wait</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">callables</span><span class="p">:</span>
+                    <span class="c1"># below is useful but too verbose even at debug</span>
+                    <span class="c1"># log.debug(&#39;Going through callables at this sweep step.&#39;</span>
+                    <span class="c1">#           &#39; Calling {}&#39;.format(f))</span>
+                    <span class="n">f</span><span class="p">(</span><span class="n">first_delay</span><span class="o">=</span><span class="n">delay</span><span class="p">,</span>
+                      <span class="n">loop_indices</span><span class="o">=</span><span class="n">new_indices</span><span class="p">,</span>
+                      <span class="n">current_values</span><span class="o">=</span><span class="n">new_values</span><span class="p">)</span>
+
+                    <span class="c1"># after the first action, no delay is inherited</span>
+                    <span class="n">delay</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">except</span> <span class="n">_QcodesBreak</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="c1"># after the first setpoint, delay reverts to the loop delay</span>
+            <span class="n">delay</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delay</span>
+
+            <span class="c1"># now check for a background task and execute it if it&#39;s</span>
+            <span class="c1"># been long enough since the last time</span>
+            <span class="c1"># don&#39;t let exceptions in the background task interrupt</span>
+            <span class="c1"># the loop</span>
+            <span class="c1"># if the background task fails twice consecutively, stop</span>
+            <span class="c1"># executing it</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bg_task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">t</span> <span class="o">-</span> <span class="n">last_task</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bg_min_delay</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">bg_task</span><span class="p">()</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_task_failed</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">bg_task</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">last_task_failed</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed to execute bg task&quot;</span><span class="p">)</span>
+
+                    <span class="n">last_task</span> <span class="o">=</span> <span class="n">t</span>
+
+        <span class="c1"># run the background task one last time to catch the last setpoint(s)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bg_task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Running the background task one last time.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bg_task</span><span class="p">()</span>
+
+        <span class="c1"># the loop is finished - run the .then actions</span>
+        <span class="c1">#log.debug(&#39;Finishing loop, running the .then actions...&#39;)</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compile_actions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">then_actions</span><span class="p">,</span> <span class="p">()):</span>
+            <span class="c1">#log.debug(&#39;...running .then action {}&#39;.format(f))</span>
+            <span class="n">f</span><span class="p">()</span>
+
+        <span class="c1"># run the bg_final_task from the bg_task:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bg_final_task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Running the bg_final_task&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bg_final_task</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delay</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">delay</span><span class="p">:</span>
+            <span class="n">finish_clock</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">+</span> <span class="n">delay</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">wait_secs</span><span class="p">(</span><span class="n">finish_clock</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

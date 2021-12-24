@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QCoDes API documentation &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="qcodes.configuration" href="configuration/index.html" />
+    <link rel="prev" title="Interdependent Parameters" href="../dataset/interdependentparams.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">QCoDes API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#qcodes-api">QCoDeS API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="configuration/index.html">qcodes.configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dataset/index.html">qcodes.dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="instrument/index.html">qcodes.instrument (Instruments)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="parameters/index.html">qcodes.instrument (Parameters)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logger/index.html">qcodes.logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="math_utils/index.html">qcodes.math</a></li>
+<li class="toctree-l3"><a class="reference internal" href="monitor/index.html">qcodes.monitor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="station.html">qcodes.station</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils/index.html">qcodes.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#legacy-api">Legacy API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="loops.html">qcodes.loops</a></li>
+<li class="toctree-l3"><a class="reference internal" href="actions.html">qcodes.actions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="measure.html">qcodes.measure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data/index.html">qcodes.data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots/index.html">qcodes.plots</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>QCoDes API documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="qcodes-api-documentation">
+<span id="api"></span><h1>QCoDes API documentation<a class="headerlink" href="#qcodes-api-documentation" title="Permalink to this headline"></a></h1>
+<p>This page documents the QCoDes API. This page contains documentation of all user facing modules.
+A few of our modules are considered legacy and documented separately below.
+This is split in roughly one page per QCoDeS submodule. A few of the submodules have been split for
+additional clarity.</p>
+<section id="qcodes-api">
+<h2>QCoDeS API<a class="headerlink" href="#qcodes-api" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="configuration/index.html">qcodes.configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configuration/config.html">qcodes.configuration.config</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dataset/index.html">qcodes.dataset</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dataset/measurements.html">qcodes.dataset.measurements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataset/plotting.html">qcodes.dataset.plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataset/data_set.html">qcodes.dataset.data_set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataset/database_extract_runs.html">qcodes.dataset.database_extract_runs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dataset/legacy_import.html">qcodes.dataset.legacy_import</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="instrument/index.html">qcodes.instrument (Instruments)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="instrument/visa.html">qcodes.instrument.visa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instrument/channel.html">qcodes.instrument.channel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instrument/delegate.html">qcodes.instrument.delegate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instrument/base.html">qcodes.instrument.base</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="parameters/index.html">qcodes.instrument (Parameters)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="parameters/parameter.html">qcodes.instrument.parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameters/group_parameter.html">qcodes.instrument.group_parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameters/specialized_parameters.html">qcodes.instrument.specialized_parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="logger/index.html">qcodes.logger</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="logger/instrument_logger.html">qcodes.logger.instrument_logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logger/log_analysis.html">qcodes.logger.log_analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logger/logger.html">qcodes.logger.logger</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="math_utils/index.html">qcodes.math</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="math_utils/field_vector.html">qcodes.math.field_vector</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="monitor/index.html">qcodes.monitor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="monitor/monitor.html">qcodes.monitor.monitor</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="station.html">qcodes.station</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils/index.html">qcodes.utils</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="utils/command.html">qcodes.utils.command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils/deprecate.html">qcodes.utils.deprecate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils/helpers.html">qcodes.utils.helpers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils/magic.html">qcodes.utils.magic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils/metadata.html">qcodes.utils.metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils/plotting.html">qcodes.utils.plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils/slack.html">qcodes.utils.slack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils/threading.html">qcodes.utils.threading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils/validators.html">qcodes.utils.validators</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="legacy-api">
+<h2>Legacy API<a class="headerlink" href="#legacy-api" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="loops.html">qcodes.loops</a></li>
+<li class="toctree-l1"><a class="reference internal" href="actions.html">qcodes.actions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="measure.html">qcodes.measure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data/index.html">qcodes.data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data/data_array.html">qcodes.data.data_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/data_set.html">qcodes.data.data_set</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/format.html">qcodes.data.format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/gnuplot_format.html">qcodes.data.gnuplot_format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/hdf5_format.html">qcodes.data.hdf5_format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/hdf5_format_hickle.html">qcodes.data.hdf5_format_hickle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/io.html">qcodes.data.io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/location.html">qcodes.data.location</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plots/index.html">qcodes.plots</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plots/base.html">qcodes.plots.base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plots/colors.html">qcodes.plots.colors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plots/pyqtgraph.html">qcodes.plots.pyqtgraph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plots/qcmatplotlib.html">qcodes.plots.qcmatplotlib</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../dataset/interdependentparams.html" class="btn btn-neutral float-left" title="Interdependent Parameters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="configuration/index.html" class="btn btn-neutral float-right" title="qcodes.configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.actions &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link href="../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.actions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.actions</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Actions, mainly to be executed in measurement Loops.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">qcodes.utils.helpers</span> <span class="kn">import</span> <span class="n">is_function</span>
+<span class="kn">from</span> <span class="nn">qcodes.utils.threading</span> <span class="kn">import</span> <span class="n">thread_map</span>
+
+<span class="n">_NO_SNAPSHOT</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s1">&#39;Action without snapshot&#39;</span><span class="p">}</span>
+
+
+<span class="c1"># exception when threading is attempted used to simultaneously</span>
+<span class="c1"># query the same instrument for several values</span>
+<div class="viewcode-block" id="UnsafeThreadingException"><a class="viewcode-back" href="../../api/actions.html#qcodes.actions.UnsafeThreadingException">[docs]</a><span class="k">class</span> <span class="nc">UnsafeThreadingException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<span class="k">def</span> <span class="nf">_actions_snapshot</span><span class="p">(</span><span class="n">actions</span><span class="p">,</span> <span class="n">update</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a list of snapshots from a list of actions.&quot;&quot;&quot;</span>
+    <span class="n">snapshot</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="s1">&#39;snapshot&#39;</span><span class="p">):</span>
+            <span class="n">snapshot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">action</span><span class="o">.</span><span class="n">snapshot</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">update</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">snapshot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_NO_SNAPSHOT</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">snapshot</span>
+
+
+<div class="viewcode-block" id="Task"><a class="viewcode-back" href="../../api/actions.html#qcodes.actions.Task">[docs]</a><span class="k">class</span> <span class="nc">Task</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A predefined task to be executed within a measurement Loop.</span>
+
+<span class="sd">    The first argument should be a callable, to which any subsequent</span>
+<span class="sd">    args and kwargs (which are evaluated before the loop starts) are passed.</span>
+
+<span class="sd">    The args and kwargs are first evaluated if they are found to be callable.</span>
+
+<span class="sd">    Keyword Args passed when the Task is called are ignored,</span>
+<span class="sd">    but are accepted for compatibility with other things happening in a Loop.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        func (Callable): Function to executed</span>
+<span class="sd">        *args: pass to func, after evaluation if callable</span>
+<span class="sd">        **kwargs: pass to func, after evaluation if callable</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">ignore_kwargs</span><span class="p">):</span>
+        <span class="c1"># If any of the arguments are callable, evaluate them first</span>
+        <span class="n">eval_args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="p">()</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">else</span> <span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">]</span>
+        <span class="n">eval_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="p">(</span><span class="n">v</span><span class="p">()</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">else</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">eval_args</span><span class="p">,</span> <span class="o">**</span><span class="n">eval_kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Task.snapshot"><a class="viewcode-back" href="../../api/actions.html#qcodes.actions.Task.snapshot">[docs]</a>    <span class="k">def</span> <span class="nf">snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Snapshots  task</span>
+<span class="sd">        Args:</span>
+<span class="sd">            update (bool): TODO not in use</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: snapshot</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Task&#39;</span><span class="p">,</span> <span class="s1">&#39;func&#39;</span><span class="p">:</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">)}</span></div></div>
+
+
+<div class="viewcode-block" id="Wait"><a class="viewcode-back" href="../../api/actions.html#qcodes.actions.Wait">[docs]</a><span class="k">class</span> <span class="nc">Wait</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A simple class to tell a Loop to wait &lt;delay&gt; seconds.</span>
+
+<span class="sd">    This is transformed into a Task within the Loop, such that</span>
+<span class="sd">    it can do other things (monitor, check for halt) during the delay.</span>
+
+<span class="sd">    But for use outside of a Loop, it is also callable (then it just sleeps)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        delay: seconds to delay</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if delay is negative</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delay</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">delay</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;delay must be &gt; 0, not </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delay</span> <span class="o">=</span> <span class="n">delay</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Wait.snapshot"><a class="viewcode-back" href="../../api/actions.html#qcodes.actions.Wait.snapshot">[docs]</a>    <span class="k">def</span> <span class="nf">snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Snapshots  delay</span>
+<span class="sd">        Args:</span>
+<span class="sd">            update (bool): TODO not in use</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: snapshot</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Wait&#39;</span><span class="p">,</span> <span class="s1">&#39;delay&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">delay</span><span class="p">}</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">_Measure</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A callable collection of parameters to measure.</span>
+
+<span class="sd">    This should not be constructed manually, only by an ActiveLoop.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params_indices</span><span class="p">,</span> <span class="n">data_set</span><span class="p">,</span> <span class="n">use_threads</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_threads</span> <span class="o">=</span> <span class="n">use_threads</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">params_indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="c1"># the applicable DataSet.store function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">store</span>
+
+        <span class="c1"># for performance, pre-calculate which params return data for</span>
+        <span class="c1"># multiple arrays, and the name mappings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">getters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param_ids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">composite</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">paramcheck</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># list to check if parameters are unique</span>
+        <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">action_indices</span> <span class="ow">in</span> <span class="n">params_indices</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">getters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">get</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">_instrument</span><span class="p">:</span>
+                <span class="n">paramcheck</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">param</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">_instrument</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="s1">&#39;names&#39;</span><span class="p">):</span>
+                <span class="n">part_ids</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">names</span><span class="p">)):</span>
+                    <span class="n">param_id</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">action_id_map</span><span class="p">[</span><span class="n">action_indices</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span><span class="p">,)]</span>
+                    <span class="n">part_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param_id</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">param_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">composite</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">part_ids</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">param_id</span> <span class="o">=</span> <span class="n">data_set</span><span class="o">.</span><span class="n">action_id_map</span><span class="p">[</span><span class="n">action_indices</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">param_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param_id</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">composite</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_threads</span><span class="p">:</span>
+            <span class="n">insts</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paramcheck</span><span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">insts</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">insts</span><span class="p">)):</span>
+                <span class="n">duplicates</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paramcheck</span> <span class="k">if</span> <span class="n">insts</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="k">raise</span> <span class="n">UnsafeThreadingException</span><span class="p">(</span><span class="s1">&#39;Can not use threading to &#39;</span>
+                                               <span class="s1">&#39;read &#39;</span>
+                                               <span class="s1">&#39;several things from the same &#39;</span>
+                                               <span class="s1">&#39;instrument. Specifically, you &#39;</span>
+                                               <span class="s1">&#39;asked for&#39;</span>
+                                               <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">duplicates</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop_indices</span><span class="p">,</span> <span class="o">**</span><span class="n">ignore_kwargs</span><span class="p">):</span>
+        <span class="n">out_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_threads</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">thread_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getters</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="p">()</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getters</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">param_out</span><span class="p">,</span> <span class="n">param_id</span><span class="p">,</span> <span class="n">composite</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_ids</span><span class="p">,</span>
+                                                  <span class="bp">self</span><span class="o">.</span><span class="n">composite</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">composite</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">val</span><span class="p">,</span> <span class="n">part_id</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">param_out</span><span class="p">,</span> <span class="n">composite</span><span class="p">):</span>
+                    <span class="n">out_dict</span><span class="p">[</span><span class="n">part_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out_dict</span><span class="p">[</span><span class="n">param_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">param_out</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">loop_indices</span><span class="p">,</span> <span class="n">out_dict</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_Nest</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper to make a callable nested ActiveLoop.</span>
+
+<span class="sd">    This should not be constructed manually, only by an ActiveLoop.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inner_loop</span><span class="p">,</span> <span class="n">action_indices</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inner_loop</span> <span class="o">=</span> <span class="n">inner_loop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_indices</span> <span class="o">=</span> <span class="n">action_indices</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inner_loop</span><span class="o">.</span><span class="n">_run_loop</span><span class="p">(</span><span class="n">action_indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">action_indices</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="BreakIf"><a class="viewcode-back" href="../../api/actions.html#qcodes.actions.BreakIf">[docs]</a><span class="k">class</span> <span class="nc">BreakIf</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loop action that breaks out of the loop if a condition is truthy.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        condition (Callable): a callable taking no arguments.</span>
+<span class="sd">            Can be a simple function that returns truthy when it&#39;s time to quit</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        TypeError: if condition is not a callable with no aguments.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">            &gt;&gt;&gt; BreakIf(lambda: gates.chan1.get() &gt;= 3)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_function</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;BreakIf condition must be a callable with &#39;</span>
+                            <span class="s1">&#39;no arguments&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">condition</span> <span class="o">=</span> <span class="n">condition</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">ignore_kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">condition</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">_QcodesBreak</span>
+
+<div class="viewcode-block" id="BreakIf.snapshot"><a class="viewcode-back" href="../../api/actions.html#qcodes.actions.BreakIf.snapshot">[docs]</a>    <span class="k">def</span> <span class="nf">snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Snapshots breakif action</span>
+<span class="sd">        Args:</span>
+<span class="sd">            update (bool): TODO not in use</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: snapshot</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;BreakIf&#39;</span><span class="p">,</span> <span class="s1">&#39;condition&#39;</span><span class="p">:</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">condition</span><span class="p">)}</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">_QcodesBreak</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

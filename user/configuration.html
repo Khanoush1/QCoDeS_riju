@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuring QCoDeS &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="DataSet" href="../dataset/index.html" />
+    <link rel="prev" title="QCodes FAQ" href="faq.html" />
+    <link href="../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community/index.html">Community Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html">QCodes FAQ</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Configuring QCoDeS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#config-files">Config files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#default-config">Default config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-the-config">Using the config</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#updating-a-value">Updating a value</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#saving">Saving</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#more">More</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">User Guide</a> &raquo;</li>
+      <li>Configuring QCoDeS</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user/configuration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="configuring-qcodes">
+<h1>Configuring QCoDeS<a class="headerlink" href="#configuring-qcodes" title="Permalink to this headline"></a></h1>
+<p>QCoDeS uses a JSON based configuration system.
+The configuration is modeled after the module structure plus some higher level switches.</p>
+<section id="config-files">
+<h2>Config files<a class="headerlink" href="#config-files" title="Permalink to this headline"></a></h2>
+<p>QCoDeS config files are read in the following order:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Package defaults</p></li>
+<li><p>User’s home directory</p></li>
+<li><p>QCODES_CONFIG environment variable</p></li>
+<li><p>Current working directory</p></li>
+</ul>
+</div></blockquote>
+<p>This means that something specified in your current working directory will overwrite the package defaults.</p>
+<p>Config files are backed by a json-schema, meaning that they will be validated before use, and if an error occurs the default settings are kept, and the user is informed.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A change in the configuration requires reimporting the package, or restarting the notebook kernel.</p>
+</div>
+</section>
+<section id="default-config">
+<h2>Default config<a class="headerlink" href="#default-config" title="Permalink to this headline"></a></h2>
+<p>The following  table explains the default configuration of qcodes.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td colspan="6"><p>schema for a qcodes config file</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="5"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="6"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="27"><ul class="simple">
+<li><p><strong>core</strong></p></li>
+</ul>
+</td>
+<td colspan="5"><p>controls core settings of qcodes</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>default_fmt</p></li>
+</ul>
+</td>
+<td colspan="4"><p>default location formatter used for the legacy dataset</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>data/{date}/#{counter}_{name}_{time}</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>loglevel</p></li>
+</ul>
+</td>
+<td colspan="4"><p>deprecated - use logger.console_level</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>enum</p></td>
+<td colspan="3"><p>CRITICAL, ERROR, WARNING, INFO, DEBUG</p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>DEBUG</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>file_loglevel</p></li>
+</ul>
+</td>
+<td colspan="4"><p>deprecated - use logger.file_level</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>enum</p></td>
+<td colspan="3"><p>CRITICAL, ERROR, WARNING, INFO, DEBUG</p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>INFO</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>register_magic</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Register QCoDeS magic when in IPython. Can be set to True, False, or a list of magic commands to be registered</p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>True</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p>anyOf</p></td>
+<td><p>type</p></td>
+<td colspan="2"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="2"><p><em>array</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>import_legacy_api</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Import the legacy api in main qcodes namespace</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>False</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>db_debug</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Use debugging mode in sqlite</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>False</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p><strong>db_location</strong></p></li>
+</ul>
+</td>
+<td colspan="4"><p>location of the database</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>./experiments.db</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="18"><ul class="simple">
+<li><p>logger</p></li>
+</ul>
+</td>
+<td colspan="5"><p>controls all settings related to the logging module <cite>qcodes.utils.logger</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>start_logging_on_import</p></li>
+</ul>
+</td>
+<td colspan="4"><p>whether to call <cite>start_all_logging</cite> on qcodes import time. Valid values are ‘always’, ‘never’, ‘if_telemetry_set_up’.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>enum</p></td>
+<td colspan="3"><p>always, never, if_telemetry_set_up</p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>if_telemetry_set_up</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p><strong>console_level</strong></p></li>
+</ul>
+</td>
+<td colspan="4"><p>control logging level of console output</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>enum</p></td>
+<td colspan="3"><p>CRITICAL, ERROR, WARNING, INFO, DEBUG</p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>DEBUG</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p><strong>file_level</strong></p></li>
+</ul>
+</td>
+<td colspan="4"><p>control logging level of file output.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>enum</p></td>
+<td colspan="3"><p>CRITICAL, ERROR, WARNING, INFO, DEBUG</p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>INFO</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>logger_levels</p></li>
+</ul>
+</td>
+<td><p>type</p></td>
+<td colspan="3"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td><p>pyvisa</p></td>
+<td colspan="2"><p>INFO</p></td>
+</tr>
+<tr class="row-even"><td><p>additionalProperties</p></td>
+<td><p>type</p></td>
+<td colspan="2"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="5"><ul class="simple">
+<li><p>subscription</p></li>
+</ul>
+</td>
+<td colspan="5"><p>Controls how subscriptions to the dataset, for e.g. live plotting, are handled. Here subscribers can be registered so that they will be available through <cite>DataSet.subscribe_from_config</cite>. Additionally default subscribers for every DataSet that is generated by the <cite>Measurement</cite> object can be defined.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><ul class="simple">
+<li><p>subscribers</p></li>
+</ul>
+</td>
+<td colspan="4"><p>List of available pre-configured subscribers. The names of the subscriber entries are available as arguments of the <cite>DataSet.subscribe_from_config</cite> method and can be used in this conifg in the <cite>subscription.default_subscribers</cite> property.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>object</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="13"><ul class="simple">
+<li><p><strong>gui</strong></p></li>
+</ul>
+</td>
+<td colspan="5"><p>controls legacy gui of qcodes</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p><strong>notebook</strong></p></li>
+</ul>
+</td>
+<td colspan="4"><p>Use notebook frontend</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>True</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p><strong>plotlib</strong></p></li>
+</ul>
+</td>
+<td colspan="4"><p>Plotting library set to null to run without plotting</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em> / <em>null</em></p></td>
+</tr>
+<tr class="row-even"><td><p>enum</p></td>
+<td colspan="3"><p>QT, matplotlib, all, None</p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>null</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p><strong>pyqtmaxplots</strong></p></li>
+</ul>
+</td>
+<td colspan="4"><p>Maximum number of PyQtPlots to automatically keep in memory</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>100</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="26"><ul class="simple">
+<li><p>plotting</p></li>
+</ul>
+</td>
+<td colspan="5"><p>controls plotting functions i.e. <cite>plot_dataset</cite></p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>default_color_map</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Default colormap to use for <cite>plot_dataset</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>viridis</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>rasterize_threshold</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Scatter plots and heatmaps with more than this number of points will have their data rasterized by default when saved in vector format</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>5000</p></td>
+</tr>
+<tr class="row-even"><td rowspan="17"><ul class="simple">
+<li><p>auto_color_scale</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Control of a auto color scale, that scales such that potential outliers of the data will not be included in the min/max range.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>object</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>properties</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>enabled</p></li>
+</ul>
+</td>
+<td colspan="3"><p>Enable automatic color scaling</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="2"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="2"><p>False</p></td>
+</tr>
+<tr class="row-even"><td rowspan="7"><ul class="simple">
+<li><p>cutoff_percentile</p></li>
+</ul>
+</td>
+<td colspan="3"><p>Upper and lower percentage of datapoints that may maximally be discarded by the auto color scale. For example for [1,1] the auto color scale will in a set of 10 0000 points not clip more than the 100 points of lowest and highest value.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="2"><p><em>array</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p>default</p></td>
+<td colspan="2"><p>0.5</p></td>
+</tr>
+<tr class="row-odd"><td colspan="2"><p>0.5</p></td>
+</tr>
+<tr class="row-even"><td colspan="3"><p>items</p></td>
+</tr>
+<tr class="row-odd"><td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>type</p></td>
+<td><p><em>number</em></p></td>
+</tr>
+<tr class="row-even"><td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>type</p></td>
+<td><p><em>number</em></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><ul class="simple">
+<li><p>color_over</p></li>
+</ul>
+</td>
+<td colspan="3"><p>Matplotlib color representing the datapoints clipped by the upper limit</p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="2"><p>white</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><ul class="simple">
+<li><p>color_under</p></li>
+</ul>
+</td>
+<td colspan="3"><p>Matplotlib color representing the datapoints clipped by the lower limit</p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="2"><p>grey</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="9"><ul class="simple">
+<li><p>user</p></li>
+</ul>
+</td>
+<td colspan="5"><p>Optional feature for qdev-wrappers package: controls user settings of qcodes</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>scriptfolder</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Location of scripts for general experiments</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>/</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>mainfolder</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Location of experiments</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"></td>
+</tr>
+<tr class="row-even"><td rowspan="15"><ul class="simple">
+<li><p>station</p></li>
+</ul>
+</td>
+<td colspan="5"><p>Settings for QCoDeS Station.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>enable_forced_reconnect</p></li>
+</ul>
+</td>
+<td colspan="4"><p>If set to true, on instantiation of an existing instrument from station configuration, the existing instrument instance will be closed.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>False</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>default_folder</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Default folder where to look for a YAML station configuration file</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em> / <em>null</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>null</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>default_file</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Default file name, specifying a YAML station configuration file to load, when none is specified. The path can be absolute, relative to the current folder or relative to the default folder as specified in the qcodes config.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em> / <em>null</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>null</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>use_monitor</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Update the monitor based on the monitor attribute specified in the instruments section of the station config yaml file.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>False</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="12"><ul class="simple">
+<li><p><strong>GUID_components</strong></p></li>
+</ul>
+</td>
+<td colspan="5"><p>Identifiers for creating a GUID per run in the dataset database.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>location</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Geographical location code</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>0</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>work_station</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Work station identification code</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>0</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>sample</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Sample identification code</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>0</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="37"><ul class="simple">
+<li><p><strong>dataset</strong></p></li>
+</ul>
+</td>
+<td colspan="5"><p>Settings related to the DataSet and Measurement Context manager</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p><strong>write_in_background</strong></p></li>
+</ul>
+</td>
+<td colspan="4"><p>Should the data be written from a background thread</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>False</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p><strong>write_period</strong></p></li>
+</ul>
+</td>
+<td colspan="4"><p>How often should data be written to disk (s)</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>number</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>5.0</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>use_threads</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Should instruments be addresesed in parallel for process_params_meas() in doNd measurement</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>False</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p><strong>dond_plot</strong></p></li>
+</ul>
+</td>
+<td colspan="4"><p>Should dond functions automatically open a plot after the measurement completes</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>False</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p><strong>dond_show_progress</strong></p></li>
+</ul>
+</td>
+<td colspan="4"><p>Should dond functions show a progress bar during the measurement</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>False</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>export_automatic</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Should the data be exported automatically when a measurement is completed? If this is set ‘export_type’ must be set to a non null value.</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>False</p></td>
+</tr>
+<tr class="row-even"><td rowspan="4"><ul class="simple">
+<li><p>export_type</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Data export type for exporting datasets to disk after a measurement finishes. Does not export if set to null (default). Currently supported type(s): netcdf, csv</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em> / <em>null</em></p></td>
+</tr>
+<tr class="row-even"><td><p>enum</p></td>
+<td colspan="3"><p>netcdf, csv, None</p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>null</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>export_path</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Data export path for exporting datasets to disk after a measurement finishes. Only activated if export_type is set</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>~</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>export_prefix</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Prefix to add to filename for exporting datasets to disk after a measurement finishes. Only activated if export_type is set</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>qcodes_</p></td>
+</tr>
+<tr class="row-even"><td rowspan="6"><ul class="simple">
+<li><p>export_name_elements</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Elements to use in export file name, elements are dataset properties. Names will be formatted like ‘{export_prefix}_{export_name_elements[0]}_{…}.file_extension}’ respecting the order of the elements</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>array</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p>default</p></td>
+<td colspan="3"><p>captured_run_id</p></td>
+</tr>
+<tr class="row-odd"><td colspan="3"><p>guid</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><p>items</p></td>
+<td><p>type</p></td>
+<td colspan="2"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>enum</p></td>
+<td colspan="2"><p>captured_run_id, guid, exp_name, sample_name, name, captured_counter</p></td>
+</tr>
+<tr class="row-even"><td rowspan="8"><ul class="simple">
+<li><p><strong>telemetry</strong></p></li>
+</ul>
+</td>
+<td><p>type</p></td>
+<td colspan="4"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="5"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>enabled</p></li>
+</ul>
+</td>
+<td colspan="4"><p>Whether or not to enable sending telemetry data to the developers of QCoDeS (or elsewhere)</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>boolean</em></p></td>
+</tr>
+<tr class="row-even"><td><p>default</p></td>
+<td colspan="3"><p>False</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>instrumentation_key</p></li>
+</ul>
+</td>
+<td colspan="4"><p>A valid Azure Application Insights instrumentation key</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="3"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>default</p></td>
+<td colspan="3"><p>00000000-0000-0000-0000-000000000000</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="using-the-config">
+<h2>Using the config<a class="headerlink" href="#using-the-config" title="Permalink to this headline"></a></h2>
+<p>QCoDeS exposes the default values in the module namespace as <cite>config</cite></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">qcodes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qcodes</span><span class="o">.</span><span class="n">config</span>
+<span class="go">Current values:</span>
+<span class="go">{&#39;core&#39;: {&#39;default_fmt&#39;: &#39;data/{date}/#{counter}_{name}_{time}&#39;, &#39;register_magic&#39;: True, &#39;db_location&#39;: &#39;~/experiments.db&#39;, &#39;db_debug&#39;: False, &#39;loglevel&#39;: &#39;WARNING&#39;, &#39;file_loglevel&#39;: &#39;INFO&#39;}}</span>
+<span class="go">Current paths:</span>
+<span class="go">[&#39;c:\\users\\jenielse\\source\\repos\\qcodes\\qcodes\\configuration\\qcodesrc.json&#39;, &#39;C:\\Users\\jenielse\\qcodesrc.json&#39;]</span>
+<span class="go">&lt;qcodes.configuration.config.Config object at 0x0000029B9D549A90&gt;</span>
+</pre></div>
+</div>
+<p>Values can be retrieved  by key :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qcodes</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span>
+<span class="go">{}</span>
+</pre></div>
+</div>
+<p>Values can be retrieved by dotted keys:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qcodes</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;gui.notebook&#39;</span><span class="p">]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Values can be described:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qcodes</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">&quot;gui&quot;</span><span class="p">)</span>
+<span class="go">&quot;controls gui of qcodes.\n Current value: {&#39;notebook&#39;: True, &#39;plotlib&#39;: &#39;matplotlib&#39;}. Type: object. Default: Not defined.&quot;</span>
+</pre></div>
+</div>
+<p>qcodes.config looks like a dictionary (and supports all the dictionary operations you can think about), but it has some additional helpers.</p>
+<section id="updating-a-value">
+<h3>Updating a value<a class="headerlink" href="#updating-a-value" title="Permalink to this headline"></a></h3>
+<p>qcodes.config lets you insert a new value which gets stuffed in the “user” part of the config</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qcodes</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qcodes</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;user.foo&quot;</span><span class="p">]</span>
+<span class="go">&#39;bar&#39;</span>
+</pre></div>
+</div>
+<p>And also pass a type validator  and a description:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qcodes</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;finds majorana&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qcodes</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">&quot;user.foo&quot;</span><span class="p">)</span>
+<span class="go">&#39;finds majorana.</span>
+<span class="go">Current value: bar. Type: string. Default: Not defined.&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="saving">
+<h3>Saving<a class="headerlink" href="#saving" title="Permalink to this headline"></a></h3>
+<p>If you made modifications you may want also to save them.
+F.ex. this</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qcodes</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">save_to_home</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Will do what you think, i.e. saving to your home directory.
+There is the possibility to save to env variable, and current working directory.</p>
+</section>
+<section id="more">
+<h3>More<a class="headerlink" href="#more" title="Permalink to this headline"></a></h3>
+<p>For a overview of the API, read this: <a class="reference internal" href="../api/configuration/index.html#config-api"><span class="std std-ref">qcodes.configuration</span></a> .</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>for now are supported all the JSON types MINUS enum</p>
+</div>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>add GUI for creating config, explain saving (note on config loaded at module import so no effect if changed at runtime).</p>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="faq.html" class="btn btn-neutral float-left" title="QCodes FAQ" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../dataset/index.html" class="btn btn-neutral float-right" title="DataSet" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

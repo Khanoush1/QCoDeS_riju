@@ -1,0 +1,21 @@
+qcodes.instrument\_drivers.weinschel package
+============================================
+
+Submodules
+----------
+
+qcodes.instrument\_drivers.weinschel.Weinschel\_8320 module
+-----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.weinschel.Weinschel_8320
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: qcodes.instrument_drivers.weinschel
+   :members:
+   :undoc-members:
+   :show-inheritance:

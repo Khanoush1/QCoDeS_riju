@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.instrument_drivers.HP.HP8753D &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link href="../../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.instrument_drivers.HP.HP8753D</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.instrument_drivers.HP.HP8753D</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">qcodes.utils.validators</span> <span class="k">as</span> <span class="nn">vals</span>
+<span class="kn">from</span> <span class="nn">qcodes.instrument.parameter</span> <span class="kn">import</span> <span class="n">ArrayParameter</span><span class="p">,</span> <span class="n">ParamRawDataType</span>
+<span class="kn">from</span> <span class="nn">qcodes.instrument.visa</span> <span class="kn">import</span> <span class="n">VisaInstrument</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">_unit_map</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Log mag&#39;</span><span class="p">:</span> <span class="s1">&#39;dB&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;Phase&#39;</span><span class="p">:</span> <span class="s1">&#39;degree&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;Delay&#39;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+             <span class="s1">&#39;Smith chart&#39;</span><span class="p">:</span> <span class="s1">&#39;dim. less&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;Polar&#39;</span><span class="p">:</span> <span class="s1">&#39;dim. less&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;Lin mag&#39;</span><span class="p">:</span> <span class="s1">&#39;dim. less&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;Real&#39;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+             <span class="s1">&#39;Imaginary&#39;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+             <span class="s1">&#39;SWR&#39;</span><span class="p">:</span> <span class="s1">&#39;dim. less&#39;</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="HPIntParser"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.HP.html#qcodes.instrument_drivers.HP.HP8753D.HPIntParser">[docs]</a><span class="k">def</span> <span class="nf">HPIntParser</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Small custom parser for ints</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        value: the VISA return string using exponential notation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="TraceNotReady"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.HP.html#qcodes.instrument_drivers.HP.HP8753D.TraceNotReady">[docs]</a><span class="k">class</span> <span class="nc">TraceNotReady</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="HP8753DTrace"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.HP.html#qcodes.instrument_drivers.HP.HP8753D.HP8753DTrace">[docs]</a><span class="k">class</span> <span class="nc">HP8753DTrace</span><span class="p">(</span><span class="n">ArrayParameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to hold a the trace from the HP8753D</span>
+
+<span class="sd">    Although the trace can have two values per frequency, this</span>
+<span class="sd">    class only returns the first value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">instrument</span><span class="p">:</span> <span class="s2">&quot;HP8753D&quot;</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                         <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span>  <span class="c1"># is overwritten by prepare_trace</span>
+                         <span class="n">label</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>  <span class="c1"># is overwritten by prepare_trace</span>
+                         <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>  <span class="c1"># is overwritten by prepare_trace</span>
+                         <span class="n">setpoint_names</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Frequency&#39;</span><span class="p">,),</span>
+                         <span class="n">setpoint_labels</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Frequency&#39;</span><span class="p">,),</span>
+                         <span class="n">setpoint_units</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Hz&#39;</span><span class="p">,),</span>
+                         <span class="n">snapshot_get</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">instrument</span><span class="o">=</span><span class="n">instrument</span>
+                         <span class="p">)</span>
+
+<div class="viewcode-block" id="HP8753DTrace.prepare_trace"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.HP.html#qcodes.instrument_drivers.HP.HP8753D.HP8753DTrace.prepare_trace">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update setpoints, units and labels</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># we don&#39;t trust users to keep their fingers off the front panel,</span>
+        <span class="c1"># so we query the instrument for all values</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="p">,</span> <span class="n">HP8753D</span><span class="p">)</span>
+        <span class="n">fstart</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">start_freq</span><span class="p">()</span>
+        <span class="n">fstop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">stop_freq</span><span class="p">()</span>
+        <span class="n">npts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">trace_points</span><span class="p">()</span>
+
+        <span class="n">sps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">fstart</span><span class="p">,</span> <span class="n">fstop</span><span class="p">,</span> <span class="n">npts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setpoints</span> <span class="o">=</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">sps</span><span class="p">),)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sps</span><span class="p">),)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">s_parameter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">_unit_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">display_format</span><span class="p">()]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="o">.</span><span class="n">_traceready</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="HP8753DTrace.get_raw"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.HP.html#qcodes.instrument_drivers.HP.HP8753D.HP8753DTrace.get_raw">[docs]</a>    <span class="k">def</span> <span class="nf">get_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ParamRawDataType</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the trace</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">inst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">instrument</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">HP8753D</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inst</span><span class="o">.</span><span class="n">_traceready</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TraceNotReady</span><span class="p">(</span><span class="s1">&#39;Trace not ready. Please run prepare_trace.&#39;</span><span class="p">)</span>
+
+        <span class="n">inst</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;FORM2&#39;</span><span class="p">)</span>  <span class="c1"># 32-bit floating point numbers</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;OUTPFORM&#39;</span><span class="p">)</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">visa_handle</span><span class="o">.</span><span class="n">read_termination</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">raw_resp</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">visa_handle</span><span class="o">.</span><span class="n">read_raw</span><span class="p">()</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">visa_handle</span><span class="o">.</span><span class="n">read_termination</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+        <span class="n">first_points</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+        <span class="c1"># 4 bytes header, 4 bytes per point, value1&#39;s and value2&#39;s</span>
+        <span class="c1"># are intertwined like: val1_001, val2_001, val1_002, val2_002...</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">raw_resp</span><span class="p">)</span><span class="o">-</span><span class="mi">4</span><span class="p">)</span><span class="o">//</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">first_points</span> <span class="o">+=</span> <span class="n">raw_resp</span><span class="p">[</span><span class="mi">4</span><span class="p">:][</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="o">*</span><span class="mi">4</span><span class="p">:(</span><span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">4</span><span class="p">]</span>
+
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;&gt;f&#39;</span><span class="p">)</span>
+        <span class="n">trace1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">first_points</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">trace1</span></div></div>
+
+
+<div class="viewcode-block" id="HP8753D"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.HP.html#qcodes.instrument_drivers.HP.HP8753D.HP8753D">[docs]</a><span class="k">class</span> <span class="nc">HP8753D</span><span class="p">(</span><span class="n">VisaInstrument</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is the QCoDeS driver for the Hewlett Packard 8753D Network Analyzer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">terminator</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+            <span class="s1">&#39;start_freq&#39;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Sweep start frequency&#39;</span><span class="p">,</span>
+            <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;Hz&#39;</span><span class="p">,</span>
+            <span class="n">set_cmd</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">invalidate_trace</span><span class="p">,</span> <span class="s1">&#39;STAR </span><span class="si">{}</span><span class="s1"> HZ&#39;</span><span class="p">),</span>
+            <span class="n">get_cmd</span><span class="o">=</span><span class="s1">&#39;STAR?&#39;</span><span class="p">,</span>
+            <span class="n">get_parser</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="n">vals</span><span class="o">=</span><span class="n">vals</span><span class="o">.</span><span class="n">Numbers</span><span class="p">(</span><span class="mi">30000</span><span class="p">,</span> <span class="mi">6000000000</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+            <span class="s1">&#39;stop_freq&#39;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Sweep stop frequency&#39;</span><span class="p">,</span>
+            <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;Hz&#39;</span><span class="p">,</span>
+            <span class="n">set_cmd</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">invalidate_trace</span><span class="p">,</span> <span class="s1">&#39;STOP </span><span class="si">{}</span><span class="s1"> HZ&#39;</span><span class="p">),</span>
+            <span class="n">get_cmd</span><span class="o">=</span><span class="s1">&#39;STOP?&#39;</span><span class="p">,</span>
+            <span class="n">get_parser</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="n">vals</span><span class="o">=</span><span class="n">vals</span><span class="o">.</span><span class="n">Numbers</span><span class="p">(</span><span class="mi">30000</span><span class="p">,</span> <span class="mi">6000000000</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+            <span class="s1">&#39;averaging&#39;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Averaging state&#39;</span><span class="p">,</span>
+            <span class="n">set_cmd</span><span class="o">=</span><span class="s1">&#39;AVERO</span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">get_cmd</span><span class="o">=</span><span class="s1">&#39;AVERO?&#39;</span><span class="p">,</span>
+            <span class="n">val_mapping</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;ON&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;OFF&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+            <span class="s1">&#39;number_of_averages&#39;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Number of averages&#39;</span><span class="p">,</span>
+            <span class="n">set_cmd</span><span class="o">=</span><span class="s1">&#39;AVERFACT</span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">get_cmd</span><span class="o">=</span><span class="s1">&#39;AVERFACT?&#39;</span><span class="p">,</span>
+            <span class="n">get_parser</span><span class="o">=</span><span class="n">HPIntParser</span><span class="p">,</span>
+            <span class="n">vals</span><span class="o">=</span><span class="n">vals</span><span class="o">.</span><span class="n">Ints</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">999</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+            <span class="s1">&#39;trace_points&#39;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Number of points in trace&#39;</span><span class="p">,</span>
+            <span class="n">set_cmd</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">invalidate_trace</span><span class="p">,</span> <span class="s1">&#39;POIN</span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">),</span>
+            <span class="n">get_cmd</span><span class="o">=</span><span class="s1">&#39;POIN?&#39;</span><span class="p">,</span>
+            <span class="n">get_parser</span><span class="o">=</span><span class="n">HPIntParser</span><span class="p">,</span>
+            <span class="n">vals</span><span class="o">=</span><span class="n">vals</span><span class="o">.</span><span class="n">Enum</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">201</span><span class="p">,</span> <span class="mi">401</span><span class="p">,</span>
+                           <span class="mi">801</span><span class="p">,</span> <span class="mi">1601</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+            <span class="s1">&#39;sweep_time&#39;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Sweep time&#39;</span><span class="p">,</span>
+            <span class="n">set_cmd</span><span class="o">=</span><span class="s1">&#39;SWET</span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">get_cmd</span><span class="o">=</span><span class="s1">&#39;SWET?&#39;</span><span class="p">,</span>
+            <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span>
+            <span class="n">get_parser</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="n">vals</span><span class="o">=</span><span class="n">vals</span><span class="o">.</span><span class="n">Numbers</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">86400</span><span class="p">),</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+            <span class="s1">&#39;output_power&#39;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Output power&#39;</span><span class="p">,</span>
+            <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;dBm&#39;</span><span class="p">,</span>
+            <span class="n">set_cmd</span><span class="o">=</span><span class="s1">&#39;POWE</span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">get_cmd</span><span class="o">=</span><span class="s1">&#39;POWE?&#39;</span><span class="p">,</span>
+            <span class="n">get_parser</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="n">vals</span><span class="o">=</span><span class="n">vals</span><span class="o">.</span><span class="n">Numbers</span><span class="p">(</span><span class="o">-</span><span class="mi">85</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+            <span class="s1">&#39;s_parameter&#39;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;S-parameter&#39;</span><span class="p">,</span>
+            <span class="n">set_cmd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_s_parameter_setter</span><span class="p">,</span>
+            <span class="n">get_cmd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_s_parameter_getter</span><span class="p">)</span>
+
+        <span class="c1"># DISPLAY / Y SCALE PARAMETERS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+            <span class="s1">&#39;display_format&#39;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Display format&#39;</span><span class="p">,</span>
+            <span class="n">set_cmd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_display_format_setter</span><span class="p">,</span>
+            <span class="n">get_cmd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_display_format_getter</span><span class="p">)</span>
+
+        <span class="c1"># TODO: update this on startup and via display format</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+            <span class="s1">&#39;display_reference&#39;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Display reference level&#39;</span><span class="p">,</span>
+            <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># will be set by display_format</span>
+            <span class="n">get_cmd</span><span class="o">=</span><span class="s1">&#39;REFV?&#39;</span><span class="p">,</span>
+            <span class="n">set_cmd</span><span class="o">=</span><span class="s1">&#39;REFV</span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">get_parser</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="n">vals</span><span class="o">=</span><span class="n">vals</span><span class="o">.</span><span class="n">Numbers</span><span class="p">(</span><span class="o">-</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+            <span class="s1">&#39;display_scale&#39;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Display scale&#39;</span><span class="p">,</span>
+            <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># will be set by display_format</span>
+            <span class="n">get_cmd</span><span class="o">=</span><span class="s1">&#39;SCAL?&#39;</span><span class="p">,</span>
+            <span class="n">set_cmd</span><span class="o">=</span><span class="s1">&#39;SCAL</span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">get_parser</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+            <span class="n">vals</span><span class="o">=</span><span class="n">vals</span><span class="o">.</span><span class="n">Numbers</span><span class="p">(</span><span class="o">-</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;trace&#39;</span><span class="p">,</span>
+            <span class="n">parameter_class</span><span class="o">=</span><span class="n">HP8753DTrace</span><span class="p">)</span>
+
+        <span class="c1"># Startup</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">startup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect_message</span><span class="p">()</span>
+
+<div class="viewcode-block" id="HP8753D.reset"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.HP.html#qcodes.instrument_drivers.HP.HP8753D.HP8753D.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resets the instrument to factory default state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># use OPC to make sure we wait for operation to finish</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ask</span><span class="p">(</span><span class="s1">&#39;OPC?;PRES&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HP8753D.run_continously"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.HP.html#qcodes.instrument_drivers.HP.HP8753D.HP8753D.run_continously">[docs]</a>    <span class="k">def</span> <span class="nf">run_continously</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the instrument in run continously mode</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;CONT&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HP8753D.run_N_times"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.HP.html#qcodes.instrument_drivers.HP.HP8753D.HP8753D.run_N_times">[docs]</a>    <span class="k">def</span> <span class="nf">run_N_times</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run N sweeps and then hold. We wait for a response before returning</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">st</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sweep_time</span><span class="o">.</span><span class="n">get_latest</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">N</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Can not run </span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s1"> times.&#39;</span> <span class="o">+</span>
+                             <span class="s1">&#39; please select a number from 1-999.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># set a longer timeout, to not timeout during the sweep</span>
+        <span class="n">new_timeout</span> <span class="o">=</span> <span class="n">st</span><span class="o">*</span><span class="n">N</span> <span class="o">+</span> <span class="mi">2</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">set_to</span><span class="p">(</span><span class="n">new_timeout</span><span class="p">):</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Making </span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s1"> blocking sweeps.&#39;</span> <span class="o">+</span>
+                      <span class="sa">f</span><span class="s1">&#39; Setting VISA timeout to </span><span class="si">{</span><span class="n">new_timeout</span><span class="si">}</span><span class="s1"> s.&#39;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">ask</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;OPC?;NUMG</span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HP8753D.invalidate_trace"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.HP.html#qcodes.instrument_drivers.HP.HP8753D.HP8753D.invalidate_trace">[docs]</a>    <span class="k">def</span> <span class="nf">invalidate_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                         <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wrapper for set_cmds that make the trace not ready</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_traceready</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cmd</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="HP8753D.startup"><a class="viewcode-back" href="../../../../api/generated/qcodes.instrument_drivers.HP.html#qcodes.instrument_drivers.HP.HP8753D.HP8753D.startup">[docs]</a>    <span class="k">def</span> <span class="nf">startup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_traceready</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_format</span><span class="p">())</span></div>
+
+    <span class="k">def</span> <span class="nf">_s_parameter_setter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set_cmd for the s_parameter parameter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">param</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;S11&#39;</span><span class="p">,</span> <span class="s1">&#39;S12&#39;</span><span class="p">,</span> <span class="s1">&#39;S21&#39;</span><span class="p">,</span> <span class="s1">&#39;S22&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot set s-parameter to </span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># the trace labels changes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_traceready</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_s_parameter_getter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get_cmd for the s_parameter parameter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;S11?&#39;</span><span class="p">,</span> <span class="s1">&#39;S12?&#39;</span><span class="p">,</span> <span class="s1">&#39;S21?&#39;</span><span class="p">,</span> <span class="s1">&#39;S22?&#39;</span><span class="p">]:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ask</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">resp</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">]:</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">cmd</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_display_format_setter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set_cmd for the display_format parameter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">val_mapping</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Log mag&#39;</span><span class="p">:</span> <span class="s1">&#39;LOGM&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;Phase&#39;</span><span class="p">:</span> <span class="s1">&#39;PHAS&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;Delay&#39;</span><span class="p">:</span> <span class="s1">&#39;DELA&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;Smith chart&#39;</span><span class="p">:</span> <span class="s1">&#39;SMIC&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;Polar&#39;</span><span class="p">:</span> <span class="s1">&#39;POLA&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;Lin mag&#39;</span><span class="p">:</span> <span class="s1">&#39;LINM&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;Real&#39;</span><span class="p">:</span> <span class="s1">&#39;REAL&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;Imaginary&#39;</span><span class="p">:</span> <span class="s1">&#39;IMAG&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;SWR&#39;</span><span class="p">:</span> <span class="s1">&#39;SWR&#39;</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">fmt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">val_mapping</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot set display_format to </span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_traceready</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_reference</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">_unit_map</span><span class="p">[</span><span class="n">fmt</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_scale</span><span class="o">.</span><span class="n">unit</span> <span class="o">=</span> <span class="n">_unit_map</span><span class="p">[</span><span class="n">fmt</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">val_mapping</span><span class="p">[</span><span class="n">fmt</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_display_format_getter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get_cmd for the display_format parameter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">val_mapping</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;LOGM&#39;</span><span class="p">:</span> <span class="s1">&#39;Log mag&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;PHAS&#39;</span><span class="p">:</span> <span class="s1">&#39;Phase&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;DELA&#39;</span><span class="p">:</span> <span class="s1">&#39;Delay&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;SMIC&#39;</span><span class="p">:</span> <span class="s1">&#39;Smith chart&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;POLA&#39;</span><span class="p">:</span> <span class="s1">&#39;Polar&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;LINM&#39;</span><span class="p">:</span> <span class="s1">&#39;Lin mag&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;REAL&#39;</span><span class="p">:</span> <span class="s1">&#39;Real&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;IMAG&#39;</span><span class="p">:</span> <span class="s1">&#39;Imaginary&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;SWR&#39;</span><span class="p">:</span> <span class="s1">&#39;SWR&#39;</span><span class="p">}</span>
+
+        <span class="c1"># keep asking until we find the currently used format</span>
+        <span class="k">for</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="n">val_mapping</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ask</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">cmd</span><span class="si">}</span><span class="s1">?&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">resp</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">]:</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">val_mapping</span><span class="p">[</span><span class="n">cmd</span><span class="p">]</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

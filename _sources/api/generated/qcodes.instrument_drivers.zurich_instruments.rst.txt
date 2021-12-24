@@ -1,0 +1,45 @@
+qcodes.instrument\_drivers.zurich\_instruments package
+======================================================
+
+Submodules
+----------
+
+qcodes.instrument\_drivers.zurich\_instruments.hdawg module
+-----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.zurich_instruments.hdawg
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.zurich\_instruments.mfli module
+----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.zurich_instruments.mfli
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.zurich\_instruments.uhfli module
+-----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.zurich_instruments.uhfli
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.zurich\_instruments.uhfqa module
+-----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.zurich_instruments.uhfqa
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: qcodes.instrument_drivers.zurich_instruments
+   :members:
+   :undoc-members:
+   :show-inheritance:

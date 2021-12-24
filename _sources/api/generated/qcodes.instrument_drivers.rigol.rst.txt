@@ -1,0 +1,77 @@
+qcodes.instrument\_drivers.rigol package
+========================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 10
+
+   qcodes.instrument_drivers.rigol.private
+
+Submodules
+----------
+
+qcodes.instrument\_drivers.rigol.DG1062 module
+----------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.rigol.DG1062
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.rigol.DG4000 module
+----------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.rigol.DG4000
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.rigol.DP821 module
+---------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.rigol.DP821
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.rigol.DP831 module
+---------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.rigol.DP831
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.rigol.DP832 module
+---------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.rigol.DP832
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.rigol.DS1074Z module
+-----------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.rigol.DS1074Z
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.rigol.DS4000 module
+----------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.rigol.DS4000
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: qcodes.instrument_drivers.rigol
+   :members:
+   :undoc-members:
+   :show-inheritance:

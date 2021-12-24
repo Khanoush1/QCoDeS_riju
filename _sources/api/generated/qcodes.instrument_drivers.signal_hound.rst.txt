@@ -1,0 +1,21 @@
+qcodes.instrument\_drivers.signal\_hound package
+================================================
+
+Submodules
+----------
+
+qcodes.instrument\_drivers.signal\_hound.USB\_SA124B module
+-----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.signal_hound.USB_SA124B
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: qcodes.instrument_drivers.signal_hound
+   :members:
+   :undoc-members:
+   :show-inheritance:

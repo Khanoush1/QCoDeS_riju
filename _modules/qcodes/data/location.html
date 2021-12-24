@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>qcodes.data.location &mdash; QCoDeS 0.31.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> QCoDeS
+          </a>
+              <div class="version">
+                0.31.0+88.g816e76809
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/15_minutes_to_QCoDeS.html">15 minutes to QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples of using QCoDeS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../community/index.html">Community Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dataset/index.html">DataSet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">QCoDes API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/generated/qcodes.instrument_drivers.html">qcodes.instrument_drivers package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changes/index.html">Changelogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../help.html">Get Help</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">QCoDeS</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>qcodes.data.location</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for qcodes.data.location</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Standard location_provider class(es) for creating DataSet locations.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">string</span>
+
+<span class="kn">import</span> <span class="nn">qcodes</span>
+
+<div class="viewcode-block" id="SafeFormatter"><a class="viewcode-back" href="../../../api/data/location.html#qcodes.data.location.SafeFormatter">[docs]</a><span class="k">class</span> <span class="nc">SafeFormatter</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">Formatter</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Modified string formatter that doesn&#39;t complain about missing keys.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SafeFormatter.get_value"><a class="viewcode-back" href="../../../api/data/location.html#qcodes.data.location.SafeFormatter.get_value">[docs]</a>    <span class="k">def</span> <span class="nf">get_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Missing keys just get left as they were: &#39;{key}&#39;.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="se">}}</span><span class="s1">&#39;</span></div></div>
+
+
+<div class="viewcode-block" id="FormatLocation"><a class="viewcode-back" href="../../../api/data/location.html#qcodes.data.location.FormatLocation">[docs]</a><span class="k">class</span> <span class="nc">FormatLocation</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is the default DataSet Location provider.</span>
+
+<span class="sd">    It provides a callable that returns a new (not used by another DataSet)</span>
+<span class="sd">    location string, based on a format string ``fmt`` and a dict ``record`` of</span>
+<span class="sd">    information to pass to ``fmt``.</span>
+
+<span class="sd">    Default record items are ``date``, ``time``, and ``counter``</span>
+<span class="sd">    Record item priority from lowest to highest (double items will be</span>
+<span class="sd">    overwritten):</span>
+
+<span class="sd">    - current ``date``, and ``time``</span>
+<span class="sd">    - record dict from ``__init__``</span>
+<span class="sd">    - record dict from ``__call__``</span>
+<span class="sd">    - automatic ``counter``</span>
+
+<span class="sd">    For example if any record dict contains a `date` keyword, it will no longer</span>
+<span class="sd">    be auto-generated.</span>
+
+<span class="sd">    Uses ``io.list`` to search for existing data at a matching location.</span>
+
+<span class="sd">    ``counter`` must NOT be provided in the record. If ``fmt`` contains</span>
+<span class="sd">    &#39;{counter}&#39;, we look for existing files matching everything BEFORE this,</span>
+<span class="sd">    then find the highest counter (integer) among those files and use the next</span>
+<span class="sd">    value.</span>
+
+<span class="sd">    If the format string does not contain ``{counter}`` but the location we</span>
+<span class="sd">    would return is occupied, we add ``&#39;_{counter}&#39;`` to the end.</span>
+
+<span class="sd">    Usage::</span>
+
+<span class="sd">        loc_provider = FormatLocation(</span>
+<span class="sd">            fmt=&#39;{date}/#{counter}_{time}_{name}_{label}&#39;)</span>
+<span class="sd">        loc = loc_provider(DiskIO(&#39;.&#39;),</span>
+<span class="sd">                           record={&#39;name&#39;: &#39;Rainbow&#39;, &#39;label&#39;: &#39;test&#39;})</span>
+<span class="sd">        loc</span>
+<span class="sd">        &gt; &#39;2016-04-30/#001_13-28-15_Rainbow_test&#39;</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fmt (Optional[str]): a format string that all the other info will be</span>
+<span class="sd">            inserted into. Default &#39;{date}/{time}&#39;, or &#39;{date}/{time}_{name}&#39;</span>
+<span class="sd">            if there is a ``name`` in the record.</span>
+
+<span class="sd">        fmt_date (Optional[str]): a ``datetime.strftime`` format string,</span>
+<span class="sd">            should only use the date part. The result will be inserted in</span>
+<span class="sd">            &#39;{date}&#39; in ``fmt``. Default &#39;%Y-%m-%d&#39;.</span>
+
+<span class="sd">        fmt_time (Optional[str]): a ``datetime.strftime`` format string,</span>
+<span class="sd">            should only use the time part. The result will be inserted in</span>
+<span class="sd">            &#39;{time}&#39; in ``fmt``. Default &#39;%H-%M-%S&#39;.</span>
+
+<span class="sd">        fmt_counter (Optional[str]): a format string for the counter (integer)</span>
+<span class="sd">            which is automatically generated from existing DataSets that the</span>
+<span class="sd">            io manager can see. Default &#39;{03}&#39;.</span>
+
+<span class="sd">        record (Optional[dict]): A dict of default values to provide when</span>
+<span class="sd">            calling the location_provider. Values provided later will</span>
+<span class="sd">            override these values.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Do not include date/time or number formatting in ``fmt`` itself, such</span>
+<span class="sd">        as &#39;{date:%Y-%m-%d}&#39; or &#39;{counter:03}&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">default_fmt</span> <span class="o">=</span> <span class="n">qcodes</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;core&#39;</span><span class="p">][</span><span class="s1">&#39;default_fmt&#39;</span><span class="p">]</span>
+    <span class="n">default_fmt</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">default_fmt</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fmt_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fmt_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">fmt_counter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">record</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># TODO(giulioungaretti) this should be</span>
+        <span class="c1"># FormatLocation.default_fmt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="o">=</span> <span class="n">fmt</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_fmt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmt_date</span> <span class="o">=</span> <span class="n">fmt_date</span> <span class="ow">or</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmt_time</span> <span class="o">=</span> <span class="n">fmt_time</span> <span class="ow">or</span> <span class="s1">&#39;%H-%M-%S&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmt_counter</span> <span class="o">=</span> <span class="n">fmt_counter</span> <span class="ow">or</span> <span class="s1">&#39;</span><span class="si">{:03}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_record</span> <span class="o">=</span> <span class="n">record</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="n">SafeFormatter</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">testval</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">456</span><span class="p">,</span> <span class="mi">7890</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_findint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt_counter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">testval</span><span class="p">))</span> <span class="o">!=</span> <span class="n">testval</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;fmt_counter must produce a correct integer &#39;</span>
+                                 <span class="s1">&#39;representation of its argument (eg &quot;</span><span class="si">{:03}</span><span class="s1">&quot;)&#39;</span><span class="p">,</span>
+                                 <span class="n">fmt_counter</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_findint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="FormatLocation.__call__"><a class="viewcode-back" href="../../../api/data/location.html#qcodes.data.location.FormatLocation.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">io</span><span class="p">,</span> <span class="n">record</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Call the location provider to get a new location.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            io (io_manager): where we intend to put the new DataSet.</span>
+
+<span class="sd">            record (Optional[dict]): information to insert in the format string</span>
+<span class="sd">                Any key provided here will override the default record</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">loc_fmt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span>
+
+        <span class="n">time_now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">time_now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt_date</span><span class="p">)</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">time_now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt_time</span><span class="p">)</span>
+        <span class="n">format_record</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;date&#39;</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_record</span><span class="p">:</span>
+            <span class="n">format_record</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_record</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">record</span><span class="p">:</span>
+            <span class="n">format_record</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;counter&#39;</span> <span class="ow">in</span> <span class="n">format_record</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;you must not provide a counter in your record.&#39;</span><span class="p">,</span>
+                           <span class="n">format_record</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;name&#39;</span> <span class="ow">in</span> <span class="n">format_record</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{name}</span><span class="s1">&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">loc_fmt</span><span class="p">):</span>
+            <span class="n">loc_fmt</span> <span class="o">+=</span> <span class="s1">&#39;_</span><span class="si">{name}</span><span class="s1">&#39;</span>
+
+        <span class="k">if</span> <span class="s1">&#39;</span><span class="si">{counter}</span><span class="s1">&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">loc_fmt</span><span class="p">:</span>
+            <span class="n">location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loc_fmt</span><span class="p">,</span> <span class="o">**</span><span class="n">format_record</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">io</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">location</span><span class="p">):</span>
+                <span class="n">loc_fmt</span> <span class="o">+=</span> <span class="s1">&#39;_</span><span class="si">{counter}</span><span class="s1">&#39;</span>
+                <span class="c1"># redirect to the counter block below, but starting from 2</span>
+                <span class="c1"># because the already existing file counts like 1</span>
+                <span class="n">existing_count</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">location</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># if counter is already in loc_fmt, start from 1</span>
+            <span class="n">existing_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># now search existing files for the next allowed counter</span>
+
+        <span class="n">head_fmt</span> <span class="o">=</span> <span class="n">loc_fmt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{counter}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># io.join will normalize slashes in head to match the locations</span>
+        <span class="c1"># returned by io.list</span>
+        <span class="n">head</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">head_fmt</span><span class="p">,</span> <span class="o">**</span><span class="n">format_record</span><span class="p">))</span>
+
+        <span class="n">file_list</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">head</span> <span class="o">+</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">maxdepth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">include_dirs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">file_list</span><span class="p">:</span>
+            <span class="n">cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_findint</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">head</span><span class="p">):])</span>
+            <span class="n">existing_count</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">existing_count</span><span class="p">,</span> <span class="n">cnt</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="n">existing_count</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">format_record</span><span class="p">[</span><span class="s1">&#39;counter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt_counter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">counter</span><span class="p">)</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loc_fmt</span><span class="p">,</span> <span class="o">**</span><span class="n">format_record</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">location</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p></p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

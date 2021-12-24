@@ -1,0 +1,133 @@
+qcodes.instrument\_drivers.tektronix package
+============================================
+
+Submodules
+----------
+
+qcodes.instrument\_drivers.tektronix.AWG5014 module
+---------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.tektronix.AWG5014
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.tektronix.AWG5208 module
+---------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.tektronix.AWG5208
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.tektronix.AWG70000A module
+-----------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.tektronix.AWG70000A
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.tektronix.AWG70002A module
+-----------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.tektronix.AWG70002A
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.tektronix.AWGFileParser module
+---------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.tektronix.AWGFileParser
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.tektronix.DPO7200xx module
+-----------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.tektronix.DPO7200xx
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.tektronix.Keithley\_2000 module
+----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.tektronix.Keithley_2000
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.tektronix.Keithley\_2400 module
+----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.tektronix.Keithley_2400
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.tektronix.Keithley\_2450 module
+----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.tektronix.Keithley_2450
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.tektronix.Keithley\_2600\_channels module
+--------------------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.tektronix.Keithley_2600_channels
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.tektronix.Keithley\_3706A module
+-----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.tektronix.Keithley_3706A
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.tektronix.Keithley\_6500 module
+----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.tektronix.Keithley_6500
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.tektronix.Keithley\_s46 module
+---------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.tektronix.Keithley_s46
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.tektronix.TPS2012 module
+---------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.tektronix.TPS2012
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+qcodes.instrument\_drivers.tektronix.keithley\_7510 module
+----------------------------------------------------------
+
+.. automodule:: qcodes.instrument_drivers.tektronix.keithley_7510
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: qcodes.instrument_drivers.tektronix
+   :members:
+   :undoc-members:
+   :show-inheritance:
